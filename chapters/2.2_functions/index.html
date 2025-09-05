@@ -902,9 +902,13 @@
 <li><code>...</code>: each function has individual parameter keys for the various     individual parameters. For example, functions of type <code>sum</code> have the     parameter key <code>summands</code>. In general, these keys can describe     strings as references to other objects or numbers. Depending on the     parameter and the type of function, they appear either in single     item or array format. </li>
 </ul>
 <div class="highlight"><span class="filename">Example: Functions</span><pre><span></span><code><span class="nt">&quot;functions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sum1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sum&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;summands&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">1.8</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;param_xy&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sum1&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sum&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">&quot;summands&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">1.8</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;param_xy&quot;</span><span class="p">]</span><span class="w"> </span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span>
 <span class="w">    </span><span class="err">...</span><span class="w"> </span>
-<span class="w">    </span><span class="p">]</span>
+<span class="p">]</span>
 </code></pre></div>
 <p>In the following the implemented functions are described in detail. </p>
 <h3 id="product">Product<a class="headerlink" href="#product" title="Permanent link">&para;</a></h3>

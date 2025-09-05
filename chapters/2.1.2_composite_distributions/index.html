@@ -946,9 +946,9 @@
 <li><code>coefficients</code>: array of names of coefficients <span class="arithmatex">\(c_i\)</span> or numbers to     be added </li>
 <li><code>extended</code>: boolean denoting whether this is an extended     distribution (<span class="smallcaps">optional</span>, as it can be inferred from the     lengths of the lists for <code>summands</code> and <code>coefficients</code>) 
 This distribution can be treated as extended or as non-extended. </li>
-<li>If the number of coefficients equals the number of distributions and     'extended' is 'false', then the sum of the coefficient must be     (approximately) one. </li>
-<li>If the number of coefficients equals the number of distributions and     'extended' is 'true', then the sum of the coefficients will be used     as the Poisson rate parameter and the mixture distribution itself     will use the coefficients normalized by their sum. </li>
-<li>If the number of coefficients is one less than the number of     distributions, then 'extended' must be 'false' and <span class="arithmatex">\(c_n\)</span> is computed     from the other coefficients as </li>
+<li>If the number of coefficients equals the number of distributions and <code>extended</code> is <code>false</code>, then the sum of the coefficient must be     (approximately) one. </li>
+<li>If the number of coefficients equals the number of distributions and <code>extended</code> is <code>true</code>, then the sum of the coefficients will be used     as the Poisson rate parameter and the mixture distribution itself     will use the coefficients normalized by their sum. </li>
+<li>If the number of coefficients is one less than the number of     distributions, then <code>extended</code> must be <code>false</code> and <span class="arithmatex">\(c_n\)</span> is computed     from the other coefficients as </li>
 </ul>
 <div class="arithmatex">\[
 \begin{aligned}     c_n &amp;= 1 - \sum_{i=1}^{n-1}c_i .     \end{aligned} 
@@ -992,7 +992,7 @@ The PDF the Poisson point process distribution at an outcome <span class="arithm
 <p>In particle physics, the function <span class="arithmatex">\(\text{PoissonPointProcessPdf}(\lambda, m(\theta), x)\)</span>, for a fixed observation <span class="arithmatex">\(x\)</span> and varying parameters <span class="arithmatex">\(\lambda\)</span> and <span class="arithmatex">\(\theta\)</span>, is often called an extended likelihood. 
 A a poisson point process distribution can be specified in HS<sup>3</sup> in two ways: </p>
 <ul>
-<li>`rate_extended_dist$: The global-rate parameter <span class="arithmatex">\(\lambda\)</span>     and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: </li>
+<li><code>rate_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span>     and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: </li>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>rate_extended_dist</code> </li>
 <li><code>rate</code>: The global rate <span class="arithmatex">\(\lambda\)</span> </li>

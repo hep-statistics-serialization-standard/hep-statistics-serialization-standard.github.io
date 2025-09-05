@@ -831,17 +831,19 @@
 <h2 id="sec:misc">Miscellaneous<a class="headerlink" href="#sec:misc" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>misc</code> can contain arbitrary, user-created information in struct format. </p>
 <div class="highlight"><span class="filename">Example: Miscellaneous</span><pre><span></span><code><span class="nt">&quot;misc&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;customkey1&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;custom information 1&quot;</span><span class="w"> </span><span class="p">,</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;myPackage_internal&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;somekey&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;custom info only affecting myPackage&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;default_color_for_all_curves&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fuchsia&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">&quot;customkey1&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;custom information 1&quot;</span><span class="w"> </span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">&quot;myPackage_internal&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">&quot;somekey&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;custom info only affecting myPackage&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">&quot;default_color_for_all_curves&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fuchsia&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span>
 </code></pre></div>
-<p>This top-level component is intended to store any and all additional information, including user- or backend-specific meta-information. Examples include, but are not limited to: 
--   colors and styles for drawing distributions in this file 
--   suggested settings for samplers or minimizers when working with the     distributions in this file 
--   comments explaining design choices made when building the model in     this file 
--   suggested names and paths for output files to be used by backends     working with this file </p>
+<p>This top-level component is intended to store any and all additional information, including user- or backend-specific meta-information. Examples include, but are not limited to: </p>
+<ul>
+<li>colors and styles for drawing distributions in this file </li>
+<li>suggested settings for samplers or minimizers when working with the     distributions in this file </li>
+<li>comments explaining design choices made when building the model in     this file </li>
+<li>suggested names and paths for output files to be used by backends     working with this file </li>
+</ul>
 
 
 

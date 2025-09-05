@@ -842,13 +842,24 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <li><code>aux_distributions</code>: (<span class="smallcaps">optional</span>) array of strings     referencing the considered auxiliary distributions defined in the     top-level component <code>distributions</code>. They can be used to encode     regularizers or penalty terms to aid the minimization. These     observed data for these distributions is implicit and not part of     <code>data</code>. </li>
 </ul>
 <div class="highlight"><span class="filename">Example: Likelihoods</span><pre><span></span><code><span class="nt">&quot;likelihoods&quot;</span><span class="p">:[</span><span class="w"> </span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;likelihood1&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span><span class="w"> </span><span class="s2">&quot;dist1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;dist2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;single_dimensional_dist_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w">         </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;data1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;data2&quot;</span><span class="p">,</span><span class="w">                           </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;aux_distributions&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;regularization_term&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">        </span><span class="err">...</span><span class="w"> </span>
-<span class="w">    </span><span class="p">]</span><span class="w"> </span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;likelihood1&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span><span class="w"> </span>
+<span class="w">      </span><span class="s2">&quot;dist1&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="s2">&quot;dist2&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="s2">&quot;single_dimensional_dist_1&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="err">...</span><span class="w"> </span>
+<span class="w">    </span><span class="p">],</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w">         </span><span class="p">[</span><span class="w"> </span>
+<span class="w">      </span><span class="s2">&quot;data1&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="s2">&quot;data2&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="err">...</span><span class="w"> </span>
+<span class="w">    </span><span class="p">],</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">&quot;aux_distributions&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;regularization_term&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span>
+<span class="w">  </span><span class="err">...</span><span class="w"> </span>
+<span class="p">]</span><span class="w"> </span>
 </code></pre></div>
 
 
