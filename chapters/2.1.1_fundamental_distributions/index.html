@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -599,10 +599,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#barlow-besston-lite-constraint-distribution" class="md-nav__link">
+  <a href="#barlow-beeston-lite-constraint-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Barlow-Besston-Lite Constraint distribution
+        Barlow-Beeston-Lite Constraint distribution
       
     </span>
   </a>
@@ -1205,10 +1205,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#barlow-besston-lite-constraint-distribution" class="md-nav__link">
+  <a href="#barlow-beeston-lite-constraint-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Barlow-Besston-Lite Constraint distribution
+        Barlow-Beeston-Lite Constraint distribution
       
     </span>
   </a>
@@ -1294,7 +1294,7 @@ functions, parameters and exactly one variable.</p>
 <li><code>power</code>: value or name of the parameter used as exponent <span class="arithmatex">\(p\)</span>. </li>
 </ul>
 <h4 id="continued-poisson-distribution">Continued Poisson distribution<a class="headerlink" href="#continued-poisson-distribution" title="Permanent link">&para;</a></h4>
-<p>The of a continued Poisson distribution of the variable <span class="arithmatex">\(x\)</span> is defined as </p>
+<p>The continued Poisson distribution of the variable <span class="arithmatex">\(x\)</span> is defined as </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{ContinuedPoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left(x \cdot \ln \lambda - \lambda - \ln \Gamma(x+1)\right), \end{aligned} 
 \]</div>
@@ -1409,7 +1409,7 @@ In this case, the behavior for non-integer values of <span class="arithmatex">\(
 <h3 id="multivariate-fundamental-distributions">Multivariate fundamental distributions<a class="headerlink" href="#multivariate-fundamental-distributions" title="Permanent link">&para;</a></h3>
 <p>This section contains multivariate fundamental distributions. They may
 refer to functions, parameters and more than one variable.</p>
-<h4 id="barlow-besston-lite-constraint-distribution">Barlow-Besston-Lite Constraint distribution<a class="headerlink" href="#barlow-besston-lite-constraint-distribution" title="Permanent link">&para;</a></h4>
+<h4 id="barlow-beeston-lite-constraint-distribution">Barlow-Beeston-Lite Constraint distribution<a class="headerlink" href="#barlow-beeston-lite-constraint-distribution" title="Permanent link">&para;</a></h4>
 <p>This distribution represents a product of Poisson distributions
 defining the statistical uncertainties of the histogram templates
 defined in a <code>histfactory_func</code>.</p>
@@ -1419,7 +1419,7 @@ defined in a <code>histfactory_func</code>.</p>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>barlow_beeston_lite_poisson_constraint_dist</code> </li>
-<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
+<li><code>x</code>: array of names of the variables <span class="arithmatex">\(x_i\)</span>. This also includes mixed arrays of values and names. </li>
 <li><code>expected</code>: array of central values <span class="arithmatex">\(\tau_i\)</span> </li>
 </ul>
 <h4 id="multivariate-normal-distribution">Multivariate normal distribution<a class="headerlink" href="#multivariate-normal-distribution" title="Permanent link">&para;</a></h4>
@@ -1521,7 +1521,7 @@ The way modifiers affect the yield in the corresponding bin is subject to an int
 <p>The components of a HistFactory distribution are: </p>
 <ul>
 <li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>histfactory_yield</code> </li>
+<li><code>type</code>: <code>histfactory_dist</code> </li>
 <li><code>axes</code>: array of structs representing the axes. If given each struct     needs to have the component <code>name</code>. Further,     (<span class="smallcaps">optional</span>) components are <code>max</code>, <code>min</code> and <code>nbins</code>,     or, alternatively, <code>edges</code>. The definition of the axes follows the     format for binned data (see Section 
     <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>). </li>
 <li><code>samples</code>: array of structs containing the samples of this channel.     For details see below. 
@@ -1677,10 +1677,10 @@ Eq. <a href="#eq:relativistic_breit_wigner_dist" reference="eq:relativistic_brei
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "content.code.copy", "content.code.annotate", "content.tabs.link", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "content.code.copy", "content.code.annotate", "content.tabs.link", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="../../javascripts/mathjax.js"></script>
       
