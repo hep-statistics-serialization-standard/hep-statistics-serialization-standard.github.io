@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -558,7 +558,7 @@
   <a href="#dist:bin-counts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bin count distribution
+        Bin-count distribution
       
     </span>
   </a>
@@ -1031,7 +1031,7 @@
   <a href="#dist:bin-counts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bin count distribution
+        Bin-count distribution
       
     </span>
   </a>
@@ -1107,17 +1107,17 @@ This distribution can be treated as extended or as non-extended. </li>
 \]</div>
 <p>The distribution can be specified either via the non-normalized density function <span class="arithmatex">\(f(x)\)</span> or via the non-normalized log-density function <span class="arithmatex">\(\log(f(x))\)</span>: </p>
 <ul>
-<li><code>density_function\_dist</code>$: Specified via the PDF <span class="arithmatex">\(f(x)\)</span> </li>
+<li><code>density_function_dist</code>: Specified via the PDF <span class="arithmatex">\(f(x)\)</span> </li>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>density_function_dist</code> </li>
 <li><code>function</code>: The density function <span class="arithmatex">\(f\)</span> </li>
-<li><code>log_density_function\_dist</code>: Specified via the PDF     <span class="arithmatex">\(f(x)\)</span> </li>
+<li><code>log_density_function_dist</code>: Specified via the PDF     <span class="arithmatex">\(f(x)\)</span> </li>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>log_density_function_dist</code> </li>
 <li><code>function</code>: The density function <span class="arithmatex">\(f\)</span> </li>
 </ul>
 <h4 id="dist:poisson-point-process" label="dist:poisson-point-process">Poisson point process<a class="headerlink" href="#dist:poisson-point-process" title="Permanent link">&para;</a></h4>
-<p>A Poisson point process distribution is understood here as the distribution of the outcomes of a (typically inhomogeneous) Poisson point process. In particle physics, such a distribution is often called an extended distribution [^barlow-extended-ml]. 
+<p>A Poisson point process distribution is understood here as the distribution of the outcomes of a (typically inhomogeneous) Poisson point process. In particle physics, such a distribution is often called an extended distribution [^barlow-extended-ml].
 In HS<sup>3</sup>, a Poisson point process distribution is specified using a global-rate parameter <span class="arithmatex">\(\lambda\)</span> and an underlying distribution <span class="arithmatex">\(m\)</span>, either explicitly or implicitly (see below). 
 Random values are drawn from the Poisson point process distribution by drawing a random number <span class="arithmatex">\(n\)</span> from a Poisson distribution of the global-rate <span class="arithmatex">\(\lambda\)</span>, and then drawing <span class="arithmatex">\(n\)</span> random values from the underlying distribution <span class="arithmatex">\(m\)</span>. The resulting random values are vectors <span class="arithmatex">\(x\)</span> of length <span class="arithmatex">\(n\)</span>, so their length varies. 
 The PDF the Poisson point process distribution at an outcome <span class="arithmatex">\(x\)</span> (a vector of length <span class="arithmatex">\(n\)</span>) is </p>
@@ -1125,7 +1125,7 @@ The PDF the Poisson point process distribution at an outcome <span class="arithm
 \begin{aligned} \text{PoissonPointProcessPdf}(\lambda, m, x) &amp;= \text{PoissonPdf}(n, \lambda) \cdot \prod_i^n \text{PDF}(m, x_i). \end{aligned} 
 \]</div>
 <p>In particle physics, the function <span class="arithmatex">\(\text{PoissonPointProcessPdf}(\lambda, m(\theta), x)\)</span>, for a fixed observation <span class="arithmatex">\(x\)</span> and varying parameters <span class="arithmatex">\(\lambda\)</span> and <span class="arithmatex">\(\theta\)</span>, is often called an extended likelihood. 
-A a poisson point process distribution can be specified in HS<sup>3</sup> in two ways: </p>
+A Poisson point process distribution can be specified in HS<sup>3</sup> in two ways: </p>
 <ul>
 <li><code>rate_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span>     and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: </li>
 <li><code>name</code>: custom string </li>
@@ -1141,7 +1141,7 @@ A a poisson point process distribution can be specified in HS<sup>3</sup> in two
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>density</code>: The rate-density function <span class="arithmatex">\(f\)</span> </li>
 </ul>
-<h4 id="dist:bin-counts" label="dist:bin-counts">Bin count distribution<a class="headerlink" href="#dist:bin-counts" title="Permanent link">&para;</a></h4>
+<h4 id="dist:bin-counts" label="dist:bin-counts">Bin-count distribution<a class="headerlink" href="#dist:bin-counts" title="Permanent link">&para;</a></h4>
 <p>This is a binned version of the Poisson point process distribution 
 (<a href="#dist:poisson-point-process" reference="dist:poisson-point-process" reference-type="ref">Poisson point process</a>). Is is the distribution of the bin counts that result from histogramming the outcomes of a Poisson point process distribution using a given binning scheme (see 
 <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>). 
@@ -1150,7 +1150,7 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <div class="arithmatex">\[
 \begin{aligned} \nu_i &amp;= \lambda \cdot \int_{\text{bin}_i} \text{PDF}(y, m) dy \quad \text{equivalent to}\\ \nu_i &amp;= \int_{\text{bin}_i} f(y) dy \end{aligned} 
 \]</div>
-<p>The PDF of the Bin-counts distribution at an outcome <span class="arithmatex">\(x\)</span> (a vector of length <span class="arithmatex">\(k\)</span>, same as the number of bins) is </p>
+<p>The PDF of the bin-counts distribution at an outcome <span class="arithmatex">\(x\)</span> (a vector of length <span class="arithmatex">\(k\)</span>, same as the number of bins) is </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{BinCountsPdf}(x) &amp;= \prod_i^k \text{PoissonPdf}(x_i, \nu_i) \end{aligned} 
 \]</div>
