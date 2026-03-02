@@ -1070,10 +1070,10 @@ power-law distributions describing the lower and upper tails, given by</p>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>c</code>: value or name of the parameter used as coefficient <span class="arithmatex">\(c\)</span>. </li>
 </ul>
-<h4 id="gaussian-normal-distribution">Gaussian Normal distribution<a class="headerlink" href="#gaussian-normal-distribution" title="Permanent link">&para;</a></h4>
-<p>The Gaussian/Normal distribution is defined as </p>
+<h4 id="gaussiannormal-distribution">Gaussian/normal distribution<a class="headerlink" href="#gaussiannormal-distribution" title="Permanent link">&para;</a></h4>
+<p>The Gaussian/normal distribution is defined as</p>
 <div class="arithmatex">\[
-\begin{aligned} \text{GaussianPdf}(x, \mu, \sigma) = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left(\frac{(x-\mu)^2}{\sigma^2}\right) \end{aligned} 
+\begin{aligned} \text{GaussianPdf}(x, \mu, \sigma) = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right) \end{aligned}
 \]</div>
 <ul>
 <li><code>name</code>: custom unique string </li>
@@ -1081,6 +1081,26 @@ power-law distributions describing the lower and upper tails, given by</p>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>mean</code>: value or name of the parameter used as mean value <span class="arithmatex">\(\mu\)</span> </li>
 <li><code>sigma</code>: value or name of the parameter encoding the standard     deviation <span class="arithmatex">\(\sigma\)</span>. </li>
+</ul>
+<h4 id="generalized-normal-distribution">Generalized Normal distribution<a class="headerlink" href="#generalized-normal-distribution" title="Permanent link">&para;</a></h4>
+<p>The generalized normal distribution is defined as</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{GeneralizedNormalPdf}(x, \mu, \alpha, \beta) = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left\{ -\left( \frac{|x-\mu|}{\alpha} \right)^\beta \right\}
+\end{aligned}
+\]</div>
+<p>cf. the <a href="https://en.wikipedia.org/wiki/Generalized_normal_distribution">Wikipedia definition</a>.</p>
+<p>This form is of particular use with values of <span class="arithmatex">\(\beta \sim 8\)</span> to generate a flat-topped distribution useful
+for "2 point" parameter-constraints between models where there is no clear preference but their average
+should not be particularly favoured. (In such usage, the template points should ideally be located at <span class="arithmatex">\(|x| &lt; \pm 1\)</span>,
+to avoid disfavouring a pure solution.)</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>generalized_normal_dist</code></li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
+<li><code>mean</code>: value or name of the parameter used as mean value <span class="arithmatex">\(\mu\)</span></li>
+<li><code>alpha</code>: value or name of the <span class="arithmatex">\(\alpha\)</span> parameter encoding the width; this corresponds to <span class="arithmatex">\(\sigma = \alpha/\sqrt{2}\)</span> when <span class="arithmatex">\(\beta = 2\)</span>.</li>
+<li><code>beta</code>: power <span class="arithmatex">\(\beta\)</span> to which the exponent is raised, <span class="arithmatex">\(\beta = 2\)</span> corresponding to the <span class="arithmatex">\(\text{GaussianPdf}\)</span> shape.</li>
 </ul>
 <h4 id="log-normal-distribution">Log-Normal distribution<a class="headerlink" href="#log-normal-distribution" title="Permanent link">&para;</a></h4>
 <p>The log-normal distribution is defined as </p>
