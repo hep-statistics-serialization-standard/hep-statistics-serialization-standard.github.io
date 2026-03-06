@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
     
     
       
@@ -951,8 +951,8 @@ The implementations that support generic expression <span class="smallcaps">must
 <li>Literal integer (format <code>1234</code>), boolean (format <code>TRUE</code> and <code>FALSE</code>)     and floating point (format <code>123.4</code>, <code>1.234e2</code> and <code>1.234E2</code>) values. </li>
 <li>Literal values for <span class="arithmatex">\(\pi\)</span> (<code>PI</code>) and Euler's number (<code>EULER</code>). </li>
 <li>The arithmetic operators addition (<code>x + y</code>), subtraction (<code>x - y</code>),     multiplication (<code>x * y</code>), division (<code>x / y</code>) and exponentiation     (<code>x^y</code>). </li>
-<li>The comparison operators approximately-equal (<code>x == y</code>),     exactly-equal (<code>x === y</code>), not-approximately-equal (<code>x != y</code>),     not-exactly-equal (<code>x !== y</code>), less-than (<code>x &lt; y</code>), less-or-equal     (<code>x &lt;= y</code>), greater-than (<code>x &gt;= y</code>) and greater-or-equal (<code>x &gt;= y</code>). </li>
-<li>The logical operators logical-inverse (<code>!a</code>), logical-and     (<code>a &amp;&amp; b</code>), logical-or (<code>a || b</code>), less-or-equal (<code>a &lt;= b</code>),     greater-than (<code>a &gt;= b</code>) and greater-or-equal (<code>a &gt;= b</code>). </li>
+<li>The comparison operators approximately-equal (<code>x == y</code>),     exactly-equal (<code>x === y</code>), not-approximately-equal (<code>x != y</code>),     not-exactly-equal (<code>x !== y</code>), less-than (<code>x &lt; y</code>), less-or-equal     (<code>x &lt;= y</code>), greater-than (<code>x &gt; y</code>) and greater-or-equal (<code>x &gt;= y</code>). </li>
+<li>The logical operators logical-inverse (<code>!a</code>), logical-and     (<code>a &amp;&amp; b</code>) and logical-or (<code>a || b</code>). </li>
 <li>Round brackets to specify the order of operations. </li>
 <li>The ternary operator <code>condition ? result_if_true : result_if_false</code> </li>
 <li>The functions <ul>
@@ -960,7 +960,6 @@ The implementations that support generic expression <span class="smallcaps">must
 <li><code>log(x)</code>: Natural logarithm of <code>x</code> </li>
 <li><code>sqrt(x)</code>: The square root of <code>x</code> </li>
 <li><code>abs(x)</code>: The absolute value of <code>x</code> </li>
-<li><code>pow(x, y)</code>: <code>x</code> raised to the power of <code>y</code> </li>
 <li><code>pow(x, y)</code>: <code>x</code> raised to the power of <code>y</code> </li>
 <li><code>min(x, y)</code>: minimum of <code>x</code> and <code>y</code> </li>
 <li><code>max(x, y)</code>: maximum of <code>x</code> and <code>y</code> </li>
@@ -974,7 +973,7 @@ The implementations that support generic expression <span class="smallcaps">must
 </li>
 </ul>
 <p>Symbols not defined here refer to variables in the HS<span class="arithmatex">\({}^3\)</span> model. 
-The operator precedence and associativity is acorrding to the common conventions. 
+The operator precedence and associativity is according to the common conventions. 
 Spaces between operators and operands are optional. There must be no space between a function name and the function arguments, spaces between function arguments are optional (<code>f(a, b)</code> and <code>f(a,b)</code> are correct but <code>f (a, b)</code> is not allowed). </p>
 <p>Division <span class="smallcaps">must</span> be treated as floating-point division (i.e. <code>2/3</code> should be equivalent to <code>2.0/3.0</code>). </p>
 <p>The approximately-equal (<code>a == b</code>) and the not-approximately-equal operator (<code>a != b</code>), <span class="smallcaps">should</span> compare floating-point numbers to within a small multiple of the unit of least precision. 

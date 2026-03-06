@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
     
     
       
@@ -922,7 +922,7 @@ the model (see <a href="#sec:data-generation" reference="sec:data-generation" re
 <h3 id="sec:frequentist-inference">Frequentist parameter inference<a class="headerlink" href="#sec:frequentist-inference" title="Permanent link">&para;</a></h3>
 <p>The standard method of frequentist inference is the maximum (or, respectively, profile) likelihood method. In the vast majority of cases, the test statistic used here is the likelihood ratio, that is, the ratio of two values of the likelihood corresponding to two different points in parameter space: one that maximizes the likelihood unconditionally, one one that maximizes the likelihood under some condition such as the values of the parameters of interest expected in the absence of a deviation from the null hypothesis. The corresponding building blocks for such an analysis, such as the list of parameters of interest and the likelihood function to be used, are specified in the analysis section of an HS<span class="arithmatex">\({}^3\)</span> configuration (Sec. <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>). </p>
 <h3 id="sec:bayesian-inference">Bayesian parameter inference<a class="headerlink" href="#sec:bayesian-inference" title="Permanent link">&para;</a></h3>
-<p>The standard also encompasses the specification of Baysian posterior distributions over parameters by combining (Sec. 
+<p>The standard also encompasses the specification of Bayesian posterior distributions over parameters by combining (Sec. 
 <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>) likelihoods with probabilty distributions that acts the priors. Here concrete distributions are used to describe the prior probability of parameters in addition to parameterized distributions that are used to describe of the probability of observing specific data. </p>
 <h2 id="how-to-read-this-document">How to read this document<a class="headerlink" href="#how-to-read-this-document" title="Permanent link">&para;</a></h2>
 <p>In the context of this document, any <code>JSON</code> object is referred to as a struct. A key-value-pair inside such a struct is referred to as a component. If not explicitly stated otherwise, all components mentioned are mandatory. 
@@ -1009,11 +1009,11 @@ functions, parameters and exactly one variable.</p>
 \begin{aligned} \text{ContinuedPoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left(x \cdot \ln \lambda - \lambda - \ln \Gamma(x+1)\right), \end{aligned} 
 \]</div>
 <p>where <span class="arithmatex">\(\Gamma\)</span> denotes the Euler Gamma function. </p>
-<p>This function is similar the the Poisson distribution (see <a href="#dist:poisson">Poisson
+<p>This function is similar to the Poisson distribution (see <a href="#dist:poisson">Poisson
 distribution</a>{reference-type="ref"
 reference="dist:poisson"}), but can accept non-integer values for
 <span class="arithmatex">\(x\)</span>. Notably, the differences between the two might be significant for
-small values of <span class="arithmatex">\(x\)</span> (below x). Nevertheless, the distribution is
+small values of <span class="arithmatex">\(x\)</span> (below <span class="arithmatex">\(1\)</span>). Nevertheless, the distribution is
 useful to deal with datasets with non-integer event counts, such as
 Asimov datasets <sup id="fnref:asymptotics"><a class="footnote-ref" href="#fn:asymptotics">10</a></sup>.</p>
 <ul>
@@ -1341,7 +1341,7 @@ Eq. <a href="#eq:relativistic_breit_wigner_dist" reference="eq:relativistic_brei
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>mixture_dist</code> </li>
-<li><code>name</code>: name of the variable <span class="arithmatex">\(x\)</span> (<span class="smallcaps">optional</span>, since the     variable is fully defined by the summands) </li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (<span class="smallcaps">optional</span>, since the     variable is fully defined by the summands) </li>
 <li><code>summands</code>: array of names referencing distributions </li>
 <li><code>coefficients</code>: array of names of coefficients <span class="arithmatex">\(c_i\)</span> or numbers to     be added </li>
 <li><code>extended</code>: boolean denoting whether this is an extended     distribution (<span class="smallcaps">optional</span>, as it can be inferred from the     lengths of the lists for <code>summands</code> and <code>coefficients</code>) 
@@ -1354,7 +1354,7 @@ This distribution can be treated as extended or as non-extended. </li>
 \begin{aligned}     c_n &amp;= 1 - \sum_{i=1}^{n-1}c_i .     \end{aligned} 
 \]</div>
 <h4 id="sec:product-distribution" label="sec:product-distribution">Product distribution<a class="headerlink" href="#sec:product-distribution" title="Permanent link">&para;</a></h4>
-<p>The product of s of independent distributions <span class="arithmatex">\(f_i\)</span> is defined as </p>
+<p>The product of independent distributions <span class="arithmatex">\(f_i\)</span> is defined as </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{ProductPdf}(x) &amp;= \frac{1}{\ensuremath{\mathcal{M}}}\prod_i^n f(x). \end{aligned} 
 \]</div>
@@ -1400,7 +1400,7 @@ A Poisson point process distribution can be specified in HS<sup>3</sup> in two w
 </ul>
 <p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying     distribution. The underlying distribution <span class="smallcaps">must</span> not be     referred to from other components of the statistical model. </p>
 <ul>
-<li><code>rate_density_dist</code>: Specified via a non-normalized     rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the     underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) d y\)</span> and     <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesque measure. </li>
+<li><code>rate_density_dist</code>: Specified via a non-normalized     rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the     underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) d y\)</span> and     <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </li>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>rate_density_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
@@ -1408,7 +1408,7 @@ A Poisson point process distribution can be specified in HS<sup>3</sup> in two w
 </ul>
 <h4 id="dist:bin-counts" label="dist:bin-counts">Bin-count distribution<a class="headerlink" href="#dist:bin-counts" title="Permanent link">&para;</a></h4>
 <p>This is a binned version of the Poisson point process distribution 
-(<a href="#dist:poisson-point-process" reference="dist:poisson-point-process" reference-type="ref">Poisson point process</a>). Is is the distribution of the bin counts that result from histogramming the outcomes of a Poisson point process distribution using a given binning scheme (see 
+(<a href="#dist:poisson-point-process" reference="dist:poisson-point-process" reference-type="ref">Poisson point process</a>). It is the distribution of the bin counts that result from histogramming the outcomes of a Poisson point process distribution using a given binning scheme (see 
 <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>). 
 Like the Poisson point process distribution, a Bin-counts distribution can either be specified via a global-rate parameter <span class="arithmatex">\(\lambda\)</span> and an underlying distribution <span class="arithmatex">\(m\)</span>, or via a rate-density function <span class="arithmatex">\(f\)</span> (in which case <span class="arithmatex">\(\lambda\)</span> and <span class="arithmatex">\(m\)</span> are implicit). In addition, the binning scheme also has to be specified in either case, unless it can be inferred (see below). 
 For <span class="arithmatex">\(k\)</span> bins, this type of distribution corresponds to a product of <span class="arithmatex">\(k\)</span> Poisson distributions with rates </p>
@@ -1425,18 +1425,18 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <li><code>type</code>: <code>bincounts_extended_dist</code> </li>
 <li><code>rate</code>: The global rate <span class="arithmatex">\(\lambda\)</span> </li>
 <li><code>dist</code>: The underlying distribution <span class="arithmatex">\(m\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the         defintions in 
-    <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned data]</a>. <span class="smallcaps">optional</span> if <code>dist</code>         is a binned distribution, in which case the same binning is used         by default. </li>
+<li><code>axes</code>: a definition of the binning to be used, following the         definitions in 
+    <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. <span class="smallcaps">optional</span> if <code>dist</code>         is a binned distribution, in which case the same binning is used         by default. </li>
 </ul>
 <p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying     distribution. The underlying distribution <span class="smallcaps">must</span> not be     referred to from other components of the statistical model. 
 <code>bincounts_density_dist</code>: Specified via a non-normalized     rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the     underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and     <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
-<p>More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesque measure. </p>
+<p>More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </p>
 <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>bincounts_density_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>density</code>: The rate-density function <span class="arithmatex">\(f\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the         defintions in 
+<li><code>axes</code>: a definition of the binning to be used, following the         definitions in 
         <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. </li>
 </ul>
 <h2 id="sec:functions">Functions<a class="headerlink" href="#sec:functions" title="Permanent link">&para;</a></h2>
@@ -1573,7 +1573,7 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 <span class="w">    </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mf">0.</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">3</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;edges&quot;</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;edges&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
 <span class="w">    </span><span class="p">]</span><span class="w"> </span>
 <span class="w">  </span><span class="p">},</span><span class="w"> </span>
 <span class="w">    </span><span class="err">...</span><span class="w"> </span>
@@ -1647,8 +1647,8 @@ The component <code>axes</code> itself is an array of ranges each containing the
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;domain1&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;product_domain&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">4.78</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">4.78</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="err">...</span><span class="w"> </span>
 <span class="w">    </span><span class="p">]</span><span class="w"> </span>
 <span class="w">  </span><span class="p">},</span><span class="w"> </span>
@@ -1744,8 +1744,8 @@ The implementations that support generic expression <span class="smallcaps">must
 <li>Literal integer (format <code>1234</code>), boolean (format <code>TRUE</code> and <code>FALSE</code>)     and floating point (format <code>123.4</code>, <code>1.234e2</code> and <code>1.234E2</code>) values. </li>
 <li>Literal values for <span class="arithmatex">\(\pi\)</span> (<code>PI</code>) and Euler's number (<code>EULER</code>). </li>
 <li>The arithmetic operators addition (<code>x + y</code>), subtraction (<code>x - y</code>),     multiplication (<code>x * y</code>), division (<code>x / y</code>) and exponentiation     (<code>x^y</code>). </li>
-<li>The comparison operators approximately-equal (<code>x == y</code>),     exactly-equal (<code>x === y</code>), not-approximately-equal (<code>x != y</code>),     not-exactly-equal (<code>x !== y</code>), less-than (<code>x &lt; y</code>), less-or-equal     (<code>x &lt;= y</code>), greater-than (<code>x &gt;= y</code>) and greater-or-equal (<code>x &gt;= y</code>). </li>
-<li>The logical operators logical-inverse (<code>!a</code>), logical-and     (<code>a &amp;&amp; b</code>), logical-or (<code>a || b</code>), less-or-equal (<code>a &lt;= b</code>),     greater-than (<code>a &gt;= b</code>) and greater-or-equal (<code>a &gt;= b</code>). </li>
+<li>The comparison operators approximately-equal (<code>x == y</code>),     exactly-equal (<code>x === y</code>), not-approximately-equal (<code>x != y</code>),     not-exactly-equal (<code>x !== y</code>), less-than (<code>x &lt; y</code>), less-or-equal     (<code>x &lt;= y</code>), greater-than (<code>x &gt; y</code>) and greater-or-equal (<code>x &gt;= y</code>). </li>
+<li>The logical operators logical-inverse (<code>!a</code>), logical-and     (<code>a &amp;&amp; b</code>) and logical-or (<code>a || b</code>). </li>
 <li>Round brackets to specify the order of operations. </li>
 <li>The ternary operator <code>condition ? result_if_true : result_if_false</code> </li>
 <li>The functions <ul>
@@ -1753,7 +1753,6 @@ The implementations that support generic expression <span class="smallcaps">must
 <li><code>log(x)</code>: Natural logarithm of <code>x</code> </li>
 <li><code>sqrt(x)</code>: The square root of <code>x</code> </li>
 <li><code>abs(x)</code>: The absolute value of <code>x</code> </li>
-<li><code>pow(x, y)</code>: <code>x</code> raised to the power of <code>y</code> </li>
 <li><code>pow(x, y)</code>: <code>x</code> raised to the power of <code>y</code> </li>
 <li><code>min(x, y)</code>: minimum of <code>x</code> and <code>y</code> </li>
 <li><code>max(x, y)</code>: maximum of <code>x</code> and <code>y</code> </li>
@@ -1767,7 +1766,7 @@ The implementations that support generic expression <span class="smallcaps">must
 </li>
 </ul>
 <p>Symbols not defined here refer to variables in the HS<span class="arithmatex">\({}^3\)</span> model. 
-The operator precedence and associativity is acorrding to the common conventions. 
+The operator precedence and associativity is according to the common conventions. 
 Spaces between operators and operands are optional. There must be no space between a function name and the function arguments, spaces between function arguments are optional (<code>f(a, b)</code> and <code>f(a,b)</code> are correct but <code>f (a, b)</code> is not allowed). </p>
 <p>Division <span class="smallcaps">must</span> be treated as floating-point division (i.e. <code>2/3</code> should be equivalent to <code>2.0/3.0</code>). </p>
 <p>The approximately-equal (<code>a == b</code>) and the not-approximately-equal operator (<code>a != b</code>), <span class="smallcaps">should</span> compare floating-point numbers to within a small multiple of the unit of least precision. 

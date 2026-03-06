@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
     
     
       
@@ -1076,7 +1076,7 @@
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>mixture_dist</code> </li>
-<li><code>name</code>: name of the variable <span class="arithmatex">\(x\)</span> (<span class="smallcaps">optional</span>, since the     variable is fully defined by the summands) </li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (<span class="smallcaps">optional</span>, since the     variable is fully defined by the summands) </li>
 <li><code>summands</code>: array of names referencing distributions </li>
 <li><code>coefficients</code>: array of names of coefficients <span class="arithmatex">\(c_i\)</span> or numbers to     be added </li>
 <li><code>extended</code>: boolean denoting whether this is an extended     distribution (<span class="smallcaps">optional</span>, as it can be inferred from the     lengths of the lists for <code>summands</code> and <code>coefficients</code>) 
@@ -1089,7 +1089,7 @@ This distribution can be treated as extended or as non-extended. </li>
 \begin{aligned}     c_n &amp;= 1 - \sum_{i=1}^{n-1}c_i .     \end{aligned} 
 \]</div>
 <h4 id="sec:product-distribution" label="sec:product-distribution">Product distribution<a class="headerlink" href="#sec:product-distribution" title="Permanent link">&para;</a></h4>
-<p>The product of s of independent distributions <span class="arithmatex">\(f_i\)</span> is defined as </p>
+<p>The product of independent distributions <span class="arithmatex">\(f_i\)</span> is defined as </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{ProductPdf}(x) &amp;= \frac{1}{\ensuremath{\mathcal{M}}}\prod_i^n f(x). \end{aligned} 
 \]</div>
@@ -1135,7 +1135,7 @@ A Poisson point process distribution can be specified in HS<sup>3</sup> in two w
 </ul>
 <p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying     distribution. The underlying distribution <span class="smallcaps">must</span> not be     referred to from other components of the statistical model. </p>
 <ul>
-<li><code>rate_density_dist</code>: Specified via a non-normalized     rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the     underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) d y\)</span> and     <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesque measure. </li>
+<li><code>rate_density_dist</code>: Specified via a non-normalized     rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the     underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) d y\)</span> and     <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </li>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>rate_density_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
@@ -1143,7 +1143,7 @@ A Poisson point process distribution can be specified in HS<sup>3</sup> in two w
 </ul>
 <h4 id="dist:bin-counts" label="dist:bin-counts">Bin-count distribution<a class="headerlink" href="#dist:bin-counts" title="Permanent link">&para;</a></h4>
 <p>This is a binned version of the Poisson point process distribution 
-(<a href="#dist:poisson-point-process" reference="dist:poisson-point-process" reference-type="ref">Poisson point process</a>). Is is the distribution of the bin counts that result from histogramming the outcomes of a Poisson point process distribution using a given binning scheme (see 
+(<a href="#dist:poisson-point-process" reference="dist:poisson-point-process" reference-type="ref">Poisson point process</a>). It is the distribution of the bin counts that result from histogramming the outcomes of a Poisson point process distribution using a given binning scheme (see 
 <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>). 
 Like the Poisson point process distribution, a Bin-counts distribution can either be specified via a global-rate parameter <span class="arithmatex">\(\lambda\)</span> and an underlying distribution <span class="arithmatex">\(m\)</span>, or via a rate-density function <span class="arithmatex">\(f\)</span> (in which case <span class="arithmatex">\(\lambda\)</span> and <span class="arithmatex">\(m\)</span> are implicit). In addition, the binning scheme also has to be specified in either case, unless it can be inferred (see below). 
 For <span class="arithmatex">\(k\)</span> bins, this type of distribution corresponds to a product of <span class="arithmatex">\(k\)</span> Poisson distributions with rates </p>
@@ -1160,18 +1160,18 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <li><code>type</code>: <code>bincounts_extended_dist</code> </li>
 <li><code>rate</code>: The global rate <span class="arithmatex">\(\lambda\)</span> </li>
 <li><code>dist</code>: The underlying distribution <span class="arithmatex">\(m\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the         defintions in 
-    <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned data]</a>. <span class="smallcaps">optional</span> if <code>dist</code>         is a binned distribution, in which case the same binning is used         by default. </li>
+<li><code>axes</code>: a definition of the binning to be used, following the         definitions in 
+    <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. <span class="smallcaps">optional</span> if <code>dist</code>         is a binned distribution, in which case the same binning is used         by default. </li>
 </ul>
 <p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying     distribution. The underlying distribution <span class="smallcaps">must</span> not be     referred to from other components of the statistical model. 
 <code>bincounts_density_dist</code>: Specified via a non-normalized     rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the     underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and     <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
-<p>More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesque measure. </p>
+<p>More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </p>
 <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>bincounts_density_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>density</code>: The rate-density function <span class="arithmatex">\(f\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the         defintions in 
+<li><code>axes</code>: a definition of the binning to be used, following the         definitions in 
         <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. </li>
 </ul>
 
