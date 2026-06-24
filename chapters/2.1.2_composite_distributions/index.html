@@ -522,10 +522,32 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#mixture-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mixture model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#sec:product-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
         Product distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#efficiency-product-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Efficiency product distribution
       
     </span>
   </a>
@@ -995,10 +1017,32 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#mixture-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mixture model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#sec:product-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
         Product distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#efficiency-product-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Efficiency product distribution
       
     </span>
   </a>
@@ -1088,6 +1132,27 @@ This distribution can be treated as extended or as non-extended. </li>
 <div class="arithmatex">\[
 \begin{aligned}     c_n &amp;= 1 - \sum_{i=1}^{n-1}c_i .     \end{aligned} 
 \]</div>
+<h4 id="mixture-model">Mixture model<a class="headerlink" href="#mixture-model" title="Permanent link">&para;</a></h4>
+<p>The mixture model is a weighted sum of resolution models or model PDFs:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{MixtureModel}(x) = \sum_{i=1}^{n} c_i\,m_i(x).
+\end{aligned}
+\]</div>
+<p>If one coefficient fewer than the number of summands is provided, the final coefficient is computed as</p>
+<div class="arithmatex">\[
+\begin{aligned}
+c_n = 1 - \sum_{i=1}^{n-1} c_i .
+\end{aligned}
+\]</div>
+<p>If all coefficients are given, their sum is used as the expected number of events in extended use cases.</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>mixture_model</code></li>
+<li><code>summands</code>: array of names referencing model distributions</li>
+<li><code>coefficients</code>: array of names of coefficients <span class="arithmatex">\(c_i\)</span> or numbers</li>
+<li><code>extended</code>: boolean denoting whether this is an extended model</li>
+</ul>
 <h4 id="sec:product-distribution" label="sec:product-distribution">Product distribution<a class="headerlink" href="#sec:product-distribution" title="Permanent link">&para;</a></h4>
 <p>The product of independent distributions <span class="arithmatex">\(f_i\)</span> is defined as </p>
 <div class="arithmatex">\[
@@ -1098,6 +1163,21 @@ This distribution can be treated as extended or as non-extended. </li>
 <li><code>type</code>: <code>product_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (<span class="smallcaps">optional</span>, since the     variable is fully defined by the factors) </li>
 <li><code>factors</code>: array of names referencing distributions </li>
+</ul>
+<h4 id="efficiency-product-distribution">Efficiency product distribution<a class="headerlink" href="#efficiency-product-distribution" title="Permanent link">&para;</a></h4>
+<p>The efficiency product distribution multiplies a normalized PDF with an efficiency function and normalizes the product:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{EfficiencyProductPdf}(x) =
+\frac{1}{\ensuremath{\mathcal{M}}}\, f(x)\,\epsilon(x).
+\end{aligned}
+\]</div>
+<p>The efficiency function is expected to be non-negative over the domain.</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>efficiency_product_pdf_dist</code></li>
+<li><code>pdf</code>: name of the input distribution <span class="arithmatex">\(f\)</span></li>
+<li><code>eff</code>: name of the efficiency function <span class="arithmatex">\(\epsilon\)</span></li>
 </ul>
 <h4 id="density-function-distribution">Density Function distribution<a class="headerlink" href="#density-function-distribution" title="Permanent link">&para;</a></h4>
 <p>A distribution that is specified via a non-normalized density function <span class="arithmatex">\(f(x)\)</span>. Formally, it corresponds to the probability measure that has the density <span class="arithmatex">\(f(x)\)</span> in respect to the Lebesgue measure. </p>

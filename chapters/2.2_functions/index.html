@@ -561,6 +561,50 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#polynomial-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Polynomial Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#derivative-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Derivative Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gaussian-resolution-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gaussian Resolution Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#truth-resolution-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Truth Resolution Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#generic-function" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -984,6 +1028,50 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#polynomial-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Polynomial Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#derivative-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Derivative Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gaussian-resolution-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gaussian Resolution Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#truth-resolution-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Truth Resolution Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#generic-function" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1057,6 +1145,66 @@
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>sum</code> </li>
 <li><code>summands</code>: array of names of the elements of the sum or numbers. </li>
+</ul>
+<h3 id="polynomial-function">Polynomial Function<a class="headerlink" href="#polynomial-function" title="Permanent link">&para;</a></h3>
+<p>The polynomial function is defined as</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{Polynomial}(x, a_0, a_1,\ldots,a_n) = \sum_{i=0}^{n} a_i x^i .
+\end{aligned}
+\]</div>
+<p>Unlike <code>polynomial_dist</code>, this object is a function and is not normalized.</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>polynomial</code></li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
+<li><code>coefficients</code>: array of coefficients <span class="arithmatex">\(a_i\)</span>. The length of this array implies the degree of the polynomial.</li>
+</ul>
+<h3 id="derivative-function">Derivative Function<a class="headerlink" href="#derivative-function" title="Permanent link">&para;</a></h3>
+<p>The derivative function represents a numerical derivative of another function with respect to a variable:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{Derivative}(f,x,n) = \frac{d^n f}{dx^n}.
+\end{aligned}
+\]</div>
+<p>The order is intended for first, second, or third derivatives, and <code>eps</code> controls the finite-difference step size.</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>derivative</code></li>
+<li><code>function</code>: name of the function <span class="arithmatex">\(f\)</span></li>
+<li><code>x</code>: name of the differentiation variable <span class="arithmatex">\(x\)</span></li>
+<li><code>order</code>: derivative order <span class="arithmatex">\(n\)</span></li>
+<li><code>eps</code>: step size used for the numerical derivative</li>
+<li><code>normalization</code>: array of names defining the normalization set (<span class="smallcaps">optional</span>)</li>
+</ul>
+<h3 id="gaussian-resolution-model">Gaussian Resolution Model<a class="headerlink" href="#gaussian-resolution-model" title="Permanent link">&para;</a></h3>
+<p>The Gaussian resolution model represents a Gaussian smearing model in the convolution variable <span class="arithmatex">\(x\)</span>:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{GaussModel}(x,\mu,\sigma) =
+\frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right).
+\end{aligned}
+\]</div>
+<p>It can be used as a resolution model for analytical convolutions.</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>gauss_model_function</code></li>
+<li><code>x</code>: name of the convolution variable <span class="arithmatex">\(x\)</span></li>
+<li><code>mean</code>: value or name of the mean parameter <span class="arithmatex">\(\mu\)</span></li>
+<li><code>sigma</code>: value or name of the width parameter <span class="arithmatex">\(\sigma\)</span></li>
+</ul>
+<h3 id="truth-resolution-model">Truth Resolution Model<a class="headerlink" href="#truth-resolution-model" title="Permanent link">&para;</a></h3>
+<p>The truth resolution model corresponds to perfect resolution, represented by a delta function in the convolution variable:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{TruthModel}(x) = \delta(x).
+\end{aligned}
+\]</div>
+<p>When used in an analytical convolution, it returns the unconvolved basis function.</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>truth_model_function</code></li>
+<li><code>x</code>: name of the convolution variable <span class="arithmatex">\(x\)</span></li>
 </ul>
 <h3 id="generic-function">Generic Function<a class="headerlink" href="#generic-function" title="Permanent link">&para;</a></h3>
 <p><em>Note: Users should prefer the specific functions defined in this standard over generic functions where possible, as implementations of these will typically be more optimized. Generic functions should only be used if no equivalent specific distribution is defined.</em> 

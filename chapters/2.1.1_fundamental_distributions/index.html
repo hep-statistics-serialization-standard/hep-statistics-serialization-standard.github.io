@@ -505,6 +505,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#chebychev-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebychev distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#uniform-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -520,6 +531,17 @@
     <span class="md-ellipsis">
       
         Crystal Ball distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decay-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decay distribution
       
     </span>
   </a>
@@ -1133,6 +1155,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#chebychev-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebychev distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#uniform-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1148,6 +1181,17 @@
     <span class="md-ellipsis">
       
         Crystal Ball distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decay-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decay distribution
       
     </span>
   </a>
@@ -1356,6 +1400,22 @@ Asimov datasets [^asymptotics].</p>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span> for the     standard integer case) </li>
 <li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
 </ul>
+<h4 id="chebychev-distribution">Chebychev distribution<a class="headerlink" href="#chebychev-distribution" title="Permanent link">&para;</a></h4>
+<p>The Chebychev distribution is defined as a polynomial in Chebychev polynomials of the first kind:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{ChebychevPdf}(x, a_1,\ldots,a_n) =
+\frac{1}{\ensuremath{\mathcal{M}}}\left(T_0(z) + \sum_{i=1}^{n} a_i T_i(z)\right),
+\quad z = 2\frac{x-x_{\min}}{x_{\max}-x_{\min}} - 1 .
+\end{aligned}
+\]</div>
+<p>The coefficient of the constant term <span class="arithmatex">\(T_0(z)=1\)</span> is implicit and fixed to one.</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>chebychev_dist</code></li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
+<li><code>coefficients</code>: array of coefficients <span class="arithmatex">\(a_i\)</span> for the non-constant Chebychev terms. The first coefficient belongs to <span class="arithmatex">\(T_1(z)\)</span>.</li>
+</ul>
 <h4 id="uniform-distribution">Uniform distribution<a class="headerlink" href="#uniform-distribution" title="Permanent link">&para;</a></h4>
 <p>The continuous uniform distribution is defined as: </p>
 <div class="arithmatex">\[
@@ -1392,6 +1452,33 @@ power-law distributions describing the lower and upper tails, given by</p>
 <li><code>sigma</code>: value or names of <span class="arithmatex">\(\sigma_L\)</span> and <span class="arithmatex">\(\sigma_R\)</span> from above.     <span class="smallcaps">must not</span> be used in conjuction with <code>sigma_L</code> or     <code>sigma_R</code>. </li>
 <li><code>sigma_L</code>: value or names of <span class="arithmatex">\(\sigma_L\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>sigma</code>. </li>
 <li><code>sigma_R</code>: value or names of <span class="arithmatex">\(\sigma_R\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>sigma</code>. </li>
+</ul>
+<h4 id="decay-distribution">Decay distribution<a class="headerlink" href="#decay-distribution" title="Permanent link">&para;</a></h4>
+<p>The decay distribution describes a single- or double-sided exponential decay convolved with a resolution model <span class="arithmatex">\(R\)</span>:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{DecayPdf}(t,\tau,R) =
+\frac{1}{\ensuremath{\mathcal{M}}}\,(B_{\text{type}} * R)(t),
+\end{aligned}
+\]</div>
+<p>where</p>
+<div class="arithmatex">\[
+\begin{aligned}
+B_{\text{type}}(t) =
+\begin{cases}
+\exp(-t/\tau), &amp; \text{for SingleSided}, \\
+\exp(t/\tau), &amp; \text{for Flipped}, \\
+\exp(-|t|/\tau), &amp; \text{for DoubleSided}.
+\end{cases}
+\end{aligned}
+\]</div>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>decay_dist</code></li>
+<li><code>t</code>: name of the decay-time variable <span class="arithmatex">\(t\)</span></li>
+<li><code>tau</code>: value or name of the decay constant <span class="arithmatex">\(\tau\)</span></li>
+<li><code>resolutionModel</code>: name of the resolution model <span class="arithmatex">\(R\)</span></li>
+<li><code>decayType</code>: integer selecting the decay basis, with <code>0</code> for <code>SingleSided</code>, <code>1</code> for <code>DoubleSided</code>, and <code>2</code> for <code>Flipped</code>.</li>
 </ul>
 <h4 id="exponential-distribution">Exponential distribution<a class="headerlink" href="#exponential-distribution" title="Permanent link">&para;</a></h4>
 <p>The exponential distribution is defined as</p>
