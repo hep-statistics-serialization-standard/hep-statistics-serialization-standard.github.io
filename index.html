@@ -909,7 +909,7 @@ The variates of all distributions (so the possible results of random draws from 
 <h3 id="sec:what-is-a-pdf">Probability density functions (PDFs)<a class="headerlink" href="#sec:what-is-a-pdf" title="Permanent link">&para;</a></h3>
 <p>Statistics literature often discriminates between probability density functions (PDF) for continuous probability distributions and probability mass functions (PMF) for discrete probability distributions. This standard use the term PDF for both continuous and discrete distributions. The concept of density is to be understood in terms of densities in the realm of measure theory here, that is the density of a probability measure (distribution) is its Radon-Nikodym derivative in respect to an (implied) reference measure. 
 The choice of reference measure would be arbitrary in principle, which scales likelihood functions 
-(Sec. <a href="#sec:likelihood-definition" reference="sec:likelihood-definition" reference-type="ref">Likelihood</a>) by a constant factor that depends on choice of reference. In this standard, a specific reference measures is implied for each probability distribution, typically the Lebesgue measure for continuous distributions and the counting measure for discrete distributions. The standard aims to to match the PDF (resp.&nbsp;PMF) most commonly used in literature for each specific probability distribution and the mathematical form of the PDF is documented explicitly for each distribution in the standard. So within HS<span class="arithmatex">\({}^3\)</span>, probability densities and likelihood functions are unambiguous. 
+(Sec. <a href="#sec:likelihood-definition" reference="sec:likelihood-definition" reference-type="ref">Likelihood</a>) by a constant factor that depends on choice of reference. In this standard, a specific reference measures is implied for each probability distribution, typically the Lebesgue measure for continuous distributions and the counting measure for discrete distributions. The standard aims to match the PDF (resp.&nbsp;PMF) most commonly used in literature for each specific probability distribution and the mathematical form of the PDF is documented explicitly for each distribution in the standard. So within HS<span class="arithmatex">\({}^3\)</span>, probability densities and likelihood functions are unambiguous. 
 Here we use <span class="arithmatex">\(\text{PDF}(m(\theta), x)\)</span> to denote the density value of the probability distribution/measure <span class="arithmatex">\(m\)</span>, parameterized by <span class="arithmatex">\(\theta\)</span>, at the point/variate <span class="arithmatex">\(x\)</span>, in respect to the implied reference for <span class="arithmatex">\(m\)</span>. </p>
 <h3 id="sec:data-generation">Observed and simulated data<a class="headerlink" href="#sec:data-generation" title="Permanent link">&para;</a></h3>
 <p>The term data refers here to any collection of values that represents the outcome of an experiment. Data takes the same form as variates of distributions (see 
@@ -920,7 +920,7 @@ This means that given a model <span class="arithmatex">\(m\)</span> and concrete
 <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>). In addition to using observed data, implementations may provide the option to use random data generated from 
 the model (see <a href="#sec:data-generation" reference="sec:data-generation" reference-type="ref">Data</a>) to check for Monte-Carlo closure. </p>
 <h3 id="sec:frequentist-inference">Frequentist parameter inference<a class="headerlink" href="#sec:frequentist-inference" title="Permanent link">&para;</a></h3>
-<p>The standard method of frequentist inference is the maximum (or, respectively, profile) likelihood method. In the vast majority of cases, the test statistic used here is the likelihood ratio, that is, the ratio of two values of the likelihood corresponding to two different points in parameter space: one that maximizes the likelihood unconditionally, one one that maximizes the likelihood under some condition such as the values of the parameters of interest expected in the absence of a deviation from the null hypothesis. The corresponding building blocks for such an analysis, such as the list of parameters of interest and the likelihood function to be used, are specified in the analysis section of an HS<span class="arithmatex">\({}^3\)</span> configuration (Sec. <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>). </p>
+<p>The standard method of frequentist inference is the maximum (or, respectively, profile) likelihood method. In the vast majority of cases, the test statistic used here is the likelihood ratio, that is, the ratio of two values of the likelihood corresponding to two different points in parameter space: one that maximizes the likelihood unconditionally, and one that maximizes the likelihood under some condition such as the values of the parameters of interest expected in the absence of a deviation from the null hypothesis. The corresponding building blocks for such an analysis, such as the list of parameters of interest and the likelihood function to be used, are specified in the analysis section of an HS<span class="arithmatex">\({}^3\)</span> configuration (Sec. <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>). </p>
 <h3 id="sec:bayesian-inference">Bayesian parameter inference<a class="headerlink" href="#sec:bayesian-inference" title="Permanent link">&para;</a></h3>
 <p>The standard also encompasses the specification of Bayesian posterior distributions over parameters by combining (Sec. 
 <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>) likelihoods with probabilty distributions that acts the priors. Here concrete distributions are used to describe the prior probability of parameters in addition to parameterized distributions that are used to describe of the probability of observing specific data. </p>
@@ -934,7 +934,7 @@ The keywords <span class="smallcaps">optional</span> and <span class="smallcaps"
 <li><code>struct</code>: represented with { }, containing a <em>key:value</em> mapping,     keys are of type <code>string</code>. </li>
 <li><code>component</code>: key-value pair within a struct </li>
 <li><code>array</code> array of items (either <code>string</code>s or <code>number</code>s) without keys. Represented with <code>[...]</code>. </li>
-<li><code>string</code>: references to objects, names and arbitrary information.     Represented with </li>
+<li><code>string</code>: references to objects, names and arbitrary information.     Represented with <code>"..."</code></li>
 <li><code>number</code>: either floating or integer type values </li>
 <li><code>boolean</code>: boolean values; they can be encoded as <code>true</code> and <code>false</code> </li>
 </ul>
@@ -962,10 +962,12 @@ The keywords <span class="smallcaps">optional</span> and <span class="smallcaps"
 <p>In the following each of these are described in more detail with respect to their own structure. </p>
 <h2 id="sec:distributions">Distributions<a class="headerlink" href="#sec:distributions" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>distributions</code> contains an array of distributions in struct format. Distributions <span class="smallcaps">must</span> be normalized, thus, the letter <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> in the following descriptions will always relate to the normalization of the distribution. The value of <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is conditional on the current domain. It <span class="smallcaps">must</span> be chosen such that the integral of the distribution over the current domain equals one. The implementations might chose to perform this integral using analytical or numerical means. 
-Each distribution <span class="smallcaps">must</span> have the components <code>type</code>, denoting the kind of distribution described, and a component <code>name</code>, which acts as a unique identifier of this distribution among all other named objects. Distributions in general have the following keys: 
--   <code>name</code>: custom unique string (<span class="smallcaps">required</span>), e.     g.&nbsp;<code>my_distribution_of_x</code> 
--   <code>type</code>: string (<span class="smallcaps">required</span>) that determines the kind of     distribution, e. g.&nbsp;<code>gaussian_dist</code> 
--   <code>...</code>: each distribution <span class="smallcaps">may</span> have components for the     various individual parameters. For example, distributions of type     <code>gaussian_dist</code> have the specific components <code>mean</code>, <code>sigma</code> and     <code>x</code>. In general, these components <span class="smallcaps">may</span> be strings as     references to other <code>objects</code>, but <span class="smallcaps">may</span> also directly     yield numeric or boolean values. Depending on the parameter and the     type of distribution, they appear either in single item or array     format. </p>
+Each distribution <span class="smallcaps">must</span> have the components <code>type</code>, denoting the kind of distribution described, and a component <code>name</code>, which acts as a unique identifier of this distribution among all other named objects. Distributions in general have the following keys: </p>
+<ul>
+<li><code>name</code>: custom unique string (<span class="smallcaps">required</span>), e.     g.&nbsp;<code>my_distribution_of_x</code> </li>
+<li><code>type</code>: string (<span class="smallcaps">required</span>) that determines the kind of     distribution, e. g.&nbsp;<code>gaussian_dist</code> </li>
+<li><code>...</code>: each distribution <span class="smallcaps">may</span> have components for the     various individual parameters. For example, distributions of type     <code>gaussian_dist</code> have the specific components <code>mean</code>, <code>sigma</code> and     <code>x</code>. In general, these components <span class="smallcaps">may</span> be strings as     references to other <code>objects</code>, but <span class="smallcaps">may</span> also directly     yield numeric or boolean values. Depending on the parameter and the     type of distribution, they appear either in single item or array     format. </li>
+</ul>
 <div class="highlight"><span class="filename">Example: Distributions</span><pre><span></span><code><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>
 <span class="w">    </span><span class="p">{</span><span class="w"> </span>
 <span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;gauss1&quot;</span><span class="p">,</span><span class="w"> </span>
@@ -1163,11 +1165,13 @@ to avoid disfavouring a pure solution.)</p>
 \begin{aligned} \text{PoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \frac{\lambda^x}{x!}  \text{e}^{-\lambda}. \end{aligned} 
 \]</div>
 <p>where <span class="arithmatex">\(x\)</span> is required to be an integer. 
-In this case, the behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. 
--   <code>name</code>: custom unique string 
--   <code>type</code>: <code>poisson_dist</code> 
--   <code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span> for the     standard integer case) 
--   <code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </p>
+In this case, the behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. </p>
+<ul>
+<li><code>name</code>: custom unique string </li>
+<li><code>type</code>: <code>poisson_dist</code> </li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span> for the     standard integer case) </li>
+<li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
+</ul>
 <h4 id="polynomial-distribution">Polynomial distribution<a class="headerlink" href="#polynomial-distribution" title="Permanent link">&para;</a></h4>
 <p>The polynomial distribution is defined as </p>
 <div class="arithmatex">\[
@@ -1299,11 +1303,13 @@ The way modifiers affect the yield in the corresponding bin is subject to an int
 <li><code>axes</code>: array of structs representing the axes. If given each struct     needs to have the component <code>name</code>. Further,     (<span class="smallcaps">optional</span>) components are <code>max</code>, <code>min</code> and <code>nbins</code>,     or, alternatively, <code>edges</code>. The definition of the axes follows the     format for binned data (see Section 
     <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>). </li>
 <li><code>samples</code>: array of structs containing the samples of this channel.     For details see below. 
-Struct of one sample: </li>
+Struct of one sample:  <ul>
 <li><code>name</code>: (<span class="smallcaps">optional</span>) custom string, unique within this     function </li>
 <li><code>data</code>: struct containing the components <code>contents</code> and <code>errors</code>,     depicting the data contents and their errors. Both components are     arrays of the same length. </li>
 <li><code>modifiers</code>: array of structs with each struct containing a     component <code>type</code> of the modifier, as well as a component <code>parameter</code>     (defining a string) or a component <code>parameters</code> (defining an array     of strings) relating to the name or names of parameters controlling     this modifier. Further (<span class="smallcaps">optional</span>) components are     <code>data</code> and <code>constraint</code>, both depending on the type of modifier. For     details on these components, see the description above. 
 Two modifiers are correlated exactly if they share the same parameters as indicated by <code>parameter</code> or <code>parameters</code>. In such a case, it is mandatory that they share the same constraint term. If this is not the case, the behavior is undefined. </li>
+</ul>
+</li>
 </ul>
 <div class="highlight"><span class="filename">HistFactory</span><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myAnalysisChannel&quot;</span><span class="p">,</span>
@@ -1451,14 +1457,18 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 \]</div>
 <p>The distribution can be specified either via the non-normalized density function <span class="arithmatex">\(f(x)\)</span> or via the non-normalized log-density function <span class="arithmatex">\(\log(f(x))\)</span>: </p>
 <ul>
-<li><code>density_function_dist</code>: Specified via the PDF <span class="arithmatex">\(f(x)\)</span> </li>
+<li><code>density_function_dist</code>: Specified via the PDF <span class="arithmatex">\(f(x)\)</span> <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>density_function_dist</code> </li>
 <li><code>function</code>: The density function <span class="arithmatex">\(f\)</span> </li>
-<li><code>log_density_function_dist</code>: Specified via the PDF     <span class="arithmatex">\(f(x)\)</span> </li>
+</ul>
+</li>
+<li><code>log_density_function_dist</code>: Specified via the PDF <span class="arithmatex">\(f(x)\)</span> <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>log_density_function_dist</code> </li>
 <li><code>function</code>: The density function <span class="arithmatex">\(f\)</span> </li>
+</ul>
+</li>
 </ul>
 <h4 id="dist:poisson-point-process" label="dist:poisson-point-process">Poisson point process<a class="headerlink" href="#dist:poisson-point-process" title="Permanent link">&para;</a></h4>
 <p>A Poisson point process distribution is understood here as the distribution of the outcomes of a (typically inhomogeneous) Poisson point process. In particle physics, such a distribution is often called an extended distribution <sup id="fnref2:barlow-extended-ml"><a class="footnote-ref" href="#fn:barlow-extended-ml">9</a></sup>.
@@ -1471,19 +1481,23 @@ The PDF the Poisson point process distribution at an outcome <span class="arithm
 <p>In particle physics, the function <span class="arithmatex">\(\text{PoissonPointProcessPdf}(\lambda, m(\theta), x)\)</span>, for a fixed observation <span class="arithmatex">\(x\)</span> and varying parameters <span class="arithmatex">\(\lambda\)</span> and <span class="arithmatex">\(\theta\)</span>, is often called an extended likelihood. 
 A Poisson point process distribution can be specified in HS<sup>3</sup> in two ways: </p>
 <ul>
-<li><code>rate_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span>     and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: </li>
+<li><code>rate_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span>     and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>rate_extended_dist</code> </li>
 <li><code>rate</code>: The global rate <span class="arithmatex">\(\lambda\)</span> </li>
 <li><code>dist</code>: The underlying distribution <span class="arithmatex">\(m\)</span> </li>
 </ul>
+</li>
+</ul>
 <p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying     distribution. The underlying distribution <span class="smallcaps">must</span> not be     referred to from other components of the statistical model. </p>
 <ul>
-<li><code>rate_density_dist</code>: Specified via a non-normalized     rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the     underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) d y\)</span> and     <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </li>
+<li><code>rate_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) d y\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. More formally, the distribution corresponds to the inhomogeneous Poisson point process that is defined by a non-normalized rate measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>rate_density_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>density</code>: The rate-density function <span class="arithmatex">\(f\)</span> </li>
+</ul>
+</li>
 </ul>
 <h4 id="dist:bin-counts" label="dist:bin-counts">Bin-count distribution<a class="headerlink" href="#dist:bin-counts" title="Permanent link">&para;</a></h4>
 <p>This is a binned version of the Poisson point process distribution 
@@ -1499,24 +1513,26 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 \begin{aligned} \text{BinCountsPdf}(x) &amp;= \prod_i^k \text{PoissonPdf}(x_i, \nu_i) \end{aligned} 
 \]</div>
 <ul>
-<li><code>bincounts_extended_dist</code>: The global-rate parameter     <span class="arithmatex">\(\lambda\)</span> and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: </li>
+<li><code>bincounts_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span> and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>bincounts_extended_dist</code> </li>
 <li><code>rate</code>: The global rate <span class="arithmatex">\(\lambda\)</span> </li>
 <li><code>dist</code>: The underlying distribution <span class="arithmatex">\(m\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the         definitions in 
-    <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. <span class="smallcaps">optional</span> if <code>dist</code>         is a binned distribution, in which case the same binning is used         by default. </li>
+<li><code>axes</code>: a definition of the binning to be used, following the in <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. <span class="smallcaps">optional</span> if <code>dist</code> is a binned distribution, in which case the same binning is used by default.  </li>
 </ul>
-<p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying     distribution. The underlying distribution <span class="smallcaps">must</span> not be     referred to from other components of the statistical model. 
-<code>bincounts_density_dist</code>: Specified via a non-normalized     rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the     underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and     <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
-<p>More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </p>
+</li>
+</ul>
+<p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying distribution. The underlying distribution <span class="smallcaps">must</span> not be referred to from other components of the statistical model. 
+<code>bincounts_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
+<p>More formally, the distribution corresponds to the inhomogeneous Poisson point process that is defined by a non-normalized rate measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </p>
 <ul>
-<li><code>name</code>: custom string </li>
+<li><code>name</code>: custom string <ul>
 <li><code>type</code>: <code>bincounts_density_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>density</code>: The rate-density function <span class="arithmatex">\(f\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the         definitions in 
-        <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. </li>
+<li><code>axes</code>: a definition of the binning to be used, following the definitions in <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. </li>
+</ul>
+</li>
 </ul>
 <h2 id="sec:functions">Functions<a class="headerlink" href="#sec:functions" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>functions</code> describes an array of mathematical functions in struct format to be used as helper objects. Similar to distributions each entry is <span class="smallcaps">required</span> to have the components <code>type</code> and <code>name</code>. Other components are dependent on the kind of functions. The field <code>name</code> is <span class="smallcaps">required</span> and may be any custom unique string. Functions in general have the following components: </p>
@@ -1689,7 +1705,7 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 <li><code>contents</code>: array of values representing the contents of the binned     data set </li>
 <li><code>axes</code>: array of structs representing the axes. Each struct     <span class="smallcaps">must</span> have the component <code>name</code>. Further, it must     specify the binning through one of these two options: <ol>
 <li>regular binnings are specified through the components <code>max</code>,         <code>min</code> and <code>nbins</code> </li>
-<li>potentially irregular binnings are specified through the         component <code>edges</code>, which contains an array of length <span class="arithmatex">\(n+1\)</span>,         where the first and last entries denote the minimum and and         maximum of the variable, and all entries between denote the         intermediate bin boundaries. </li>
+<li>potentially irregular binnings are specified through the         component <code>edges</code>, which contains an array of length <span class="arithmatex">\(n+1\)</span>,         where the first and last entries denote the minimum and         maximum of the variable, and all entries between denote the         intermediate bin boundaries. </li>
 </ol>
 </li>
 <li><code>uncertainty</code>: (<span class="smallcaps">optional</span>) struct representing the     uncertainty of the contents. It consists of up to three components: <ul>
@@ -1776,10 +1792,12 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>product_domain</code> </li>
 <li><code>axes</code>: array of parameters and variables in this domain (see below) 
-The component <code>axes</code> itself is an array of ranges each containing the components <code>min</code>, <code>max</code> and <code>name</code>. </li>
+The component <code>axes</code> itself is an array of ranges each containing the components <code>min</code>, <code>max</code> and <code>name</code>. <ul>
 <li><code>name</code>: custom string </li>
 <li><code>max</code>: upper bound of range </li>
 <li><code>min</code>: lower bound of range </li>
+</ul>
+</li>
 </ul>
 <div class="highlight"><span class="filename">Example: Domains</span><pre><span></span><code><span class="nt">&quot;domains&quot;</span><span class="p">:[</span><span class="w"> </span>
 <span class="w">  </span><span class="p">{</span><span class="w"> </span>
@@ -1799,10 +1817,12 @@ The component <code>axes</code> itself is an array of ranges each containing the
 <ul>
 <li><code>name</code>: custom string </li>
 <li><code>parameters</code>: array of parameter structs (see below) 
-The component <code>parameters</code> is an array of components each containing: </li>
+The component <code>parameters</code> is an array of components each containing: <ul>
 <li><code>name</code>: custom string </li>
 <li><code>value</code>: number, value of variable </li>
 <li><code>const</code>: (<span class="smallcaps">optional</span>) boolean, whether variable is     constant or not. Default is <code>false</code>. </li>
+</ul>
+</li>
 </ul>
 <div class="highlight"><span class="filename">Example: Parameter points</span><pre><span></span><code><span class="nt">&quot;parameter_points&quot;</span><span class="p">:[</span><span class="w"> </span>
 <span class="w">  </span><span class="p">{</span><span class="w"> </span>

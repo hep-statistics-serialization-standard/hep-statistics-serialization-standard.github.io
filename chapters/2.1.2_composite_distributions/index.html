@@ -1187,14 +1187,18 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 \]</div>
 <p>The distribution can be specified either via the non-normalized density function <span class="arithmatex">\(f(x)\)</span> or via the non-normalized log-density function <span class="arithmatex">\(\log(f(x))\)</span>: </p>
 <ul>
-<li><code>density_function_dist</code>: Specified via the PDF <span class="arithmatex">\(f(x)\)</span> </li>
+<li><code>density_function_dist</code>: Specified via the PDF <span class="arithmatex">\(f(x)\)</span> <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>density_function_dist</code> </li>
 <li><code>function</code>: The density function <span class="arithmatex">\(f\)</span> </li>
-<li><code>log_density_function_dist</code>: Specified via the PDF     <span class="arithmatex">\(f(x)\)</span> </li>
+</ul>
+</li>
+<li><code>log_density_function_dist</code>: Specified via the PDF <span class="arithmatex">\(f(x)\)</span> <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>log_density_function_dist</code> </li>
 <li><code>function</code>: The density function <span class="arithmatex">\(f\)</span> </li>
+</ul>
+</li>
 </ul>
 <h4 id="dist:poisson-point-process" label="dist:poisson-point-process">Poisson point process<a class="headerlink" href="#dist:poisson-point-process" title="Permanent link">&para;</a></h4>
 <p>A Poisson point process distribution is understood here as the distribution of the outcomes of a (typically inhomogeneous) Poisson point process. In particle physics, such a distribution is often called an extended distribution [^barlow-extended-ml].
@@ -1207,19 +1211,23 @@ The PDF the Poisson point process distribution at an outcome <span class="arithm
 <p>In particle physics, the function <span class="arithmatex">\(\text{PoissonPointProcessPdf}(\lambda, m(\theta), x)\)</span>, for a fixed observation <span class="arithmatex">\(x\)</span> and varying parameters <span class="arithmatex">\(\lambda\)</span> and <span class="arithmatex">\(\theta\)</span>, is often called an extended likelihood. 
 A Poisson point process distribution can be specified in HS<sup>3</sup> in two ways: </p>
 <ul>
-<li><code>rate_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span>     and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: </li>
+<li><code>rate_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span>     and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>rate_extended_dist</code> </li>
 <li><code>rate</code>: The global rate <span class="arithmatex">\(\lambda\)</span> </li>
 <li><code>dist</code>: The underlying distribution <span class="arithmatex">\(m\)</span> </li>
 </ul>
+</li>
+</ul>
 <p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying     distribution. The underlying distribution <span class="smallcaps">must</span> not be     referred to from other components of the statistical model. </p>
 <ul>
-<li><code>rate_density_dist</code>: Specified via a non-normalized     rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the     underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) d y\)</span> and     <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </li>
+<li><code>rate_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) d y\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. More formally, the distribution corresponds to the inhomogeneous Poisson point process that is defined by a non-normalized rate measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>rate_density_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>density</code>: The rate-density function <span class="arithmatex">\(f\)</span> </li>
+</ul>
+</li>
 </ul>
 <h4 id="dist:bin-counts" label="dist:bin-counts">Bin-count distribution<a class="headerlink" href="#dist:bin-counts" title="Permanent link">&para;</a></h4>
 <p>This is a binned version of the Poisson point process distribution 
@@ -1235,24 +1243,26 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 \begin{aligned} \text{BinCountsPdf}(x) &amp;= \prod_i^k \text{PoissonPdf}(x_i, \nu_i) \end{aligned} 
 \]</div>
 <ul>
-<li><code>bincounts_extended_dist</code>: The global-rate parameter     <span class="arithmatex">\(\lambda\)</span> and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: </li>
+<li><code>bincounts_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span> and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>bincounts_extended_dist</code> </li>
 <li><code>rate</code>: The global rate <span class="arithmatex">\(\lambda\)</span> </li>
 <li><code>dist</code>: The underlying distribution <span class="arithmatex">\(m\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the         definitions in 
-    <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. <span class="smallcaps">optional</span> if <code>dist</code>         is a binned distribution, in which case the same binning is used         by default. </li>
+<li><code>axes</code>: a definition of the binning to be used, following the in <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. <span class="smallcaps">optional</span> if <code>dist</code> is a binned distribution, in which case the same binning is used by default.  </li>
 </ul>
-<p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying     distribution. The underlying distribution <span class="smallcaps">must</span> not be     referred to from other components of the statistical model. 
-<code>bincounts_density_dist</code>: Specified via a non-normalized     rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the     underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and     <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
-<p>More formally, the distribution corresponds to the inhomogeneous     Poisson point process that is defined by a non-normalized rate     measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </p>
+</li>
+</ul>
+<p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying distribution. The underlying distribution <span class="smallcaps">must</span> not be referred to from other components of the statistical model. 
+<code>bincounts_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
+<p>More formally, the distribution corresponds to the inhomogeneous Poisson point process that is defined by a non-normalized rate measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </p>
 <ul>
-<li><code>name</code>: custom string </li>
+<li><code>name</code>: custom string <ul>
 <li><code>type</code>: <code>bincounts_density_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>density</code>: The rate-density function <span class="arithmatex">\(f\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the         definitions in 
-        <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. </li>
+<li><code>axes</code>: a definition of the binning to be used, following the definitions in <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. </li>
+</ul>
+</li>
 </ul>
 
 

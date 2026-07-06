@@ -1086,7 +1086,7 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 <li><code>contents</code>: array of values representing the contents of the binned     data set </li>
 <li><code>axes</code>: array of structs representing the axes. Each struct     <span class="smallcaps">must</span> have the component <code>name</code>. Further, it must     specify the binning through one of these two options: <ol>
 <li>regular binnings are specified through the components <code>max</code>,         <code>min</code> and <code>nbins</code> </li>
-<li>potentially irregular binnings are specified through the         component <code>edges</code>, which contains an array of length <span class="arithmatex">\(n+1\)</span>,         where the first and last entries denote the minimum and and         maximum of the variable, and all entries between denote the         intermediate bin boundaries. </li>
+<li>potentially irregular binnings are specified through the         component <code>edges</code>, which contains an array of length <span class="arithmatex">\(n+1\)</span>,         where the first and last entries denote the minimum and         maximum of the variable, and all entries between denote the         intermediate bin boundaries. </li>
 </ol>
 </li>
 <li><code>uncertainty</code>: (<span class="smallcaps">optional</span>) struct representing the     uncertainty of the contents. It consists of up to three components: <ul>

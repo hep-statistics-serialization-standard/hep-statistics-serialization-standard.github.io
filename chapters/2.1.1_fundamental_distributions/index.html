@@ -1541,11 +1541,13 @@ to avoid disfavouring a pure solution.)</p>
 \begin{aligned} \text{PoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \frac{\lambda^x}{x!}  \text{e}^{-\lambda}. \end{aligned} 
 \]</div>
 <p>where <span class="arithmatex">\(x\)</span> is required to be an integer. 
-In this case, the behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. 
--   <code>name</code>: custom unique string 
--   <code>type</code>: <code>poisson_dist</code> 
--   <code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span> for the     standard integer case) 
--   <code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </p>
+In this case, the behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. </p>
+<ul>
+<li><code>name</code>: custom unique string </li>
+<li><code>type</code>: <code>poisson_dist</code> </li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span> for the     standard integer case) </li>
+<li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
+</ul>
 <h4 id="polynomial-distribution">Polynomial distribution<a class="headerlink" href="#polynomial-distribution" title="Permanent link">&para;</a></h4>
 <p>The polynomial distribution is defined as </p>
 <div class="arithmatex">\[
@@ -1677,11 +1679,13 @@ The way modifiers affect the yield in the corresponding bin is subject to an int
 <li><code>axes</code>: array of structs representing the axes. If given each struct     needs to have the component <code>name</code>. Further,     (<span class="smallcaps">optional</span>) components are <code>max</code>, <code>min</code> and <code>nbins</code>,     or, alternatively, <code>edges</code>. The definition of the axes follows the     format for binned data (see Section 
     <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>). </li>
 <li><code>samples</code>: array of structs containing the samples of this channel.     For details see below. 
-Struct of one sample: </li>
+Struct of one sample:  <ul>
 <li><code>name</code>: (<span class="smallcaps">optional</span>) custom string, unique within this     function </li>
 <li><code>data</code>: struct containing the components <code>contents</code> and <code>errors</code>,     depicting the data contents and their errors. Both components are     arrays of the same length. </li>
 <li><code>modifiers</code>: array of structs with each struct containing a     component <code>type</code> of the modifier, as well as a component <code>parameter</code>     (defining a string) or a component <code>parameters</code> (defining an array     of strings) relating to the name or names of parameters controlling     this modifier. Further (<span class="smallcaps">optional</span>) components are     <code>data</code> and <code>constraint</code>, both depending on the type of modifier. For     details on these components, see the description above. 
 Two modifiers are correlated exactly if they share the same parameters as indicated by <code>parameter</code> or <code>parameters</code>. In such a case, it is mandatory that they share the same constraint term. If this is not the case, the behavior is undefined. </li>
+</ul>
+</li>
 </ul>
 <div class="highlight"><span class="filename">HistFactory</span><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myAnalysisChannel&quot;</span><span class="p">,</span>
