@@ -896,16 +896,21 @@ Please note that this document as well as the HS<span class="arithmatex">\({}^3\
 <h2 id="sec:hs3-semantics">Statistical semantics of HS<span class="arithmatex">\({}^3\)</span><a class="headerlink" href="#sec:hs3-semantics" title="Permanent link">&para;</a></h2>
 <h3 id="sec:models-and-parameters">Statistical models, probability distributions and parameters<a class="headerlink" href="#sec:models-and-parameters" title="Permanent link">&para;</a></h3>
 <p>HS<span class="arithmatex">\({}^3\)</span> takes a "forward-modelling" approach throughout: a statistical model <span class="arithmatex">\(m\)</span> maps a space <span class="arithmatex">\(\Theta\)</span> of free parameters <span class="arithmatex">\(\theta\)</span> to a space of probability distributions that describe the possible outcomes of a specific experiment. For any given parameters <span class="arithmatex">\(\theta\)</span>, the model returns a concrete probability distribution <span class="arithmatex">\(m(\theta)\)</span>. Observed data <span class="arithmatex">\(x\)</span> is then treated as random variate, presumed to be drawn from the model: <span class="arithmatex">\(x \sim m(\theta)\)</span>. 
-Parameters in HS<span class="arithmatex">\({}^3\)</span> are always named, so semantically the elements of a parameter space <span class="arithmatex">\(\Theta\)</span> are named tuples <span class="arithmatex">\(\theta\)</span> (meaning tuples in which every entry has a name). Even if there is only a single free parameter, <span class="arithmatex">\(\theta\)</span> should be thought of as a single-entry named tuple. In the current version of this standard, parameter tuples must be flat and only consist of real numbers, vector-valued or nested entries are not supported yet. Future versions of the standard will likely be less restrictive, especially with respect to discrete or vector-valued parameters. Parameter domains defined as part of this standard may be of various types, even though the current version only supports product domains. Future versions are likely to be less restrictive in this regard. 
-Mathematically and computationally, it is often convenient to treat parameters as flat real-valued vectors instead of named tuples, it is the responsibility of the implementation to map between these different views of parameters when and where necessary. 
+Parameters in HS<span class="arithmatex">\({}^3\)</span> are always named, so semantically the elements of a parameter space <span class="arithmatex">\(\Theta\)</span> are records <span class="arithmatex">\(\theta\)</span> (i.e. tuples in which every entry has a name). Even if there is only a single free parameter, <span class="arithmatex">\(\theta\)</span> should be thought of as a single-entry record. In the current version of this standard, parameter tuples must be flat and only consist of real numbers, vector-valued or nested entries are not supported yet. Future versions of the standard will likely be less restrictive, especially with respect to discrete or vector-valued parameters. Parameter domains defined as part of this standard may be of various types, even though the current version only supports product domains. Future versions are likely to be less restrictive in this regard. 
+Mathematically and computationally, it is often convenient to treat parameters as flat real-valued vectors instead of records, it is the responsibility of the implementation to map between these different views of parameters when and where necessary.
 Probability distributions in HS<span class="arithmatex">\({}^3\)</span> (see 
 <a href="#sec:distributions" reference="sec:distributions" reference-type="ref">Distributions</a>) are typically parameterized. Any instance of a distribution that has some of its parameters bound to names instead of concrete values, e.g. <span class="arithmatex">\(m = d_{\mu = a, \sigma = 0.7, \lambda = b, ...}\)</span>, constitutes a valid statistical model <span class="arithmatex">\(m(\theta)\)</span> with model parameters <span class="arithmatex">\(\theta = (a, b)\)</span>. 
 When probability distributions are combined via a Cartesian product (see 
-<a href="#sec:product-distribution" reference="sec:product-distribution" reference-type="ref">Product distribution</a>), then the named tuples that contain their free parameter values are concatenated. So <span class="arithmatex">\(m = d_{\mu = a, \sigma = b} \times d_{\mu = c, \sigma = 0.7}\)</span> constitutes a model <span class="arithmatex">\(m(\theta)\)</span> with model parameters <span class="arithmatex">\(\theta = (a, b, c)\)</span>. 
+<a href="#sec:product-distribution" reference="sec:product-distribution" reference-type="ref">Product distribution</a>), then the records that contain their free parameter values are concatenated. So <span class="arithmatex">\(m = d_{\mu = a, \sigma = b} \times d_{\mu = c, \sigma = 0.7}\)</span> constitutes a model <span class="arithmatex">\(m(\theta)\)</span> with model parameters <span class="arithmatex">\(\theta = (a, b, c)\)</span>.
 Distribution parameters may also be bound to the output of functions, and if those functions have inputs that are bound to names instead of values (or again bound to such functions, recursively), then those names become part of the model parameters. A configuration <span class="arithmatex">\(m = d_{\mu = a, \sigma = 0.7, \lambda = f}, f = \texttt{sum}(4.2, g), g = \texttt{sum}(1.3, b)\)</span>, for example, also constitutes a (different) model <span class="arithmatex">\(m(\theta)\)</span> with parameters <span class="arithmatex">\(\theta = (a, b, c)\)</span>. 
 If all parameter values of a probability distribution are set to concrete values, so if there are not directly (or indirectly via functions) bound to names, we call this probability distribution a concrete distribution here. Such distributions can be used as Bayesian 
-priors (see <a href="#sec:bayesian-inference" reference="sec:bayesian-inference" reference-type="ref">Bayesian inference</a>). 
-The variates of all distributions (so the possible results of random draws from them) are also named tuples in all cases. So even instances of univariate distributions, like the normal distributions, have variates like <span class="arithmatex">\((x = \ldots)\)</span>. The names in the variate tuples can be configured for each instance of a distribution, and must be unique across all distributions that are used together in a model. In Cartesian products of distributions, their variate tuples are concatenated. As with parameter tuples, nested tuples are not supported. The tuple entries, however, may be vector-valued, in contrast to parameter tuples. </p>
+priors (see <a href="#sec:bayesian-inference" reference="sec:bayesian-inference" reference-type="ref">Bayesian inference</a>). </p>
+<p>The variates of all distributions (so the possible results of random draws from them) are currently always records (this may be relaxed in future versions of this standard). So even instances of univariate distributions, like the normal distribution, have variates structured like <span class="arithmatex">\((a = \ldots,)\)</span>. Individual names are assigned to each entry of such record-valued variates.</p>
+<p>Future versions of the standard may support array-shaped and record-of-arrays-shaped variates and parameters.</p>
+<h3 id="sec:global-namespace">Global namespace<a class="headerlink" href="#sec:global-namespace" title="Permanent link">&para;</a></h3>
+<p>The names of all named HS<span class="arithmatex">\({}^3\)</span> objects (distributions, functions, likelihoods, data, parameters, variables, domains, parameter points, etc.) form a single namespace and must be unique within an HS<span class="arithmatex">\({}^3\)</span> document. The names assigned to variate record entries and data fields/axes are not part of the global namespace.</p>
+<p>HS<span class="arithmatex">\({}^3\)</span> implementations will typically provide a renaming/aliasing mechanism that can be used to resolve name clashes when using
+multiple HS<span class="arithmatex">\({}^3\)</span> documents together, e.g. for combined analyses.</p>
 <h3 id="sec:what-is-a-pdf">Probability density functions (PDFs)<a class="headerlink" href="#sec:what-is-a-pdf" title="Permanent link">&para;</a></h3>
 <p>Statistics literature often discriminates between probability density functions (PDF) for continuous probability distributions and probability mass functions (PMF) for discrete probability distributions. This standard use the term PDF for both continuous and discrete distributions. The concept of density is to be understood in terms of densities in the realm of measure theory here, that is the density of a probability measure (distribution) is its Radon-Nikodym derivative in respect to an (implied) reference measure. 
 The choice of reference measure would be arbitrary in principle, which scales likelihood functions 
@@ -913,7 +918,7 @@ The choice of reference measure would be arbitrary in principle, which scales li
 Here we use <span class="arithmatex">\(\text{PDF}(m(\theta), x)\)</span> to denote the density value of the probability distribution/measure <span class="arithmatex">\(m\)</span>, parameterized by <span class="arithmatex">\(\theta\)</span>, at the point/variate <span class="arithmatex">\(x\)</span>, in respect to the implied reference for <span class="arithmatex">\(m\)</span>. </p>
 <h3 id="sec:data-generation">Observed and simulated data<a class="headerlink" href="#sec:data-generation" title="Permanent link">&para;</a></h3>
 <p>The term data refers here to any collection of values that represents the outcome of an experiment. Data takes the same form as variates of distributions (see 
-<a href="#sec:distributions" reference="sec:distributions" reference-type="ref">Distributions</a>, i. e.&nbsp;named tuple of real values or vectors. To compare given data with a given model, the names and shapes of the data entries must match the variates of the probability distributions <span class="arithmatex">\(m(\theta)\)</span> that the model returns for a specific choice of parameters <span class="arithmatex">\(\theta\)</span>. 
+<a href="#sec:distributions" reference="sec:distributions" reference-type="ref">Distributions</a>, i. e.&nbsp;a record of real values or vectors. To compare given data with a given model, the names and shapes of the data entries must match the variates of the probability distributions <span class="arithmatex">\(m(\theta)\)</span> that the model returns for a specific choice of parameters <span class="arithmatex">\(\theta\)</span>. 
 This means that given a model <span class="arithmatex">\(m\)</span> and concrete parameter values <span class="arithmatex">\(\theta\)</span>, drawing a set of random values from the probability distribution <span class="arithmatex">\(m(\theta)\)</span> produces a valid set of simulated observations. Implementations can use this to provide mock-data generation capabilities. </p>
 <h3 id="sec:likelihood-definition">Likelihood functions<a class="headerlink" href="#sec:likelihood-definition" title="Permanent link">&para;</a></h3>
 <p>The concrete probability distribution <span class="arithmatex">\(m(\theta)\)</span> that a model <span class="arithmatex">\(m\)</span> returns for specific parameter values <span class="arithmatex">\(\theta\)</span> can be compared to observed data <span class="arithmatex">\(x\)</span>. This gives rise to a likelihood <span class="arithmatex">\(\mathcal{L}_{m,x}(\theta) = \text{PDF}(m(\theta), x)\)</span> that is a real-valued function on the parameter space. Multiple distributions/models that describe different modes of observation can be combined with multiple sets of data that cover those modes of observation into a single likelihood (Sec. 
@@ -969,25 +974,34 @@ Each distribution <span class="smallcaps">must</span> have the components <code>
 <li><code>type</code>: string (<span class="smallcaps">required</span>) that determines the kind of     distribution, e. g.&nbsp;<code>gaussian_dist</code> </li>
 <li><code>...</code>: each distribution <span class="smallcaps">may</span> have components for the     various individual parameters. For example, distributions of type     <code>gaussian_dist</code> have the specific components <code>mean</code>, <code>sigma</code> and     <code>x</code>. In general, these components <span class="smallcaps">may</span> be strings as     references to other <code>objects</code>, but <span class="smallcaps">may</span> also directly     yield numeric or boolean values. Depending on the parameter and the     type of distribution, they appear either in single item or array     format. </li>
 </ul>
+<p>An example for a two-dimensional multivariate distribution <code>mvnormal1</code> that has two free parameters <code>param_a</code> and <code>param_b</code> and might be used as a forward model - and to construct a likelihood when combined with data that has fields/columns/axes <code>obs_x</code> and <code>obs_y</code>:</p>
+<div class="highlight"><span class="filename">Example: Distributions</span><pre><span></span><code><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mvnormal1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;multivariate_normal_dist&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;param_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;param_b&quot;</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;covariances&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]],</span>
+<span class="w">    </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;obs_x&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;obs_y&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span><span class="w"> </span>
+<span class="p">]</span><span class="w"> </span>
+</code></pre></div>
+<p>An example of a distribution <code>gauss1</code> that has no free parameters and might be used as a prior for a fit parameter <code>param_a</code>:</p>
 <div class="highlight"><span class="filename">Example: Distributions</span><pre><span></span><code><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>
 <span class="w">    </span><span class="p">{</span><span class="w"> </span>
 <span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;gauss1&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;gaussian_dist&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="s2">&quot;param_sigma&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;param_x&quot;</span><span class="w"> </span>
-<span class="w">    </span><span class="p">},</span><span class="w"> </span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;exp1&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;exponential_dist&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="mi">-2</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;data_x&quot;</span><span class="w"> </span>
-<span class="w">    </span><span class="p">},</span><span class="w"> </span>
-<span class="w">    </span><span class="err">...</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.2</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;param_a&quot;</span><span class="w"> </span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span>
 <span class="p">]</span><span class="w"> </span>
 </code></pre></div>
 <p>Distributions can be treated either as <code>extended</code> or as non-<code>extended</code> <sup id="fnref:barlow-extended-ml"><a class="footnote-ref" href="#fn:barlow-extended-ml">9</a></sup>. Some distributions are always extended, others can never be extended, yet others can be used in extended and non-extended scenarios and have a switch selecting between the two. An non-extended distribution is always normalized to the unity. An extended distribution, on the other hand, can yield values larger than unity, where the yield is interpreted as the number of predicted events. That is to say, the distribution is augmented by a factor that is a Poisson constraint term for the total number of events. 
 In the following, all distributions supported in HS<span class="arithmatex">\({}^3\)</span> v0.2.9 are listed in detail. Future versions will expand upon this list. </p>
+<p>In Cartesian products of distributions, their variate records are concatenated.</p>
 <h3 id="univariate-fundamental-distributions">Univariate fundamental distributions<a class="headerlink" href="#univariate-fundamental-distributions" title="Permanent link">&para;</a></h3>
 <p>This section contains univariate fundamental distributions in the
 sense that they cannot refer to any other distribution -- only to
@@ -1642,117 +1656,147 @@ A generic function is defined by an expression. The expression must be a valid H
 <li><code>expression</code>: a string with a generic mathematical expression.     Simple mathematical syntax common to programming languages should be     used here, such as <code>x-2*y+z</code>. For any non-elementary operations, the     behavior is undefined. </li>
 </ul>
 <h2 id="sec:data">Data<a class="headerlink" href="#sec:data" title="Permanent link">&para;</a></h2>
-<p>The top-level component <code>data</code> contains an array of data sets in struct format. Each data set needs to contain the components <code>type</code> and <code>name</code>. Other components are dependent on the type of data set as demonstrated below: </p>
+<p>The top-level component <code>data</code> contains an array of data sets in struct format. Each data set needs to contain the components <code>type</code> and <code>name</code>. Other components are dependent on the type of data set as demonstrated below:</p>
 <ul>
-<li><code>name</code>: custom string </li>
-<li><code>type</code>: string that determines the format of the observations </li>
-<li><code>...</code>: each type of observations has different parameter keys. Some     of these are <span class="smallcaps">optional</span> and marked accordingly in the     more detailed description below </li>
+<li><code>name</code>: custom string</li>
+<li><code>type</code>: string that determines the format of the observations</li>
+<li><code>...</code>: each type of observations has different parameter keys. Some of these are <span class="smallcaps">optional</span> and marked accordingly in the more detailed description below</li>
 </ul>
-<p>A detailed description of the different types with examples can be found below. 
-While data, in most settings, has no uncertainty attached to it, this standard <em>does</em> allow to provide data with uncertainty, as there are some settings in which uncorrelated or correlated errors need to be taken into account. These include cases such as </p>
+<p>A detailed description of the different types with examples can be found below.
+While data, in most settings, has no uncertainty attached to it, this standard <em>does</em> allow to provide data with uncertainty, as there are some settings in which uncorrelated or correlated errors need to be taken into account. These include cases such as</p>
 <ul>
-<li>generated data obtained from importance sampling, including a     (potentially Gaussian) uncertainty from the frequency weights </li>
-<li>unfolded data, resulting from arbitrarily complex transformation     functions involving statistical models folding some degree of     uncertainty into the data points themselves </li>
+<li>generated data obtained from importance sampling, including a (potentially Gaussian) uncertainty from the frequency weights</li>
+<li>unfolded data, resulting from arbitrarily complex transformation functions involving statistical models folding some degree of uncertainty into the data points themselves</li>
 </ul>
-<p>While it should always be preferred to publish "raw" data, allowing to include pre-processed data with corresponding uncertainties expands the possible applications considerably. </p>
+<p>While it should always be preferred to publish "raw" data, allowing to include pre-processed data with corresponding uncertainties expands the possible applications considerably.</p>
+<h3 id="sec:axes">Axis Specifications<a class="headerlink" href="#sec:axes" title="Permanent link">&para;</a></h3>
+<p>Axes define the observable domain for data and PDFs. All axes share a common base structure but have type-specific requirements based on the data type they describe.</p>
+<h4 id="base-axis-requirements">Base Axis Requirements<a class="headerlink" href="#base-axis-requirements" title="Permanent link">&para;</a></h4>
+<p>All axis types <span class="smallcaps">must</span> include:</p>
+<ul>
+<li><code>name</code>: identifier matching the observable in the PDF</li>
+<li><code>min</code>: lower bound of the observable domain</li>
+<li><code>max</code>: upper bound of the observable domain</li>
+</ul>
+<p>These fields define the domain over which PDFs are normalized.</p>
+<p><strong>Note on normalization</strong>: Any PDF depending on observable <span class="arithmatex">\(x\)</span> must be normalized over the domain <span class="arithmatex">\([\text{min}, \text{max}]\)</span> defined by that observable's axis, not over <span class="arithmatex">\((-\infty, \infty)\)</span>.</p>
+<h4 id="forbidden-attributes">Forbidden Attributes<a class="headerlink" href="#forbidden-attributes" title="Permanent link">&para;</a></h4>
+<p>The <code>const</code> attribute <span class="smallcaps">must not</span> appear in axis specifications. All axes define observable domains, never fit parameters.</p>
+<h4 id="axis-types-by-data-type">Axis Types by Data Type<a class="headerlink" href="#axis-types-by-data-type" title="Permanent link">&para;</a></h4>
+<p><strong>For Point Data:</strong>
+-   Only base fields (<code>name</code>, <code>min</code>, <code>max</code>) are required
+-   Binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present</p>
+<p><strong>For Unbinned Data:</strong>
+-   Only base fields (<code>name</code>, <code>min</code>, <code>max</code>) are required
+-   Binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present</p>
+<p><strong>For Binned Data:</strong>
+-   Base fields (<code>name</code>, <code>min</code>, <code>max</code>) are required
+-   Exactly one binning specification <span class="smallcaps">must</span> be present:
+    1. Regular binning: <code>nbins</code> (integer number of equal-width bins)
+    2. Irregular binning: <code>edges</code> (array of length <span class="arithmatex">\(n+1\)</span> bin boundaries)
+-   Both <code>nbins</code> and <code>edges</code> <span class="smallcaps">must not</span> be specified simultaneously
+-   Neither <code>nbins</code> nor <code>edges</code> <span class="smallcaps">must not</span> be omitted</p>
+<p>For irregular binning, the <code>edges</code> array must satisfy:
+-   <code>edges[0] == min</code>
+-   <code>edges[-1] == max</code>
+-   All values must be in strictly ascending order</p>
 <h3 id="point-data">Point Data<a class="headerlink" href="#point-data" title="Permanent link">&para;</a></h3>
-<p>Point data describes a measurement of a single number, with a possible uncertainty (error). </p>
+<p>Point data describes a measurement of a single number, with a possible uncertainty (error).</p>
 <ul>
-<li><code>name</code>: custom string </li>
-<li><code>type</code>: <code>point</code> </li>
-<li><code>value</code>: value of this data point </li>
-<li><code>uncertainty</code>: (<span class="smallcaps">optional</span>) uncertainty of this data     point </li>
+<li><code>name</code>: custom string</li>
+<li><code>type</code>: <code>point</code></li>
+<li><code>value</code>: value of this data point</li>
+<li><code>axes</code>: (<span class="smallcaps">optional</span>) array of axis structs. Each struct must contain <code>name</code>, <code>min</code>, <code>max</code> as defined in <a href="#sec:axes">Axis Specifications</a>. When present, associates the point measurement with a specific observable domain.</li>
+<li><code>uncertainty</code>: (<span class="smallcaps">optional</span>) uncertainty of this data point</li>
 </ul>
-<div class="highlight"><span class="filename">Example: Point Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span><span class="w"> </span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data1&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;point&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="nt">&quot;uncertainty&quot;</span><span class="p">:</span><span class="mf">1.</span><span class="w"> </span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span>
+<div class="highlight"><span class="filename">Example: Point Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;point&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;uncertainty&quot;</span><span class="p">:</span><span class="mf">1.</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;obs_x&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">5</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">]</span>
 </code></pre></div>
 <h3 id="unbinned-data">Unbinned Data<a class="headerlink" href="#unbinned-data" title="Permanent link">&para;</a></h3>
-<p>Unbinned data describes a measurement of multiple data points in a possibly multi-dimensional space of variables. These data points can be weighted. </p>
+<p>Unbinned data describes a measurement of multiple data points in a possibly multi-dimensional space of variables. These data points can be weighted.</p>
 <ul>
-<li><code>name</code>: custom string </li>
-<li><code>type</code>: <code>unbinned</code> </li>
-<li><code>entries</code>: array of arrays containing the coordinates/entries of the     data </li>
-<li><code>axes</code>: array of structs representing the axes. Each struct     <span class="smallcaps">must</span> have the components <code>name</code> as well as <code>max</code> and     <code>min</code>. </li>
-<li><code>weights</code>: (<span class="smallcaps">optional</span>) array of values containing the     weights of the individual data points, to be used for <span class="arithmatex">\(\chi^2\)</span>     comparisons and fits. If this component is not given, weight 1 is     assumed for all data points. If given, the array needs to be of the     same length as <code>entries</code>. </li>
-<li><code>entries_uncertainties</code>: (<span class="smallcaps">optional</span>) array of arrays     containing the errors/uncertainties of each entry. If given, the     array needs to be of the same shape as <code>entries</code>. 
-<div class="highlight"><span class="filename">Example: Unbinned Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span><span class="w"> </span>
-<span class="w">  </span><span class="p">{</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data1&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;weights&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;entries&quot;</span><span class="p">:[</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">]</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;entries_uncertainties&quot;</span><span class="p">:[</span><span class="w"> </span><span class="p">[</span><span class="mf">0.3</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">0.6</span><span class="p">]</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="w"> </span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">3</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-10</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">10</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">      </span><span class="err">...</span><span class="w"> </span>
-<span class="w">    </span><span class="p">]</span><span class="w"> </span>
-<span class="w">  </span><span class="p">},</span><span class="w"> </span>
-<span class="w">  </span><span class="err">...</span><span class="w"> </span>
-<span class="p">]</span>
-</code></pre></div></li>
+<li><code>name</code>: custom string</li>
+<li><code>type</code>: <code>unbinned</code></li>
+<li><code>entries</code>: array of arrays containing the coordinates/entries of the data</li>
+<li><code>axes</code>: array of axis structs. Each struct <span class="smallcaps">must</span> contain <code>name</code>, <code>min</code>, <code>max</code> as defined in <a href="#sec:axes">Axis Specifications</a>. Binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present.</li>
+<li><code>weights</code>: (<span class="smallcaps">optional</span>) array of values containing the weights of the individual data points, to be used for <span class="arithmatex">\(\chi^2\)</span> comparisons and fits. If this component is not given, weight 1 is assumed for all data points. If given, the array needs to be of the same length as <code>entries</code>.</li>
+<li><code>entries_uncertainties</code>: (<span class="smallcaps">optional</span>) array of arrays containing the errors/uncertainties of each entry. If given, the array needs to be of the same shape as <code>entries</code>.</li>
 </ul>
+<div class="highlight"><span class="filename">Example: Unbinned Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;weights&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;entries&quot;</span><span class="p">:[</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">]</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;entries_uncertainties&quot;</span><span class="p">:[</span><span class="w"> </span><span class="p">[</span><span class="mf">0.3</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">0.6</span><span class="p">]</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">3</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-10</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">10</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
 <h3 id="sec:binned-data">Binned Data<a class="headerlink" href="#sec:binned-data" title="Permanent link">&para;</a></h3>
-<p>Binned data describes a histogram of data points with bin contents in a possibly multi-dimensional space of variables. Whether entries that fall precisely on the bin boundaries are sorted into the smaller or larger bin is under the discretion of the creator of the model and thus not defined. </p>
+<p>Binned data describes a histogram of data points with bin contents in a possibly multi-dimensional space of variables. Whether entries that fall precisely on the bin boundaries are sorted into the smaller or larger bin is under the discretion of the creator of the model and thus not defined.</p>
 <ul>
-<li><code>name</code>: custom string </li>
-<li><code>type</code>: <code>binned</code> </li>
-<li><code>contents</code>: array of values representing the contents of the binned     data set </li>
-<li><code>axes</code>: array of structs representing the axes. Each struct     <span class="smallcaps">must</span> have the component <code>name</code>. Further, it must     specify the binning through one of these two options: <ol>
-<li>regular binnings are specified through the components <code>max</code>,         <code>min</code> and <code>nbins</code> </li>
-<li>potentially irregular binnings are specified through the         component <code>edges</code>, which contains an array of length <span class="arithmatex">\(n+1\)</span>,         where the first and last entries denote the minimum and         maximum of the variable, and all entries between denote the         intermediate bin boundaries. </li>
+<li><code>name</code>: custom string</li>
+<li><code>type</code>: <code>binned</code></li>
+<li><code>contents</code>: array of values representing the contents of the binned data set</li>
+<li><code>axes</code>: array of axis structs. Each struct <span class="smallcaps">must</span> contain <code>name</code>, <code>min</code>, <code>max</code> and exactly one binning specification as defined in <a href="#sec:axes">Axis Specifications</a>:<ol>
+<li>Regular binning: <code>nbins</code> (number of equal-width bins)</li>
+<li>Irregular binning: <code>edges</code> (array of length <span class="arithmatex">\(n+1\)</span> bin boundaries)</li>
 </ol>
 </li>
-<li><code>uncertainty</code>: (<span class="smallcaps">optional</span>) struct representing the     uncertainty of the contents. It consists of up to three components: <ul>
-<li><code>type</code>: denoting the kind of uncertainty, for now only Gaussian         distributed uncertainties denoted as <code>gaussian_uncertainty</code> are         supported </li>
-<li><code>sigma</code>: array of the standard deviation of the entries in         <code>contents</code>. Needs to be of the same length as <code>contents</code> </li>
-<li><code>correlation</code>: (<span class="smallcaps">optional</span>) array of arrays denoting         the correlation between the contents in matrix format. Must be         of dimension length of <code>contents</code> <span class="arithmatex">\(\times\)</span> length of <code>contents</code>.         It can also be set to 0 to indicate no correlation. </li>
+<li><code>uncertainty</code>: (<span class="smallcaps">optional</span>) struct representing the uncertainty of the contents. It consists of up to three components:<ul>
+<li><code>type</code>: denoting the kind of uncertainty, for now only Gaussian distributed uncertainties denoted as <code>gaussian_uncertainty</code> are supported</li>
+<li><code>sigma</code>: array of the standard deviation of the entries in <code>contents</code>. Needs to be of the same length as <code>contents</code></li>
+<li><code>correlation</code>: (<span class="smallcaps">optional</span>) array of arrays denoting the correlation between the contents in matrix format. Must be of dimension length of <code>contents</code> <span class="arithmatex">\(\times\)</span> length of <code>contents</code>. It can also be set to 0 to indicate no correlation.</li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><span class="filename">Example: Binned Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span><span class="w"> </span>
-<span class="w">  </span><span class="p">{</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data2&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">3</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
-<span class="w">  </span><span class="p">},</span><span class="w"> </span>
-<span class="w">  </span><span class="p">{</span><span class="w"> </span>
+<div class="highlight"><span class="filename">Example: Binned Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">3</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;asimov_data2&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mf">0.</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="w"> </span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">3</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;edges&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
-<span class="w">    </span><span class="p">]</span><span class="w"> </span>
-<span class="w">  </span><span class="p">},</span><span class="w"> </span>
-<span class="w">    </span><span class="err">...</span><span class="w"> </span>
-<span class="w">  </span><span class="p">]</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mf">0.</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">3</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;edges&quot;</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
 </code></pre></div>
-<p>This type can also be used to store pre-processed data utilizing the <code>uncertainty</code> component </p>
-<div class="highlight"><span class="filename">Example: Pre-processed binned Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span><span class="w"> </span>
-<span class="w">  </span><span class="p">{</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data4&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;uncertainty&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gaussian_uncertainty&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">      </span><span class="nt">&quot;correlation&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<p>This type can also be used to store pre-processed data utilizing the <code>uncertainty</code> component</p>
+<div class="highlight"><span class="filename">Example: Pre-processed binned Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="w"> </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;uncertainty&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gaussian_uncertainty&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;correlation&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;sigma&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">]</span>
-<span class="w">     </span><span class="p">},</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="w"> </span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">3</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">      </span><span class="err">...</span><span class="w"> </span>
-<span class="w">    </span><span class="p">]</span><span class="w"> </span>
-<span class="w">  </span><span class="p">},</span><span class="w"> </span>
-<span class="w">  </span><span class="err">...</span><span class="w"> </span>
-<span class="p">]</span><span class="w"> </span>
+<span class="w">     </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">3</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
 </code></pre></div>
 <h2 id="sec:likelihoods">Likelihoods<a class="headerlink" href="#sec:likelihoods" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>likelihoods</code> contains an array of likelihoods in struct format specifying mappings of distributions and observations. The corresponding distributions and observations are inserted as keys in string format referencing to distributions and observations defined in the respective top-level components, or as numbers for fixed data values. 
