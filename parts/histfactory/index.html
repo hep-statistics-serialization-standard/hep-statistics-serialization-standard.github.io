@@ -860,7 +860,7 @@
   <h1>Histfactory</h1>
 
 <p>HistFactory [^hf] is a language to describe statistical models consisting only of "histograms" (which is used interchangeably with "step-functions" in this context). Each HistFactory distribution describes one "channel" or "region" of a binned measurement, containing a stack of "samples", i. e.&nbsp;binned distributions sharing the same binning (step-functions describing the signal or background of a measurement). Such a HistFactory model is shown in Figure <a href="#fig:hf-example" reference="fig:hf-example" reference-type="ref">1</a> (originally from  [^atlashzz]). Each of the contributions may be subject to <code>modifiers</code>. </p>
-<p><img alt="A binned statistical model describing a High Energy Physics measurement, in this case of the \(H\rightarrow 4l\) process by the ATLAS collaboration. Three different sample (blue, red, violet) are considered." id="fig:hf-example" src="/images/hf-example.png" width=".6\%" /> </p>
+<p><img alt="A binned statistical model describing a High Energy Physics measurement, in this case of the \(H\rightarrow 4l\) process by the ATLAS collaboration. Three different sample (blue, red, violet) are considered." id="fig:hf-example" src="/images/hf-example.png" width="60%" /> </p>
 <p>The prediction for a binned region is given as </p>
 <div class="arithmatex">\[
 \begin{aligned} \lambda(x)=\sum_{s\in\text{samples}} \left[ \left( d_s(x) + \sum_{\delta\in M_{\delta}} \delta(x,\theta_\delta) \right) \prod_{\kappa\in M_\kappa} \kappa(x,\theta_\kappa)   \right] \end{aligned} 
