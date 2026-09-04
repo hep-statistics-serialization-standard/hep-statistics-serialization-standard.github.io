@@ -593,6 +593,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#landau-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Landau distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dist:poisson" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1243,6 +1254,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#landau-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Landau distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dist:poisson" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1534,6 +1556,21 @@ to avoid disfavouring a pure solution.)</p>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>mu</code>: value or name of the parameter used as <span class="arithmatex">\(\mu\)</span> </li>
 <li><code>sigma</code>: value or name of the parameter <span class="arithmatex">\(\sigma\)</span> describing the     shape </li>
+</ul>
+<h4 id="landau-distribution">Landau distribution<a class="headerlink" href="#landau-distribution" title="Permanent link">&para;</a></h4>
+<p>The Landau distribution describes fluctuations in the energy loss of a charged particle traversing a thin layer of material. In terms of the conventional Landau density <span class="arithmatex">\(L\)</span>, it is</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{LandauPdf}(x,\mu,\sigma) =
+\frac{1}{\ensuremath{\mathcal{M}}}\,L(x;\mu,\sigma).
+\end{aligned}
+\]</div>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>landau_dist</code></li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
+<li><code>mean</code>: value or name of the location parameter <span class="arithmatex">\(\mu\)</span></li>
+<li><code>sigma</code>: value or name of the scale parameter <span class="arithmatex">\(\sigma\)</span></li>
 </ul>
 <h4 id="dist:poisson" label="dist:poisson">Poisson distribution<a class="headerlink" href="#dist:poisson" title="Permanent link">&para;</a></h4>
 <p>The Poisson distribution of the variable <span class="arithmatex">\(x\)</span> is defined as </p>

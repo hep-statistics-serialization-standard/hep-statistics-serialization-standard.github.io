@@ -605,6 +605,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#integral-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integral Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#generic-function" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1072,6 +1083,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#integral-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integral Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#generic-function" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1206,13 +1228,29 @@
 <li><code>type</code>: <code>truth_model_function</code></li>
 <li><code>x</code>: name of the convolution variable <span class="arithmatex">\(x\)</span></li>
 </ul>
+<h3 id="integral-function">Integral Function<a class="headerlink" href="#integral-function" title="Permanent link">&para;</a></h3>
+<p>The integral function represents the integral of a function <span class="arithmatex">\(f\)</span> over one or more variables:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{Integral}(f,\vec{x}) = \int f(\vec{x})\,d\vec{x}.
+\end{aligned}
+\]</div>
+<p>If <code>domain</code> is present, the integral uses the named domain for the integration variables. If <code>normalization</code> is present, the integrand is evaluated with that normalization set.</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>integral</code></li>
+<li><code>integrand</code>: name of the function <span class="arithmatex">\(f\)</span> to integrate</li>
+<li><code>variables</code>: array of names of the integration variables <span class="arithmatex">\(\vec{x}\)</span></li>
+<li><code>domain</code>: name of the integration domain (<span class="smallcaps">optional</span>)</li>
+<li><code>normalization</code>: array of names defining the normalization set (<span class="smallcaps">optional</span>)</li>
+</ul>
 <h3 id="generic-function">Generic Function<a class="headerlink" href="#generic-function" title="Permanent link">&para;</a></h3>
 <p><em>Note: Users should prefer the specific functions defined in this standard over generic functions where possible, as implementations of these will typically be more optimized. Generic functions should only be used if no equivalent specific distribution is defined.</em> 
 A generic function is defined by an expression. The expression must be a valid HS<sup>3</sup>-expression string (see Section 
 <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a>). </p>
 <ul>
 <li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>generic_function</code> </li>
+<li><code>type</code>: <code>generic</code> (current draft spelling; <code>generic_function</code> is the legacy HS<span class="arithmatex">\({}^3\)</span> v0.2.9 key)</li>
 <li><code>expression</code>: a string with a generic mathematical expression.     Simple mathematical syntax common to programming languages should be     used here, such as <code>x-2*y+z</code>. For any non-elementary operations, the     behavior is undefined. </li>
 </ul>
 

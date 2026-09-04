@@ -1000,7 +1000,8 @@ Each distribution <span class="smallcaps">must</span> have the components <code>
 <span class="p">]</span><span class="w"> </span>
 </code></pre></div>
 <p>Distributions can be treated either as <code>extended</code> or as non-<code>extended</code> <sup id="fnref:barlow-extended-ml"><a class="footnote-ref" href="#fn:barlow-extended-ml">9</a></sup>. Some distributions are always extended, others can never be extended, yet others can be used in extended and non-extended scenarios and have a switch selecting between the two. An non-extended distribution is always normalized to the unity. An extended distribution, on the other hand, can yield values larger than unity, where the yield is interpreted as the number of predicted events. That is to say, the distribution is augmented by a factor that is a Poisson constraint term for the total number of events. 
-In the following, all distributions supported in HS<span class="arithmatex">\({}^3\)</span> v0.2.9 are listed in detail. Future versions will expand upon this list. </p>
+In the following, all distributions supported in HS<span class="arithmatex">\({}^3\)</span> v0.2.9 are listed in detail. Future versions will expand upon this list. 
+Entries explicitly identified as current draft spellings document ongoing post-v0.2.9 work and have not yet been assigned to a new HS<span class="arithmatex">\({}^3\)</span> version.</p>
 <p>In Cartesian products of distributions, their variate records are concatenated.</p>
 <h3 id="univariate-fundamental-distributions">Univariate fundamental distributions<a class="headerlink" href="#univariate-fundamental-distributions" title="Permanent link">&para;</a></h3>
 <p>This section contains univariate fundamental distributions in the
@@ -1173,6 +1174,21 @@ to avoid disfavouring a pure solution.)</p>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>mu</code>: value or name of the parameter used as <span class="arithmatex">\(\mu\)</span> </li>
 <li><code>sigma</code>: value or name of the parameter <span class="arithmatex">\(\sigma\)</span> describing the     shape </li>
+</ul>
+<h4 id="landau-distribution">Landau distribution<a class="headerlink" href="#landau-distribution" title="Permanent link">&para;</a></h4>
+<p>The Landau distribution describes fluctuations in the energy loss of a charged particle traversing a thin layer of material. In terms of the conventional Landau density <span class="arithmatex">\(L\)</span>, it is</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{LandauPdf}(x,\mu,\sigma) =
+\frac{1}{\ensuremath{\mathcal{M}}}\,L(x;\mu,\sigma).
+\end{aligned}
+\]</div>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>landau_dist</code></li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
+<li><code>mean</code>: value or name of the location parameter <span class="arithmatex">\(\mu\)</span></li>
+<li><code>sigma</code>: value or name of the scale parameter <span class="arithmatex">\(\sigma\)</span></li>
 </ul>
 <h4 id="dist:poisson" label="dist:poisson">Poisson distribution<a class="headerlink" href="#dist:poisson" title="Permanent link">&para;</a></h4>
 <p>The Poisson distribution of the variable <span class="arithmatex">\(x\)</span> is defined as </p>
@@ -1646,13 +1662,29 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <li><code>type</code>: <code>truth_model_function</code></li>
 <li><code>x</code>: name of the convolution variable <span class="arithmatex">\(x\)</span></li>
 </ul>
+<h3 id="integral-function">Integral Function<a class="headerlink" href="#integral-function" title="Permanent link">&para;</a></h3>
+<p>The integral function represents the integral of a function <span class="arithmatex">\(f\)</span> over one or more variables:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{Integral}(f,\vec{x}) = \int f(\vec{x})\,d\vec{x}.
+\end{aligned}
+\]</div>
+<p>If <code>domain</code> is present, the integral uses the named domain for the integration variables. If <code>normalization</code> is present, the integrand is evaluated with that normalization set.</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>integral</code></li>
+<li><code>integrand</code>: name of the function <span class="arithmatex">\(f\)</span> to integrate</li>
+<li><code>variables</code>: array of names of the integration variables <span class="arithmatex">\(\vec{x}\)</span></li>
+<li><code>domain</code>: name of the integration domain (<span class="smallcaps">optional</span>)</li>
+<li><code>normalization</code>: array of names defining the normalization set (<span class="smallcaps">optional</span>)</li>
+</ul>
 <h3 id="generic-function">Generic Function<a class="headerlink" href="#generic-function" title="Permanent link">&para;</a></h3>
 <p><em>Note: Users should prefer the specific functions defined in this standard over generic functions where possible, as implementations of these will typically be more optimized. Generic functions should only be used if no equivalent specific distribution is defined.</em> 
 A generic function is defined by an expression. The expression must be a valid HS<sup>3</sup>-expression string (see Section 
 <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a>). </p>
 <ul>
 <li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>generic_function</code> </li>
+<li><code>type</code>: <code>generic</code> (current draft spelling; <code>generic_function</code> is the legacy HS<span class="arithmatex">\({}^3\)</span> v0.2.9 key)</li>
 <li><code>expression</code>: a string with a generic mathematical expression.     Simple mathematical syntax common to programming languages should be     used here, such as <code>x-2*y+z</code>. For any non-elementary operations, the     behavior is undefined. </li>
 </ul>
 <h2 id="sec:data">Data<a class="headerlink" href="#sec:data" title="Permanent link">&para;</a></h2>
@@ -1957,6 +1989,8 @@ The implementations that support generic expression <span class="smallcaps">must
 <li><code>log(x)</code>: Natural logarithm of <code>x</code> </li>
 <li><code>sqrt(x)</code>: The square root of <code>x</code> </li>
 <li><code>abs(x)</code>: The absolute value of <code>x</code> </li>
+<li><code>floor(x)</code>: The greatest integer less than or equal to <code>x</code></li>
+<li><code>ceil(x)</code>: The smallest integer greater than or equal to <code>x</code></li>
 <li><code>pow(x, y)</code>: <code>x</code> raised to the power of <code>y</code> </li>
 <li><code>min(x, y)</code>: minimum of <code>x</code> and <code>y</code> </li>
 <li><code>max(x, y)</code>: maximum of <code>x</code> and <code>y</code> </li>
@@ -1966,6 +2000,7 @@ The implementations that support generic expression <span class="smallcaps">must
 <li><code>asin(x)</code>: The inverse sin of <code>x</code> </li>
 <li><code>acos(x)</code>: The inverse cosine of <code>x</code> </li>
 <li><code>atan(x)</code>: The inverse tangent of <code>x</code> </li>
+<li><code>erf(x)</code>: The standard error function of <code>x</code></li>
 </ul>
 </li>
 </ul>
