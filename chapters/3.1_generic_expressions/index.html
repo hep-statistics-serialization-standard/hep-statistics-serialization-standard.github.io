@@ -982,7 +982,7 @@ The implementations that support generic expression <span class="smallcaps">must
 <li>The comparison operators approximately-equal (<code>x == y</code>),     exactly-equal (<code>x === y</code>), not-approximately-equal (<code>x != y</code>),     not-exactly-equal (<code>x !== y</code>), less-than (<code>x &lt; y</code>), less-or-equal     (<code>x &lt;= y</code>), greater-than (<code>x &gt; y</code>) and greater-or-equal (<code>x &gt;= y</code>). </li>
 <li>The logical operators logical-inverse (<code>!a</code>), logical-and     (<code>a &amp;&amp; b</code>) and logical-or (<code>a || b</code>). </li>
 <li>Round brackets to specify the order of operations. </li>
-<li>The ternary operator <code>condition ? result_if_true : result_if_false</code> </li>
+<li>The conditional expression <code>ifelse(condition, result_if_true, result_if_false)</code>.</li>
 <li>The functions <ul>
 <li><code>exp(x)</code>: Euler's number raised to the power of <code>x</code> </li>
 <li><code>log(x)</code>: Natural logarithm of <code>x</code> </li>
@@ -1007,8 +1007,9 @@ The implementations that support generic expression <span class="smallcaps">must
 The operator precedence and associativity is according to the common conventions. 
 Spaces between operators and operands are optional. There must be no space between a function name and the function arguments, spaces between function arguments are optional (<code>f(a, b)</code> and <code>f(a,b)</code> are correct but <code>f (a, b)</code> is not allowed). </p>
 <p>Division <span class="smallcaps">must</span> be treated as floating-point division (i.e. <code>2/3</code> should be equivalent to <code>2.0/3.0</code>). </p>
-<p>The approximately-equal (<code>a == b</code>) and the not-approximately-equal operator (<code>a != b</code>), <span class="smallcaps">should</span> compare floating-point numbers to within a small multiple of the unit of least precision. 
-The behavior of any functions and operators not listed above is not defined, they are reserved for future versions of this standard. Implementations <span class="smallcaps">may</span> support additional functions and operators as experimental features, but their use is considered non-standard and results in non-portable and potentially non-forward-compatible HS<span class="arithmatex">\({}^3\)</span> documents. </p>
+<p>The approximately-equal (<code>a == b</code>) and the not-approximately-equal operator (<code>a != b</code>), <span class="smallcaps">should</span> compare floating-point numbers to within a small multiple of the unit of least precision. </p>
+<p>Conditional expression may be evaluated in a lazy fashion (evaluating either  <code>result_if_true</code> or <code>result_if_false</code> depending on the result of <code>condition</code>) or in an eager fashion (evaluating all of  <code>condition</code>, <code>result_if_true</code>  and <code>result_if_false</code> in arbitrary order). Evaluation strategy is left to the engine. This implies that on some engines, large trees of conditional expressions may have a high evaluation cost.</p>
+<p>The behavior of any functions and operators not listed above is not defined, they are reserved for future versions of this standard. Implementations <span class="smallcaps">may</span> support additional functions and operators as experimental features, but their use is considered non-standard and results in non-portable and potentially non-forward-compatible HS<span class="arithmatex">\({}^3\)</span> documents. </p>
 
 
 
