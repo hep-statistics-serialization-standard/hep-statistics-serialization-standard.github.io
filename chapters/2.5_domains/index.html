@@ -976,11 +976,18 @@
 <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>product_domain</code> </li>
-<li><code>axes</code>: array of parameters and variables in this domain (see below) 
-The component <code>axes</code> itself is an array of ranges each containing the components <code>min</code>, <code>max</code> and <code>name</code>. <ul>
-<li><code>name</code>: custom string </li>
+<li><code>axes</code>: array of parameters and variables in this domain in terms of individual axes. These can be continuous or categorical, mirroring the axis types defined in <a href="#sec:axes" reference="sec:axes" reference-type="ref">Axis Specifications</a>.<ul>
+<li>A continuous axis has the components:  <ul>
+<li><code>name</code>: custom string</li>
 <li><code>max</code>: upper bound of range </li>
-<li><code>min</code>: lower bound of range </li>
+<li><code>min</code>: lower bound of range.</li>
+</ul>
+</li>
+<li>A categorical axis has the components: <ul>
+<li><code>name</code>: custom string</li>
+<li><code>categories</code>: array of unique strings enumerating the allowed values</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -991,6 +998,7 @@ The component <code>axes</code> itself is an array of ranges each containing the
 <span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">4.78</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;channel&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;categories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="s2">&quot;CR&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="err">...</span><span class="w"> </span>
 <span class="w">    </span><span class="p">]</span><span class="w"> </span>
 <span class="w">  </span><span class="p">},</span><span class="w"> </span>

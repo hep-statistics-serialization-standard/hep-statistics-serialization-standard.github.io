@@ -924,7 +924,7 @@ Please note that this document as well as the HS<span class="arithmatex">\({}^3\
 <h2 id="sec:hs3-semantics">Statistical semantics of HS<span class="arithmatex">\({}^3\)</span><a class="headerlink" href="#sec:hs3-semantics" title="Permanent link">&para;</a></h2>
 <h3 id="sec:models-and-parameters">Statistical models, probability distributions and parameters<a class="headerlink" href="#sec:models-and-parameters" title="Permanent link">&para;</a></h3>
 <p>HS<span class="arithmatex">\({}^3\)</span> takes a "forward-modelling" approach throughout: a statistical model <span class="arithmatex">\(m\)</span> maps a space <span class="arithmatex">\(\Theta\)</span> of free parameters <span class="arithmatex">\(\theta\)</span> to a space of probability distributions that describe the possible outcomes of a specific experiment. For any given parameters <span class="arithmatex">\(\theta\)</span>, the model returns a concrete probability distribution <span class="arithmatex">\(m(\theta)\)</span>. Observed data <span class="arithmatex">\(x\)</span> is then treated as random variate, presumed to be drawn from the model: <span class="arithmatex">\(x \sim m(\theta)\)</span>. 
-Parameters in HS<span class="arithmatex">\({}^3\)</span> are always named, so semantically the elements of a parameter space <span class="arithmatex">\(\Theta\)</span> are records <span class="arithmatex">\(\theta\)</span> (i.e. tuples in which every entry has a name). Even if there is only a single free parameter, <span class="arithmatex">\(\theta\)</span> should be thought of as a single-entry record. In the current version of this standard, parameter tuples must be flat and only consist of real numbers, vector-valued or nested entries are not supported yet. Future versions of the standard will likely be less restrictive, especially with respect to discrete or vector-valued parameters. Parameter domains defined as part of this standard may be of various types, even though the current version only supports product domains. Future versions are likely to be less restrictive in this regard. 
+Parameters in HS<span class="arithmatex">\({}^3\)</span> are always named, so semantically the elements of a parameter space <span class="arithmatex">\(\Theta\)</span> are records <span class="arithmatex">\(\theta\)</span> (i.e. tuples in which every entry has a name). Even if there is only a single free parameter, <span class="arithmatex">\(\theta\)</span> should be thought of as a single-entry record. In the current version of this standard, parameter tuples must be flat and only consist of real numbers (or strings for categorical parameters); vector-valued or nested entries are not supported yet. Future versions of the standard will likely be less restrictive, especially with respect to discrete or vector-valued parameters. Parameter domains defined as part of this standard may be of various types, even though the current version only supports product domains. Future versions are likely to be less restrictive in this regard. 
 Mathematically and computationally, it is often convenient to treat parameters as flat real-valued vectors instead of records, it is the responsibility of the implementation to map between these different views of parameters when and where necessary.
 Probability distributions in HS<span class="arithmatex">\({}^3\)</span> (see 
 <a href="#sec:distributions" reference="sec:distributions" reference-type="ref">Distributions</a>) are typically parameterized. Any instance of a distribution that has some of its parameters bound to names instead of concrete values, e.g. <span class="arithmatex">\(m = d_{\mu = a, \sigma = 0.7, \lambda = b, ...}\)</span>, constitutes a valid statistical model <span class="arithmatex">\(m(\theta)\)</span> with model parameters <span class="arithmatex">\(\theta = (a, b)\)</span>. 
@@ -1811,32 +1811,49 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 </ul>
 <p>While it should always be preferred to publish "raw" data, allowing to include pre-processed data with corresponding uncertainties expands the possible applications considerably.</p>
 <h3 id="sec:axes">Axis Specifications<a class="headerlink" href="#sec:axes" title="Permanent link">&para;</a></h3>
-<p>Axes define the observable domain for data and PDFs. All axes share a common base structure but have type-specific requirements based on the data type they describe.</p>
-<h4 id="base-axis-requirements">Base Axis Requirements<a class="headerlink" href="#base-axis-requirements" title="Permanent link">&para;</a></h4>
-<p>All axis types <span class="smallcaps">must</span> include:</p>
+<p>Axes define the observable domain for data and PDFs. Every axis is either continuous or categorical. The kind of an axis is determined structurally: an axis struct <span class="smallcaps">must</span> contain exactly one of the field pair <code>min</code>/<code>max</code> (continuous axis) or the field <code>categories</code> (categorical axis). Continuous axes additionally have type-specific requirements based on the data type they describe.</p>
+<h4 id="continuous-axes">Continuous Axes<a class="headerlink" href="#continuous-axes" title="Permanent link">&para;</a></h4>
+<p>A continuous axis describes a real-valued observable. All continuous axes <span class="smallcaps">must</span> include:</p>
 <ul>
 <li><code>name</code>: identifier matching the observable in the PDF</li>
 <li><code>min</code>: lower bound of the observable domain</li>
 <li><code>max</code>: upper bound of the observable domain</li>
 </ul>
 <p>These fields define the domain over which PDFs are normalized.</p>
-<p><strong>Note on normalization</strong>: Any PDF depending on observable <span class="arithmatex">\(x\)</span> must be normalized over the domain <span class="arithmatex">\([\text{min}, \text{max}]\)</span> defined by that observable's axis, not over <span class="arithmatex">\((-\infty, \infty)\)</span>.</p>
+<p><strong>Note on normalization</strong>: Any PDF depending on a continuous observable <span class="arithmatex">\(x\)</span> must be normalized over the domain <span class="arithmatex">\([\text{min}, \text{max}]\)</span> defined by that observable's axis, not over <span class="arithmatex">\((-\infty, \infty)\)</span>.</p>
+<h4 id="categorical-axes">Categorical Axes<a class="headerlink" href="#categorical-axes" title="Permanent link">&para;</a></h4>
+<p>A categorical axis describes a discrete-valued observable that takes one of a finite set of named states. A categorical axis <span class="smallcaps">must</span> include:</p>
+<ul>
+<li><code>name</code>: identifier matching the categorical observable in the PDF</li>
+<li><code>categories</code>: array of unique strings enumerating the allowed values. <code>categories</code> defines a set: the order in which values appear in the array <span class="smallcaps">must not</span> affect evaluation.</li>
+</ul>
+<p>The <code>categories</code> array itself defines the domain of the axis; the fields <code>min</code>, <code>max</code>, <code>nbins</code> and <code>edges</code> <span class="smallcaps">must not</span> be present.  </p>
 <h4 id="forbidden-attributes">Forbidden Attributes<a class="headerlink" href="#forbidden-attributes" title="Permanent link">&para;</a></h4>
 <p>The <code>const</code> attribute <span class="smallcaps">must not</span> appear in axis specifications. All axes define observable domains, never fit parameters.</p>
 <h4 id="axis-types-by-data-type">Axis Types by Data Type<a class="headerlink" href="#axis-types-by-data-type" title="Permanent link">&para;</a></h4>
-<p><strong>For Point Data:</strong>
--   Only base fields (<code>name</code>, <code>min</code>, <code>max</code>) are required
--   Binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present</p>
-<p><strong>For Unbinned Data:</strong>
--   Only base fields (<code>name</code>, <code>min</code>, <code>max</code>) are required
--   Binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present</p>
-<p><strong>For Binned Data:</strong>
--   Base fields (<code>name</code>, <code>min</code>, <code>max</code>) are required
--   Exactly one binning specification <span class="smallcaps">must</span> be present:
-    1. Regular binning: <code>nbins</code> (integer number of equal-width bins)
-    2. Irregular binning: <code>edges</code> (array of length <span class="arithmatex">\(n+1\)</span> bin boundaries)
--   Both <code>nbins</code> and <code>edges</code> <span class="smallcaps">must not</span> be specified simultaneously
--   Neither <code>nbins</code> nor <code>edges</code> <span class="smallcaps">must not</span> be omitted</p>
+<p><strong>For Point Data:</strong>  </p>
+<ul>
+<li>Only continuous axes are permitted, carrying only the base fields (<code>name</code>, <code>min</code>, <code>max</code>) </li>
+<li>Binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present</li>
+</ul>
+<p><strong>For Unbinned Data:</strong>  </p>
+<ul>
+<li>Continuous axes are required to carry base fields (<code>name</code>, <code>min</code>, <code>max</code>)</li>
+<li>Binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present</li>
+<li>Categorical axes are permitted; the corresponding column of <code>entries</code> holds the respective row's category as one of the strings listed in <code>categories</code></li>
+</ul>
+<p><strong>For Binned Data:</strong>  </p>
+<ul>
+<li>Continuous axes are required to carry base fields (<code>name</code>, <code>min</code>, <code>max</code>)</li>
+<li>Each continuous axis <span class="smallcaps">must</span> carry exactly one binning specification:<ol>
+<li>Regular binning: <code>nbins</code> (integer number of equal-width bins)</li>
+<li>Irregular binning: <code>edges</code> (array of length <span class="arithmatex">\(n+1\)</span> bin boundaries)</li>
+</ol>
+</li>
+<li>Both <code>nbins</code> and <code>edges</code> <span class="smallcaps">must not</span> be specified simultaneously</li>
+<li>Neither <code>nbins</code> nor <code>edges</code> <span class="smallcaps">must not</span> be omitted on a continuous axis</li>
+<li>Categorical axes are permitted. A categorical axis acts as its own binning, with one bin per category in the order given by <code>categories</code></li>
+</ul>
 <p>For irregular binning, the <code>edges</code> array must satisfy:
 -   <code>edges[0] == min</code>
 -   <code>edges[-1] == max</code>
@@ -1868,11 +1885,11 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 <li><code>name</code>: custom string</li>
 <li><code>type</code>: <code>unbinned</code></li>
 <li><code>entries</code>: array of arrays containing the coordinates/entries of the data</li>
-<li><code>axes</code>: array of axis structs. Each struct <span class="smallcaps">must</span> contain <code>name</code>, <code>min</code>, <code>max</code> as defined in <a href="#sec:axes">Axis Specifications</a>. Binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present.</li>
+<li><code>axes</code>: array of axis structs. Each struct <span class="smallcaps">must</span> be a valid continuous or categorical axis as defined in <a href="#sec:axes">Axis Specifications</a>. Binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present.</li>
 <li><code>weights</code>: (<span class="smallcaps">optional</span>) array of values containing the weights of the individual data points, to be used for <span class="arithmatex">\(\chi^2\)</span> comparisons and fits. If this component is not given, weight 1 is assumed for all data points. If given, the array needs to be of the same length as <code>entries</code>.</li>
 <li><code>entries_uncertainties</code>: (<span class="smallcaps">optional</span>) array of arrays containing the errors/uncertainties of each entry. If given, the array needs to be of the same shape as <code>entries</code>.</li>
 </ul>
-<div class="highlight"><span class="filename">Example: Unbinned Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<p><div class="highlight"><span class="filename">Example: Unbinned Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
 <span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data1&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span>
@@ -1886,13 +1903,29 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 <span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </code></pre></div>
+Unbinned data sets with a categorical axis store the category string in the corresponding column of <code>entries</code>:
+<div class="highlight"><span class="filename">Example: Unbinned Data with categorical axis</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;weights&quot;</span><span class="p">:[</span><span class="mf">12.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.3</span><span class="p">,</span><span class="w"> </span><span class="mf">2.1</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;entries&quot;</span><span class="p">:[[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mf">0.1</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mf">-0.2</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;CR&quot;</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mf">0.9</span><span class="p">]],</span>
+<span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;cat1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;categories&quot;</span><span class="p">:[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="s2">&quot;CR&quot;</span><span class="p">]},</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+Here the first column of <code>entries</code> refers to the <code>cat1</code> axis, giving the category of each row directly as <code>"SR"</code> or <code>"CR"</code>.</p>
 <h3 id="sec:binned-data">Binned Data<a class="headerlink" href="#sec:binned-data" title="Permanent link">&para;</a></h3>
 <p>Binned data describes a histogram of data points with bin contents in a possibly multi-dimensional space of variables. Whether entries that fall precisely on the bin boundaries are sorted into the smaller or larger bin is under the discretion of the creator of the model and thus not defined.</p>
 <ul>
 <li><code>name</code>: custom string</li>
 <li><code>type</code>: <code>binned</code></li>
 <li><code>contents</code>: array of values representing the contents of the binned data set</li>
-<li><code>axes</code>: array of axis structs. Each struct <span class="smallcaps">must</span> contain <code>name</code>, <code>min</code>, <code>max</code> and exactly one binning specification as defined in <a href="#sec:axes">Axis Specifications</a>:<ol>
+<li><code>axes</code>: array of axis structs. Each struct <span class="smallcaps">must</span> be a valid continuous or categorical axis as defined in <a href="#sec:axes">Axis Specifications</a>. Each continuous axis <span class="smallcaps">must</span> carry exactly one binning specification:<ol>
 <li>Regular binning: <code>nbins</code> (number of equal-width bins)</li>
 <li>Irregular binning: <code>edges</code> (array of length <span class="arithmatex">\(n+1\)</span> bin boundaries)</li>
 </ol>
@@ -1906,13 +1939,13 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 </ul>
 <div class="highlight"><span class="filename">Example: Binned Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data3&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="w"> </span><span class="p">],</span>
 <span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variable1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">3</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">]</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;asimov_data2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;asimov_data3&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mf">0.</span><span class="w"> </span><span class="p">],</span>
 <span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
@@ -1922,10 +1955,23 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 <span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </code></pre></div>
+<p>The <code>contents</code> of the data sets are represented in a flattened one-dimensional array of bin-contents. Here the behaviour is the same for a categorical axis with <span class="arithmatex">\(n\)</span> categories as for regularly-binned continuous axis with <span class="arithmatex">\(n\)</span> bins: each category corresponds to one bin along the respective dimension of the flattened <code>contents</code> array.</p>
+<div class="highlight"><span class="filename">Example: Binned Data with categorical axis</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;content&quot;</span><span class="p">:[</span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">8.4</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="mf">7.0</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;channel&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;categories&quot;</span><span class="p">:[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="s2">&quot;CR&quot;</span><span class="p">]},</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;variables1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
 <p>This type can also be used to store pre-processed data utilizing the <code>uncertainty</code> component</p>
 <div class="highlight"><span class="filename">Example: Pre-processed binned Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data5&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">18.4</span><span class="w"> </span><span class="p">],</span>
 <span class="w">    </span><span class="nt">&quot;uncertainty&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1977,11 +2023,18 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>product_domain</code> </li>
-<li><code>axes</code>: array of parameters and variables in this domain (see below) 
-The component <code>axes</code> itself is an array of ranges each containing the components <code>min</code>, <code>max</code> and <code>name</code>. <ul>
-<li><code>name</code>: custom string </li>
+<li><code>axes</code>: array of parameters and variables in this domain in terms of individual axes. These can be continuous or categorical, mirroring the axis types defined in <a href="#sec:axes" reference="sec:axes" reference-type="ref">Axis Specifications</a>.<ul>
+<li>A continuous axis has the components:  <ul>
+<li><code>name</code>: custom string</li>
 <li><code>max</code>: upper bound of range </li>
-<li><code>min</code>: lower bound of range </li>
+<li><code>min</code>: lower bound of range.</li>
+</ul>
+</li>
+<li>A categorical axis has the components: <ul>
+<li><code>name</code>: custom string</li>
+<li><code>categories</code>: array of unique strings enumerating the allowed values</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -1992,6 +2045,7 @@ The component <code>axes</code> itself is an array of ranges each containing the
 <span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">4.78</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;channel&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;categories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="s2">&quot;CR&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="err">...</span><span class="w"> </span>
 <span class="w">    </span><span class="p">]</span><span class="w"> </span>
 <span class="w">  </span><span class="p">},</span><span class="w"> </span>
