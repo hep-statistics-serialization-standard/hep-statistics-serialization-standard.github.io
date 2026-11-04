@@ -616,6 +616,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#histfactory-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HistFactory Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#generic-function" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1122,6 +1133,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#histfactory-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HistFactory Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#generic-function" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1271,6 +1293,17 @@
 <li><code>variables</code>: array of names of the integration variables <span class="arithmatex">\(\vec{x}\)</span></li>
 <li><code>domain</code>: name of the integration domain (<span class="smallcaps">optional</span>)</li>
 <li><code>normalization</code>: array of names defining the normalization set (<span class="smallcaps">optional</span>)</li>
+</ul>
+<h3 id="histfactory-function">HistFactory Function<a class="headerlink" href="#histfactory-function" title="Permanent link">&para;</a></h3>
+<p>A HistFactory function provides the expected counts in fixed bins of an observable <span class="arithmatex">\(x\)</span> by adding sample histogram yields with their modifiers (normalization factors, systematic variations, statistical uncertainties). It is the deterministic prediction component of the HistFactory model:</p>
+<div class="arithmatex">\[
+\begin{aligned} \text{HistFactoryFunction}_i(\theta) &amp;= \lambda_i(\theta) \end{aligned} 
+\]</div>
+<p>Here <span class="arithmatex">\(i\)</span> labels a fixed bin in <span class="arithmatex">\(x\)</span>; <span class="arithmatex">\(\theta\)</span> controls the sample yields and shapes. The corresponding <code>histfactory_dist</code> uses these expectations to model the random bin counts <span class="arithmatex">\(n_i\)</span>. The mixture interpretation, parameter roles, modifiers and example are defined in Section <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>.</p>
+<ul>
+<li><code>name</code>: custom unique string </li>
+<li><code>type</code>: <code>histfactory</code> </li>
+<li>all further components as defined in Section <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a> </li>
 </ul>
 <h3 id="generic-function">Generic Function<a class="headerlink" href="#generic-function" title="Permanent link">&para;</a></h3>
 <p><em>Note: Users should prefer the specific functions defined in this standard over generic functions where possible, as implementations of these will typically be more optimized. Generic functions should only be used if no equivalent specific distribution is defined.</em> 

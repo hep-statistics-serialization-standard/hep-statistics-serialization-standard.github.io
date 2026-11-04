@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://hep-statistics-serialization-standard.github.io/parts/histfactory/">
+        <link rel="canonical" href="https://hep-statistics-serialization-standard.github.io/chapters/3.3_histfactory/">
       
       
       
@@ -23,7 +23,7 @@
     
     
       
-        <title>Histfactory - HEP Statistics Serialization Standard (HS³)</title>
+        <title>3.3 histfactory - HEP Statistics Serialization Standard (HS³)</title>
       
     
     
@@ -75,6 +75,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#sec:histfactory" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -107,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Histfactory
+              3.3 histfactory
             
           </span>
         </div>
@@ -274,7 +279,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/1_introduction/" class="md-nav__link">
+      <a href="../1_introduction/" class="md-nav__link">
         
   
   
@@ -348,7 +353,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2_toplevels/" class="md-nav__link">
+      <a href="../2_toplevels/" class="md-nav__link">
         
   
   
@@ -376,7 +381,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.1_distributions/" class="md-nav__link">
+      <a href="../2.1_distributions/" class="md-nav__link">
         
   
   
@@ -404,7 +409,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.1.1_fundamental_distributions/" class="md-nav__link">
+      <a href="../2.1.1_fundamental_distributions/" class="md-nav__link">
         
   
   
@@ -432,7 +437,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.1.2_composite_distributions/" class="md-nav__link">
+      <a href="../2.1.2_composite_distributions/" class="md-nav__link">
         
   
   
@@ -460,7 +465,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.2_functions/" class="md-nav__link">
+      <a href="../2.2_functions/" class="md-nav__link">
         
   
   
@@ -488,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.3_data/" class="md-nav__link">
+      <a href="../2.3_data/" class="md-nav__link">
         
   
   
@@ -516,7 +521,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.4_likelihoods/" class="md-nav__link">
+      <a href="../2.4_likelihoods/" class="md-nav__link">
         
   
   
@@ -544,7 +549,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.5_domains/" class="md-nav__link">
+      <a href="../2.5_domains/" class="md-nav__link">
         
   
   
@@ -572,7 +577,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.6_parameter_points/" class="md-nav__link">
+      <a href="../2.6_parameter_points/" class="md-nav__link">
         
   
   
@@ -600,7 +605,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.7_analyses/" class="md-nav__link">
+      <a href="../2.7_analyses/" class="md-nav__link">
         
   
   
@@ -628,7 +633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.8_metadata/" class="md-nav__link">
+      <a href="../2.8_metadata/" class="md-nav__link">
         
   
   
@@ -656,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/2.9_misc/" class="md-nav__link">
+      <a href="../2.9_misc/" class="md-nav__link">
         
   
   
@@ -738,7 +743,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/3_supplementary/" class="md-nav__link">
+      <a href="../3_supplementary/" class="md-nav__link">
         
   
   
@@ -766,7 +771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/3.1_generic_expressions/" class="md-nav__link">
+      <a href="../3.1_generic_expressions/" class="md-nav__link">
         
   
   
@@ -794,7 +799,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../chapters/3.2_authoring_primitives/" class="md-nav__link">
+      <a href="../3.2_authoring_primitives/" class="md-nav__link">
         
   
   
@@ -867,6 +872,25 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sec:histfactory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HistFactory
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -885,11 +909,26 @@
   
 
 
-  <h1>Histfactory</h1>
+  <h1>3.3 histfactory</h1>
 
-<p>HistFactory [^hf] is a language to describe statistical models consisting only of "histograms" (which is used interchangeably with "step-functions" in this context). Each HistFactory distribution describes one "channel" or "region" of a binned measurement, containing a stack of "samples", i. e.&nbsp;binned distributions sharing the same binning (step-functions describing the signal or background of a measurement). Such a HistFactory model is shown in Figure <a href="#fig:hf-example" reference="fig:hf-example" reference-type="ref">1</a> (originally from  [^atlashzz]). Each of the contributions may be subject to <code>modifiers</code>. </p>
+<h2 id="sec:histfactory">HistFactory<a class="headerlink" href="#sec:histfactory" title="Permanent link">&para;</a></h2>
+<p>HistFactory, documented by Cranmer et al. in 2012 [^hf], models bin counts as independent Poisson random variables whose expectations come from a mixture of histogram templates. Its random variables are the counts <span class="arithmatex">\(n_i\)</span>; <span class="arithmatex">\(x\)</span> is the observable (or tuple of observables) used to define the fixed bins <span class="arithmatex">\(B_i\)</span>.</p>
+<p>A <em>channel</em> is a selected event category or analysis region with its own observed histogram, such as a signal or background control region. Each prediction adds the contributions of <em>samples</em> (signal and background processes) sharing the channel's binning. Parameter variations change yields, not bin boundaries; different channels may use different binning.</p>
+<p>The sample yields and normalized shapes define the event intensity:</p>
+<div class="arithmatex">\[
+\rho(x;\theta)=\sum_s N_s(\theta)f_s(x;\theta),
+\qquad \int f_s(x;\theta)\,dx=1,
+\qquad \lambda_i(\theta)=\int_{B_i}\rho(x;\theta)\,dx.
+\]</div>
+<p>Each sample has a yield <span class="arithmatex">\(N_s\)</span> and a normalized shape <span class="arithmatex">\(f_s\)</span> over the channel's observable region. The intensity integrates to the total expected yield <span class="arithmatex">\(\sum_s N_s\)</span>, rather than to one. HistFactory stores bin yields directly; the decomposition into yields and normalized shapes is explanatory. The parameters <span class="arithmatex">\(\theta\)</span> may include both parameters of interest, such as a signal strength, and nuisance parameters describing uncertainties.</p>
+<p>The function <code>histfactory</code> evaluates the expected bin yields <span class="arithmatex">\(\lambda_i(\theta)\)</span>. The distribution <code>histfactory_dist</code> additionally specifies the observation model</p>
+<div class="arithmatex">\[
+P(\mathbf{n}\mid\theta)=\prod_i\operatorname{Pois}(n_i\mid\lambda_i(\theta)),
+\qquad n_i\in\{0,1,2,\ldots\},
+\]</div>
+<p>normalized over count vectors. Independence and Poisson fluctuations are modeling assumptions beyond the expected-yield prediction. Both representations use the samples, modifiers and constraint terms described below; their <code>type</code> entries differ. Figure <a href="#fig:hf-example" reference="fig:hf-example" reference-type="ref">1</a> illustrates the sample contributions (originally from [^atlashzz]).</p>
 <p><img alt="A binned statistical model describing a High Energy Physics measurement, in this case of the \(H\rightarrow 4l\) process by the ATLAS collaboration. Three different sample (blue, red, violet) are considered." id="fig:hf-example" src="/images/hf-example.png" width="60%" /> </p>
-<p>The prediction for a binned region is given as </p>
+<p>In the modifier formula below, <span class="arithmatex">\(\lambda(x)\)</span> is a step function whose value in <span class="arithmatex">\(B_i\)</span> is the bin yield <span class="arithmatex">\(\lambda_i(\theta)\)</span>. For continuous bins of width or volume <span class="arithmatex">\(|B_i|\)</span>, the corresponding piecewise-constant intensity is <span class="arithmatex">\(\rho(x;\theta)=\lambda_i(\theta)/|B_i|\)</span>; integrating <span class="arithmatex">\(\lambda(x)\)</span> itself would incorrectly introduce a bin-volume factor.</p>
 <div class="arithmatex">\[
 \begin{aligned} \lambda(x)=\sum_{s\in\text{samples}} \left[ \left( d_s(x) + \sum_{\delta\in M_{\delta}} \delta(x,\theta_\delta) \right) \prod_{\kappa\in M_\kappa} \kappa(x,\theta_\kappa)   \right] \end{aligned} 
 \]</div>
@@ -899,7 +938,7 @@
 \]</div>
 <p>In this section, <span class="arithmatex">\(\chi^{y_s}_{b}(x)\)</span> denotes a generic step function in the binning <span class="arithmatex">\(b\)</span> such that <span class="arithmatex">\(\chi_{b}(x) = y_{s,i}\)</span>, some constant, if <span class="arithmatex">\(x\in[b_i,b_{i+1})\)</span>. The <span class="arithmatex">\(y_{s,i}\)</span> in this case are the bin contents (yields) of the histograms. 
 The <span class="arithmatex">\(M_\kappa\)</span> are the multiplicative modifiers, the <span class="arithmatex">\(M_\delta\)</span> are the additive modifiers. Each of the modifiers is either multiplicative (<span class="arithmatex">\(\kappa\)</span>) or additive (<span class="arithmatex">\(\delta\)</span>). All samples and modifiers share the same binning <span class="arithmatex">\(b\)</span>. 
-The modifiers depend on a set of nuisance parameters <span class="arithmatex">\(\theta\)</span>, where each modifier can only depend on one <span class="arithmatex">\(\theta_i\)</span>, but the <span class="arithmatex">\(\theta_i\)</span> can take the form of vectors and the same <span class="arithmatex">\(\theta_i\)</span> can be shared by several modifiers. By convention, these are denoted <span class="arithmatex">\(\alpha\)</span> if they affect all bins in a correlated way, and <span class="arithmatex">\(\gamma\)</span> if they affect only one bin at a time. The types of modifiers are </p>
+The modifiers depend on the model parameters <span class="arithmatex">\(\theta\)</span>. Each modifier can only depend on one <span class="arithmatex">\(\theta_i\)</span>, but the <span class="arithmatex">\(\theta_i\)</span> can take the form of vectors and the same <span class="arithmatex">\(\theta_i\)</span> can be shared by several modifiers. By convention, these are denoted <span class="arithmatex">\(\alpha\)</span> if they affect all bins in a correlated way, and <span class="arithmatex">\(\gamma\)</span> if they affect only one bin at a time. The types of modifiers are</p>
 <ul>
 <li>A <em>uncorrelated shape systematic</em> or <code>shapefactor</code> modifier is a     multiplicative modifier that scales each single bin by the value of     some independent parameter <span class="arithmatex">\(\gamma\)</span>. Here, <span class="arithmatex">\(\theta_i=\vec{\gamma}\)</span>,     where the length of <span class="arithmatex">\(\vec{\gamma}\)</span> is equal to the number of bins in     this region. <em>This type of modifier is sometimes called <code>shapesys</code>,     with some nuance in the meaning. However, both are synonymous in the     context of this standard.</em> </li>
 <li>A <em>correlated shape systematic</em> or <code>histosys</code> modifier is an     additive modifier that adds or subtracts a constant step function     <span class="arithmatex">\(\chi^f\)</span>, scaled with a single factor <span class="arithmatex">\(\alpha\)</span>. The modifier     contains a <code>data</code> section, which contains the subsections     <span class="arithmatex">\(\texttt{hi}\)</span> and <span class="arithmatex">\(\texttt{lo}\)</span> that help to define the step     function <span class="arithmatex">\(\chi^f\)</span>. They contain <code>contents</code>, which define the     bin-wise additions or subtractions for <span class="arithmatex">\(\alpha=1\)</span>. The functional form of <span class="arithmatex">\(\chi^f\)</span> for intermediate and outlying <span class="arithmatex">\(\alpha\)</span> is set by the <code>interpolation</code> component, described below. Here,     <span class="arithmatex">\(\theta_i=\alpha\)</span>. </li>
@@ -1031,10 +1070,11 @@ S_2=\tfrac12(u\log^2 u+v\log^2 v) \quad A_2=\tfrac12(u\log^2 u-v\log^2 v)
 <p>Modifiers can be constrained. This is indicated by the component <code>constraint</code>, which identifies the type of the constraint term. In essence, the likelihood picks up a penalty term for changing the corresponding parameter too far away from its nominal value. The nominal value is, by convention, defined by the type of constraint, and is 0 for all modifiers of type <code>sys</code> (<code>histosys</code>, <code>normsys</code>) and is 1 for all modifiers of type <code>factor</code> (<code>normfactor</code>, <code>shapefactor</code>). The strength of the constraint is always such that the standard deviation of constraint distribution is <span class="arithmatex">\(1\)</span>. </p>
 <p>The supported constraint distributions, also called constraint types, are <code>Gauss</code> for a gaussian with unit width (a gaussian distribution with a variance of <span class="arithmatex">\(1\)</span>), <code>Poisson</code> for a unit Poissonian (e.g. a continous Poissonian with a central value 1), or <code>LogNormal</code> for a unit LogNormal,. If a constraint is given, a corresponding distribution will be considered in addition to the <code>aux_likelihood</code> section of the likelihood, constraining the parameter to its nominal value. </p>
 <p>An exception to this is provided by the <code>staterror</code> modifier as described above, and the <code>shapesys</code> for which a Poissonian constraint is defined with the central values defined as the squares of the values defined in <code>vals</code>. </p>
-<p>The components of a HistFactory distribution are: </p>
+<p>The constraint terms belong to the prediction and not to its representation: a likelihood that contains a <code>histfactory_dist</code>, or a distribution that depends on a <code>histfactory</code> function, considers the constraint terms of all modifiers of that prediction in addition to the <code>aux_likelihood</code> section of the likelihood, in the same way for both representations. </p>
+<p>The components of a HistFactory prediction are: </p>
 <ul>
 <li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>histfactory_dist</code> </li>
+<li><code>type</code>: <code>histfactory</code> (function) or <code>histfactory_dist</code> (distribution) </li>
 <li><code>axes</code>: array of structs representing the axes. If given each struct     needs to have the component <code>name</code>. Further,     (<span class="smallcaps">optional</span>) components are <code>max</code>, <code>min</code> and <code>nbins</code>,     or, alternatively, <code>edges</code>. The definition of the axes follows the     format for binned data (see Section 
     <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>). </li>
 <li><code>default_interpolation</code>: <span class="smallcaps">optional</span> struct defining the default interpolation behaviour, for modifiers that do not specify it on their own. It has the components <code>type</code>, <code>in</code> and <code>out</code>, as described above.</li>

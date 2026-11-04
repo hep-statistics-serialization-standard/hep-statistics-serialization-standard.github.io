@@ -1630,7 +1630,7 @@ refer to functions, parameters and more than one variable.</p>
 <h4 id="barlow-beeston-lite-constraint-distribution">Barlow-Beeston-Lite Constraint distribution<a class="headerlink" href="#barlow-beeston-lite-constraint-distribution" title="Permanent link">&para;</a></h4>
 <p>This distribution represents a product of Poisson distributions
 defining the statistical uncertainties of the histogram templates
-defined in a <code>histfactory_func</code>.</p>
+defined in a <code>histfactory</code> function.</p>
 <div class="arithmatex">\[
 \begin{aligned} \text{BarlowBeestonLitePoissonConstraintPdf}(x) &amp;= \frac{1}{\ensuremath{\mathcal{M}}} \prod_i^n \text{PoissonPdf}(x_i\cdot \tau_i,\tau_i) \end{aligned} 
 \]</div>
@@ -1664,212 +1664,17 @@ defined in a <code>histfactory_func</code>.</p>
 The distribution is normalized by the implementation, so a normalization term <span class="smallcaps">should not</span> be included in the expression. If the expression results in a negative value, the behavior is undefined. </li>
 </ul>
 <h4 id="histfactory-distribution">HistFactory distribution<a class="headerlink" href="#histfactory-distribution" title="Permanent link">&para;</a></h4>
-<p>HistFactory [^hf] is a language to describe statistical models consisting only of "histograms" (which is used interchangeably with "step-functions" in this context). Each HistFactory distribution describes one "channel" or "region" of a binned measurement, containing a stack of "samples", i. e.&nbsp;binned distributions sharing the same binning (step-functions describing the signal or background of a measurement). Such a HistFactory model is shown in Figure <a href="#fig:hf-example" reference="fig:hf-example" reference-type="ref">1</a> (originally from  [^atlashzz]). Each of the contributions may be subject to <code>modifiers</code>. </p>
-<p><img alt="A binned statistical model describing a High Energy Physics measurement, in this case of the \(H\rightarrow 4l\) process by the ATLAS collaboration. Three different sample (blue, red, violet) are considered." id="fig:hf-example" src="/images/hf-example.png" width="60%" /> </p>
-<p>The prediction for a binned region is given as </p>
+<p>A HistFactory distribution is a joint probability distribution over bin counts <span class="arithmatex">\(n_i\)</span>, with independent Poisson probabilities whose expectations are supplied by a mixture of histogram templates. Its random variables are the bin counts, not the observable <span class="arithmatex">\(x\)</span> used to define the fixed bins. The corresponding <code>histfactory</code> function (see Section <a href="#sec:functions">Functions</a>) provides the expected bin yields <span class="arithmatex">\(\lambda_i(\theta)\)</span> from the sample mixture and its modifiers:</p>
 <div class="arithmatex">\[
-\begin{aligned} \lambda(x)=\sum_{s\in\text{samples}} \left[ \left( d_s(x) + \sum_{\delta\in M_{\delta}} \delta(x,\theta_\delta) \right) \prod_{\kappa\in M_\kappa} \kappa(x,\theta_\kappa)   \right] \end{aligned} 
+\begin{aligned} \text{HistFactoryPdf}(\mathbf{n}\mid\theta) &amp;= \prod_i \text{PoissonPdf}(n_i, \lambda_i(\theta)) \end{aligned}
 \]</div>
-<p>Here <span class="arithmatex">\(d_s(x)\)</span> is the prediction associated with the sample <span class="arithmatex">\(s\)</span>, a step function </p>
-<div class="arithmatex">\[
-\begin{aligned} d_s(x) = \chi^{y_s}_{b}(x) \end{aligned} 
-\]</div>
-<p>In this section, <span class="arithmatex">\(\chi^{y_s}_{b}(x)\)</span> denotes a generic step function in the binning <span class="arithmatex">\(b\)</span> such that <span class="arithmatex">\(\chi_{b}(x) = y_{s,i}\)</span>, some constant, if <span class="arithmatex">\(x\in[b_i,b_{i+1})\)</span>. The <span class="arithmatex">\(y_{s,i}\)</span> in this case are the bin contents (yields) of the histograms. 
-The <span class="arithmatex">\(M_\kappa\)</span> are the multiplicative modifiers, the <span class="arithmatex">\(M_\delta\)</span> are the additive modifiers. Each of the modifiers is either multiplicative (<span class="arithmatex">\(\kappa\)</span>) or additive (<span class="arithmatex">\(\delta\)</span>). All samples and modifiers share the same binning <span class="arithmatex">\(b\)</span>. 
-The modifiers depend on a set of nuisance parameters <span class="arithmatex">\(\theta\)</span>, where each modifier can only depend on one <span class="arithmatex">\(\theta_i\)</span>, but the <span class="arithmatex">\(\theta_i\)</span> can take the form of vectors and the same <span class="arithmatex">\(\theta_i\)</span> can be shared by several modifiers. By convention, these are denoted <span class="arithmatex">\(\alpha\)</span> if they affect all bins in a correlated way, and <span class="arithmatex">\(\gamma\)</span> if they affect only one bin at a time. The types of modifiers are </p>
-<ul>
-<li>A <em>uncorrelated shape systematic</em> or <code>shapefactor</code> modifier is a     multiplicative modifier that scales each single bin by the value of     some independent parameter <span class="arithmatex">\(\gamma\)</span>. Here, <span class="arithmatex">\(\theta_i=\vec{\gamma}\)</span>,     where the length of <span class="arithmatex">\(\vec{\gamma}\)</span> is equal to the number of bins in     this region. <em>This type of modifier is sometimes called <code>shapesys</code>,     with some nuance in the meaning. However, both are synonymous in the     context of this standard.</em> </li>
-<li>A <em>correlated shape systematic</em> or <code>histosys</code> modifier is an     additive modifier that adds or subtracts a constant step function     <span class="arithmatex">\(\chi^f\)</span>, scaled with a single factor <span class="arithmatex">\(\alpha\)</span>. The modifier     contains a <code>data</code> section, which contains the subsections     <span class="arithmatex">\(\texttt{hi}\)</span> and <span class="arithmatex">\(\texttt{lo}\)</span> that help to define the step     function <span class="arithmatex">\(\chi^f\)</span>. They contain <code>contents</code>, which define the     bin-wise additions or subtractions for <span class="arithmatex">\(\alpha=1\)</span>. The functional form of <span class="arithmatex">\(\chi^f\)</span> for intermediate and outlying <span class="arithmatex">\(\alpha\)</span> is set by the <code>interpolation</code> component, described below. Here,     <span class="arithmatex">\(\theta_i=\alpha\)</span>. </li>
-<li>A <em>normalization systematic</em> or <code>normsys</code> modifier is a     multiplicative modifier that scales the entire sample with the same     constant factor <span class="arithmatex">\(f\)</span> that is a function of <span class="arithmatex">\(\alpha\)</span>. The modifier     contains a <code>data</code> section, which contains the values <span class="arithmatex">\(\texttt{hi}\)</span>     and <span class="arithmatex">\(\texttt{lo}\)</span> that help to define <span class="arithmatex">\(f\)</span>. There are different     functional forms that can be chosen for <span class="arithmatex">\(f\)</span>. However, by convention     <span class="arithmatex">\(f(\alpha=0)=1\)</span>, <span class="arithmatex">\(f(\alpha=+1)=\)</span>"<code>hi</code>" and     <span class="arithmatex">\(f(\alpha=-1)=\)</span>"<code>lo</code>". The functional form of <span class="arithmatex">\(f\)</span> for intermediate and outlying <span class="arithmatex">\(\alpha\)</span> is set by the <code>interpolation</code> component, described below. In this case, <span class="arithmatex">\(\theta_i=\alpha\)</span>. </li>
-<li>A <em>normalization factor</em> or <code>normfactor</code> modifier is a     multiplicative modifier that scales the entire sample in this region     with the value of the parameter <span class="arithmatex">\(\mu\)</span> itself. In this case,     <span class="arithmatex">\(\theta_i=\mu\)</span>. </li>
-<li>The <code>staterror</code> modifier is a shorthand for encoding uncorrelated     statistical uncertainties on the values of the step-functions, using     a variant<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> of the Barlow-Beeston Method [^barlowbeeston]. Here,     the relative uncertainty on the sum of all samples in this region     containing the <code>staterror</code> modifier is computed bin-by-bin. Then, a     constrained <em>uncorrelated shape systematic</em> (<code>shapesys</code>) is created,     encoding these relative uncertainties in the corresponding <code>Poisson</code>     (or <code>Gaussian</code>) constraint term. </li>
-</ul>
-<p>The different modifies and their descriptions are also summarized in the following table: </p>
-<table>
-<thead>
-<tr>
-<th><strong>Type of Modifier</strong></th>
-<th><strong>Description</strong></th>
-<th><strong>Definition</strong></th>
-<th><strong>Free Parameters</strong></th>
-<th><strong>Number of Free Parameters</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>histosys</code></td>
-<td>Correlated Shape systematic</td>
-<td><span class="arithmatex">\(\delta(x,\alpha) = \alpha * \chi_b^f\)</span></td>
-<td><span class="arithmatex">\(\alpha\)</span></td>
-<td>1</td>
-</tr>
-<tr>
-<td><code>normsys</code></td>
-<td>Normalization systematic</td>
-<td><span class="arithmatex">\(\kappa(x,\alpha) = f(\alpha)\)</span></td>
-<td><span class="arithmatex">\(\alpha\)</span></td>
-<td>1</td>
-</tr>
-<tr>
-<td><code>normfactor</code></td>
-<td>Normalization factor</td>
-<td><span class="arithmatex">\(\kappa(x,\mu) = \mu\)</span></td>
-<td><span class="arithmatex">\(\mu\)</span></td>
-<td>1</td>
-</tr>
-<tr>
-<td><code>shapefactor</code>, <code>staterror</code></td>
-<td>Shape factor</td>
-<td><span class="arithmatex">\(\kappa(x,\vec{\gamma}) = \chi_b^{\gamma}\)</span></td>
-<td><span class="arithmatex">\(\gamma_0\)</span>, ..., <span class="arithmatex">\(\gamma_n\)</span></td>
-<td>#bins</td>
-</tr>
-</tbody>
-</table>
-<p>The <code>staterror</code> modifier is a special subtype of <code>shapefactor</code>, where the mean of the constraint is given as the sum of the predictions of all the samples carrying a <code>staterror</code> modifier in this bin.  </p>
-<p>The way modifiers affect the yield in the corresponding bin is subject to an interpolation function. The <code>histosys</code> and <code>normsys</code> modifiers thus allow for an additional component <code>interpolation</code>, a struct with the components </p>
-<ul>
-<li><code>type</code>: how the response combines with the sample prediction, <code>add</code> or <code>mult</code>, for additive or multiplicative, respectively, </li>
-<li><code>in</code>: the interpolating function used inside the bounds, <span class="arithmatex">\(|\theta|&lt;1\)</span>, </li>
-<li><code>out</code>: the extrapolating function used outside the bounds, <span class="arithmatex">\(|\theta|\geq1\)</span>, if <code>null</code> the same function as for interpolation is used.</li>
-</ul>
-<p>The final modified prediction <span class="arithmatex">\(y(\theta_1,\dots,\theta_n)\)</span> is obtained by combining the sample's nominal prediction <span class="arithmatex">\(y_0\)</span> with a normalized response function <span class="arithmatex">\(I(\theta; y_-, y_0, y_+)\)</span> for each parameter <span class="arithmatex">\(\theta_i\)</span>. Unlike <span class="arithmatex">\(y\)</span>, <span class="arithmatex">\(I\)</span> is anchored relative to <span class="arithmatex">\(y_0\)</span> rather than to it directly, with the anchor values depending on the combination <code>type</code>:</p>
-<ul>
-<li>For <code>type="add"</code>: <span class="arithmatex">\(I(0) = 0\)</span>, <span class="arithmatex">\(I(+1) = y_+ - y_0\)</span>, <span class="arithmatex">\(I(-1) = y_- - y_0\)</span></li>
-<li>For <code>type="mult"</code>: <span class="arithmatex">\(I(0) = 1\)</span>, <span class="arithmatex">\(I(+1) = y_+ / y_0\)</span>, <span class="arithmatex">\(I(-1) = y_- / y_0\)</span></li>
-</ul>
-<p>For <code>type="mult"</code>, the combined prediction follows as:</p>
-<div class="arithmatex">\[
-y(\theta_1,\dots,\theta_n) = y_0 \cdot \prod_i I(\theta_i; y_{i,-}, y_0, y_{i,+}),
-\]</div>
-<p>while for <code>type="add"</code> the combination follows as:</p>
-<div class="arithmatex">\[
-y(\theta_1,\dots,\theta_n) = y_0 + \sum_i I(\theta_i; y_{i,-}, y_0, y_{i,+}).
-\]</div>
-<p>Here <span class="arithmatex">\(y_{i,-}\)</span> and <span class="arithmatex">\(y_{i,+}\)</span> denote the <code>lo</code>/<code>hi</code> variations associated with parameter <span class="arithmatex">\(\theta_i\)</span>; <span class="arithmatex">\(y_0\)</span>, the sample's nominal prediction, is shared across all parameters and enters only through the combination above, never through <span class="arithmatex">\(I\)</span> itself.</p>
-<p>The following functions are allowed for <code>in</code> and <code>out</code>:</p>
-<ul>
-<li><code>poly1</code>: linear function</li>
-<li><code>poly2</code>: parabolic function</li>
-<li><code>poly6</code>: degree-6 polynomial</li>
-<li><code>exp</code>: exponential function</li>
-</ul>
-<p>The choice of functions for <code>in</code> and <code>out</code>, together with the anchor conditions above and, where required, matching of first and second derivatives at the boundary (<span class="arithmatex">\(\left.\frac{\mathrm{d}I}{\mathrm{d}\theta}\right|_{\theta=\pm 1}\)</span> and <span class="arithmatex">\(\left.\frac{\mathrm{d}^2I}{\mathrm{d}\theta}\right|_{\theta=\pm 1}\)</span>), fixes all free parameters of the chosen functions except for <span class="arithmatex">\(\theta\)</span> itself. </p>
-<p>The following choices of <span class="arithmatex">\(I\)</span> are often used and showcase the resulting functional forms for common combinations of <code>type</code>, <code>in</code> and <code>out</code>. Note that for <code>type="mult"</code>, all interior and extrapolation terms are expressed as ratios <span class="arithmatex">\(y_\pm/y_0\)</span> rather than raw <span class="arithmatex">\(y_\pm\)</span>, so that the anchor condition <span class="arithmatex">\(I(0)=1\)</span> holds independent of <span class="arithmatex">\(y_0\)</span>; for <code>type="add"</code>, terms are expressed as differences <span class="arithmatex">\(y_\pm - y_0\)</span>, consistent with the anchor <span class="arithmatex">\(I(0)=0\)</span>.</p>
-<ul>
-<li>additive, piecewise linear: <ul>
-<li><code>{"type":"add", "in":"poly1", "out":null}</code></li>
-<li>with <span class="arithmatex">\(I_1(\theta; y_-, y_0, y_+) = \left\{ \begin{array}{ll} \theta\cdot(y_+ - y_0) &amp;  \theta\geq0 \\ \theta\cdot(y_0-y_-) &amp;  \theta&lt;0\end{array}\right.\)</span></li>
-</ul>
-</li>
-<li>multiplicative, piecewise exponential: <ul>
-<li><code>{"type":"mult", "in":"exp", "out":null}</code></li>
-<li>with <span class="arithmatex">\(I_2(\theta; y_-, y_0, y_+) = \left\{ \begin{array}{ll} (y_+/y_0)^\theta &amp;  \theta\geq0 \\ (y_-/y_0)^{-\theta} &amp;  \theta&lt;0 \end{array}\right.\)</span></li>
-</ul>
-</li>
-<li>additive, quadratic interpolation and linear extrapolation <ul>
-<li><code>{"type":"add", "in":"poly2", "out":"poly1"}</code></li>
-<li>with <span class="arithmatex">\(I_3(\theta; y_-, y_0, y_+) = \left\{\begin{array}{ll}(2s+d)\cdot(\theta - 1) + y_+ - y_0 &amp;  \theta &gt; 1 \\ s\cdot\theta^2 +d\cdot\theta &amp; |\theta|\leq 1 \\ -(2s-d)\cdot(\theta + 1) + y_- - y_0&amp; \theta &lt; -1\end{array}\right.\)</span>,
-  where <span class="arithmatex">\(s=\tfrac12(y_+ + y_-) - y_0\)</span> and <span class="arithmatex">\(d=\tfrac12 (y_+ - y_-)\)</span></li>
-</ul>
-</li>
-<li>additive, polynomial (6th degree) interpolation and linear extrapolation <ul>
-<li><code>{"type":"add", "in":"poly6", "out":"poly1"}</code></li>
-<li>with <span class="arithmatex">\(I_4(\theta; y_-, y_0, y_+) = \left\{\begin{array}{ll} \theta\cdot(y_+ - y_0) &amp; \theta \geq 1 \\ \theta\cdot(S+\theta \cdot A (15+\theta^2\cdot(3\theta^2 -10))) &amp; |\theta| &lt; 1 \\ \theta\cdot(y_0 - y_-) &amp; \theta \leq -1 \end{array}\right.\)</span>,
-  where <span class="arithmatex">\(S=\tfrac12(y_+ - y_-)\)</span> and <span class="arithmatex">\(A=\tfrac{1}{16}(y_+ + y_- -2y_0)\)</span></li>
-</ul>
-</li>
-<li>multiplicative, polynomial (6th degree) interpolation and exponential extrapolation<ul>
-<li><code>{"type":"mult", "in":"poly6", "out":"exp"}</code></li>
-<li>with <span class="arithmatex">\(I_5(\theta; y_-, y_0, y_+) = \left\{\begin{array}{ll} (y_+/y_0)^\theta &amp;  \theta\geq 1 \\ 1+\theta\cdot(a+\theta\cdot(b+\theta\cdot(c+\theta\cdot(d+\theta\cdot(e+\theta\cdot f)))))&amp; |\theta|&lt;1\\ (y_-/y_0)^{-\theta} &amp;  \theta\leq-1\end{array}\right.\)</span>,
-where:
-<span class="arithmatex">\(\begin{array}{l}
-a=\tfrac18(15A_0-7S_1+A_2) \\
-b=\tfrac18(-24+24S_0-9A_1+S_2) \\
-c=\tfrac14(-5A_0+5S_1-A_2) \\
-d=\tfrac14(12-12S_0+7A_1-S_2) \\
-e=\tfrac18(3A_0-3S_1+A_2) \\
-f=\tfrac18(-8+8S_0-5A_1+S_2)
-\end{array}\)</span>,
-with <span class="arithmatex">\(u=y_+/y_0\)</span>, <span class="arithmatex">\(v=y_-/y_0\)</span>, <span class="arithmatex">\(\log t := \begin{cases}\log t &amp; t&gt;0\\0 &amp; t\leq0\end{cases}\)</span>, and
-<span class="arithmatex">\(\begin{array}{l}
-S_0=\tfrac12(u+v) \quad A_0=\tfrac12(u-v) \\
-S_1=\tfrac12(u\log u-v\log v) \quad A_1=\tfrac12(u\log u+v\log v) \\
-S_2=\tfrac12(u\log^2 u+v\log^2 v) \quad A_2=\tfrac12(u\log^2 u-v\log^2 v)
-\end{array}\)</span></li>
-</ul>
-</li>
-<li>multiplicative, polynomial (6th degree) interpolation and linear extrapolation <ul>
-<li><code>{"type":"mult", "in":"poly6", "out":"poly1"}</code></li>
-<li>with <span class="arithmatex">\(I_6(\theta; y_-, y_0, y_+) = 1 + I_4(\theta; y_-/y_0, 1, y_+/y_0)\)</span></li>
-</ul>
-</li>
-</ul>
-<p>Modifiers can be constrained. This is indicated by the component <code>constraint</code>, which identifies the type of the constraint term. In essence, the likelihood picks up a penalty term for changing the corresponding parameter too far away from its nominal value. The nominal value is, by convention, defined by the type of constraint, and is 0 for all modifiers of type <code>sys</code> (<code>histosys</code>, <code>normsys</code>) and is 1 for all modifiers of type <code>factor</code> (<code>normfactor</code>, <code>shapefactor</code>). The strength of the constraint is always such that the standard deviation of constraint distribution is <span class="arithmatex">\(1\)</span>. </p>
-<p>The supported constraint distributions, also called constraint types, are <code>Gauss</code> for a gaussian with unit width (a gaussian distribution with a variance of <span class="arithmatex">\(1\)</span>), <code>Poisson</code> for a unit Poissonian (e.g. a continous Poissonian with a central value 1), or <code>LogNormal</code> for a unit LogNormal,. If a constraint is given, a corresponding distribution will be considered in addition to the <code>aux_likelihood</code> section of the likelihood, constraining the parameter to its nominal value. </p>
-<p>An exception to this is provided by the <code>staterror</code> modifier as described above, and the <code>shapesys</code> for which a Poissonian constraint is defined with the central values defined as the squares of the values defined in <code>vals</code>. </p>
-<p>The components of a HistFactory distribution are: </p>
+<p>This probability mass function is normalized over nonnegative integer count vectors <span class="arithmatex">\(\mathbf{n}\)</span>. The parameters <span class="arithmatex">\(\theta\)</span> may include both parameters of interest and nuisance parameters.</p>
+<p>The prediction <span class="arithmatex">\(\lambda_i(\theta)\)</span>, the modifiers and their constraints, and an example are defined in Section <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>.</p>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>histfactory_dist</code> </li>
-<li><code>axes</code>: array of structs representing the axes. If given each struct     needs to have the component <code>name</code>. Further,     (<span class="smallcaps">optional</span>) components are <code>max</code>, <code>min</code> and <code>nbins</code>,     or, alternatively, <code>edges</code>. The definition of the axes follows the     format for binned data (see Section 
-    <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>). </li>
-<li><code>default_interpolation</code>: <span class="smallcaps">optional</span> struct defining the default interpolation behaviour, for modifiers that do not specify it on their own. It has the components <code>type</code>, <code>in</code> and <code>out</code>, as described above.</li>
-<li><code>samples</code>: array of structs containing the samples of this channel.     For details see below. 
-Struct of one sample:  <ul>
-<li><code>name</code>: (<span class="smallcaps">optional</span>) custom string, unique within this     function </li>
-<li><code>data</code>: struct containing the components <code>contents</code> and <code>errors</code>,     depicting the data contents and their errors. Both components are     arrays of the same length. </li>
-<li><code>modifiers</code>: array of structs with each struct containing the modifiers for this sample.
-Struct of one modifier:<ul>
-<li><code>type</code>: type of the modifier</li>
-<li><code>parameter</code> or <code>parameters</code>: defining a string or an array of strings, respectively. Relating to the name or names of parameters controlling this modifier. Two modifiers are correlated exactly if they share the same parameters as indicated by <code>parameter</code> or <code>parameters</code>. In such a case, it is mandatory that they share the same constraint term. If this is not the case, the behavior is undefined. </li>
-<li><code>data</code>: <span class="smallcaps">optional</span> relevant data for modifier. Its format depends on <code>type</code>, which is described above.</li>
-<li><code>constraint</code>: <span class="smallcaps">optional</span> definition of how the modifier is constrained. Its format depends on <code>type</code>, which is described above.</li>
-<li><code>interpolation</code>: <span class="smallcaps">optional</span> struct defining how the effect of the modifier is calculated within and outside of the boundaries <span class="arithmatex">\(\theta=\pm 1\)</span>. It has the components <code>type</code>, <code>in</code> and <code>out</code> as described above. If this is omitted here for at least one modifier the top-level component <code>default_interpolation</code> becomes <span class="smallcaps">required</span>.</li>
+<li>all further components as defined in Section <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a> </li>
 </ul>
-</li>
-</ul>
-</li>
-</ul>
-<div class="highlight"><span class="filename">HistFactory</span><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myAnalysisChannel&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;histfactory_dist&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;axes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myRegion&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;myChannel1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;default_interpolation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mult&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;in&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;poly6&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;out&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;exp&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;samples&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span>
-<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mySignal&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.7</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;modifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lumi&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normfactor&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mu_signal_strength&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normfactor&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gauss&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;hi&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;lo&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">          </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_normalization_systematic_1&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normsys&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Poisson&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;staterror&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">          </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;gamma_stat_1&quot;</span><span class="p">,</span><span class="s2">&quot;gamma_stat_2&quot;</span><span class="p">]},</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gauss&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;histosys&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">          </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">            </span><span class="nt">&quot;hi&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">-2.5</span><span class="p">,</span><span class="w"> </span><span class="mf">-3.1</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">            </span><span class="nt">&quot;lo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">2.2</span><span class="p">,</span><span class="w"> </span><span class="mf">3.7</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
-<span class="w">           </span><span class="p">},</span><span class="w"> </span>
-<span class="w">           </span><span class="nt">&quot;interpolation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;add&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;in&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;poly6&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;out&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;poly1&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">           </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_correlated_shape_systematic_1&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Poisson&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;vals&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.2</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">          </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_uncorrelated_shape_systematic_2&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;shapesys&quot;</span><span class="w"> </span><span class="p">}</span>
-<span class="w">      </span><span class="p">]</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span>
-<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myBackground&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="err">...</span><span class="w"> </span>
-<span class="w">   </span><span class="p">}</span>
-<span class="w">  </span><span class="p">]</span>
-<span class="p">}</span><span class="w"> </span>
-</code></pre></div>
 <h4 id="relativistic-breit-wigner-distribution">Relativistic Breit-Wigner distribution<a class="headerlink" href="#relativistic-breit-wigner-distribution" title="Permanent link">&para;</a></h4>
 <p>The relativistic Breit-Wigner distribution describes the line-shape of a resonance in the mass spectrum of a two-particle system. It is assumed that the resonance can decay into a list of channels. </p>
 <p>The first channel in the list indicates the system for which mass
@@ -1901,14 +1706,6 @@ For non-zero angular momentum, <span class="arithmatex">\(\Gamma_i(m_\text{BW})\
 A commonly used approximation of the relativistic Breit-Wigner function with the constant width is a special case of the 
 Eq. <a href="#eq:relativistic_breit_wigner_dist" reference="eq:relativistic_breit_wigner_dist" reference-type="eqref">(Breit-Wigner)</a>, where the <code>[channels]</code> argument contains a single channel with <span class="arithmatex">\(m_1=0\)</span>, <span class="arithmatex">\(m_2=0\)</span>, and <span class="arithmatex">\(l=0\)</span>. </li>
 </ul>
-<div class="footnote">
-<hr />
-<ol>
-<li id="fn:1">
-<p>The variation consists of summarizing all contributions in the     stack to a single contribution as far as treatment of the     statistical uncertainties is concerned.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
-</li>
-</ol>
-</div>
 
 
 
