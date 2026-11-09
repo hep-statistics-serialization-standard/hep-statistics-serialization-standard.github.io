@@ -385,6 +385,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Global namespace">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sec:identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1134,6 +1151,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Global namespace">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sec:identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1272,13 +1306,14 @@
 
 
 <h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h1>
-<p><em>This section is non-normative.</em> </p>
+<p><em>This introductory text is non-normative. Sections of this chapter that are non-normative are marked as such; all other sections are normative.</em> </p>
 <p>It is widely agreed upon that the publication of likelihood models from high energy physics experiments is imperative for the preservation and public access to these results. Detailed arguments have been made elsewhere already [^Cranmer_2022]. This document sets out to provide a standardized format to publish and archive statistical models of any size and across a wide range of mathematical formalisms in a way that is readable by both humans and machines. 
 With the introduction of <code>pyhf</code> [^pyhf][^pyhf-joss], a <code>JSON</code> format for likelihood serialization has been put forward. However, an interoperable format that encompasses likelihoods with a scope beyond stacks of binned histograms was lacking. With the release of <code>ROOT</code> 6.26/00 [^root] and the experimental <code>RooJSONFactoryWSTool</code> therein, this gap has now been filled. 
 This document sets out to document the syntax and features of the Statistics Serialization Standard (HS<span class="arithmatex">\({}^3\)</span>) for likelihoods and statistical models in general, as to be adopted by any HS<span class="arithmatex">\({}^3\)</span>-compatible statistics framework. The examples in this document employ the <code>JSON</code> notation, but are intended to encompass also representations as <code>YAML</code> or <code>TOML</code>. </p>
 <h2 id="how-to-use-this-document">How to use this document<a class="headerlink" href="#how-to-use-this-document" title="Permanent link">&para;</a></h2>
+<p><em>This section is non-normative.</em> </p>
 <p>Developers of statistical toolkits are invited to specifically refer to versions of this document relating to the support of this standard in their respective implementations. 
-Please note that this document as well as the HS<span class="arithmatex">\({}^3\)</span> standard are still in development and can still undergo minor and major changes in the future. This document describes the syntax of HS<span class="arithmatex">\({}^3\)</span> v0.2.9. </p>
+Please note that this document as well as the HS<span class="arithmatex">\({}^3\)</span> standard are still in development and can still undergo minor and major changes in the future. This document describes the syntax of HS<span class="arithmatex">\({}^3\)</span> version 0.3. Documents conforming to this version identify themselves with <code>"hs3_version": "0.3"</code> (see <a href="#sec:metadata" reference="sec:metadata" reference-type="ref">Metadata</a>). </p>
 <h2 id="sec:hs3-semantics">Statistical semantics of HS<span class="arithmatex">\({}^3\)</span><a class="headerlink" href="#sec:hs3-semantics" title="Permanent link">&para;</a></h2>
 <h3 id="sec:models-and-parameters">Statistical models, probability distributions and parameters<a class="headerlink" href="#sec:models-and-parameters" title="Permanent link">&para;</a></h3>
 <p>HS<span class="arithmatex">\({}^3\)</span> takes a "forward-modelling" approach throughout: a statistical model <span class="arithmatex">\(m\)</span> maps a space <span class="arithmatex">\(\Theta\)</span> of free parameters <span class="arithmatex">\(\theta\)</span> to a space of probability distributions that describe the possible outcomes of a specific experiment. For any given parameters <span class="arithmatex">\(\theta\)</span>, the model returns a concrete probability distribution <span class="arithmatex">\(m(\theta)\)</span>. Observed data <span class="arithmatex">\(x\)</span> is then treated as random variate, presumed to be drawn from the model: <span class="arithmatex">\(x \sim m(\theta)\)</span>. 
@@ -1297,6 +1332,9 @@ priors (see <a href="#sec:bayesian-inference" reference="sec:bayesian-inference"
 <p>The names of all named HS<span class="arithmatex">\({}^3\)</span> objects (distributions, functions, likelihoods, data, parameters, variables, domains, parameter points, etc.) form a single namespace and must be unique within an HS<span class="arithmatex">\({}^3\)</span> document. The names assigned to variate record entries and data fields/axes are not part of the global namespace.</p>
 <p>HS<span class="arithmatex">\({}^3\)</span> implementations will typically provide a renaming/aliasing mechanism that can be used to resolve name clashes when using
 multiple HS<span class="arithmatex">\({}^3\)</span> documents together, e.g. for combined analyses.</p>
+<h4 id="sec:identifiers">Identifiers<a class="headerlink" href="#sec:identifiers" title="Permanent link">&para;</a></h4>
+<p>The names of HS<span class="arithmatex">\({}^3\)</span> objects that can be referenced from generic expressions, i.e. parameters, variables, functions and distributions, <span class="smallcaps">must</span> be identifiers matching the regular expression <code>[A-Za-z_][A-Za-z0-9_]*</code>: an ASCII letter or underscore, followed by any number of ASCII letters, digits or underscores. The generic expression language (see <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a>) relies on this, since symbols in an expression that are not defined by the expression language refer to these objects by name, and names containing other characters could not be written there without an escaping mechanism.</p>
+<p>The names of data sets, likelihoods, analyses, domains and parameter points <span class="smallcaps">should</span> follow the same rule, but are not required to.</p>
 <h3 id="sec:what-is-a-pdf">Probability density functions (PDFs)<a class="headerlink" href="#sec:what-is-a-pdf" title="Permanent link">&para;</a></h3>
 <p>Statistics literature often discriminates between probability density functions (PDF) for continuous probability distributions and probability mass functions (PMF) for discrete probability distributions. This standard use the term PDF for both continuous and discrete distributions. The concept of density is to be understood in terms of densities in the realm of measure theory here, that is the density of a probability measure (distribution) is its Radon-Nikodym derivative in respect to an (implied) reference measure. 
 The choice of reference measure would be arbitrary in principle, which scales likelihood functions 
@@ -1311,8 +1349,10 @@ This means that given a model <span class="arithmatex">\(m\)</span> and concrete
 <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>). In addition to using observed data, implementations may provide the option to use random data generated from 
 the model (see <a href="#sec:data-generation" reference="sec:data-generation" reference-type="ref">Data</a>) to check for Monte-Carlo closure. </p>
 <h3 id="sec:frequentist-inference">Frequentist parameter inference<a class="headerlink" href="#sec:frequentist-inference" title="Permanent link">&para;</a></h3>
+<p><em>This section is non-normative.</em> </p>
 <p>The standard method of frequentist inference is the maximum (or, respectively, profile) likelihood method. In the vast majority of cases, the test statistic used here is the likelihood ratio, that is, the ratio of two values of the likelihood corresponding to two different points in parameter space: one that maximizes the likelihood unconditionally, and one that maximizes the likelihood under some condition such as the values of the parameters of interest expected in the absence of a deviation from the null hypothesis. The corresponding building blocks for such an analysis, such as the list of parameters of interest and the likelihood function to be used, are specified in the analysis section of an HS<span class="arithmatex">\({}^3\)</span> configuration (Sec. <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>). </p>
 <h3 id="sec:bayesian-inference">Bayesian parameter inference<a class="headerlink" href="#sec:bayesian-inference" title="Permanent link">&para;</a></h3>
+<p><em>This section is non-normative.</em> </p>
 <p>The standard also encompasses the specification of Bayesian posterior distributions over parameters by combining (Sec. 
 <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>) likelihoods with probabilty distributions that acts the priors. Here concrete distributions are used to describe the prior probability of parameters in addition to parameterized distributions that are used to describe of the probability of observing specific data. </p>
 <h2 id="how-to-read-this-document">How to read this document<a class="headerlink" href="#how-to-read-this-document" title="Permanent link">&para;</a></h2>
@@ -1335,8 +1375,10 @@ The keywords <span class="smallcaps">optional</span> and <span class="smallcaps"
 <p>HS<span class="arithmatex">\({}^3\)</span> documents are encoded in the JSON format as defined in ISO/IEC 21778:2017 [^json]. Implementations <span class="smallcaps">may</span> support other serialization formats that support a non-ambiguous mapping to JSON, such as TOML or YAML, in which case they <span class="smallcaps">should</span> use a different file extension.</p>
 <p>The recommended filename extension for HS<span class="arithmatex">\({}^3\)</span> JSON documents is <code>.hs3.json</code>.</p>
 <h2 id="validators">Validators<a class="headerlink" href="#validators" title="Permanent link">&para;</a></h2>
+<p><em>This section is non-normative.</em> </p>
 <p>Future versions of this standard will recommend official validator implementations and schemata. Currently, these have not been finalized. </p>
 <h2 id="how-to-get-in-touch">How to get in touch<a class="headerlink" href="#how-to-get-in-touch" title="Permanent link">&para;</a></h2>
+<p><em>This section is non-normative.</em> </p>
 <p>Visit the GitHub page <a href="https://github.com/hep-statistics-serialization-standard/hep-statistics-serialization-standard">https://github.com/hep-statistics-serialization-standard/hep-statistics-serialization-standard</a> </p>
 
 

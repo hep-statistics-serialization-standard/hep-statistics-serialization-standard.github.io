@@ -1081,14 +1081,14 @@ S_2=\tfrac12(u\log^2 u+v\log^2 v) \quad A_2=\tfrac12(u\log^2 u-v\log^2 v)
 <li><code>samples</code>: array of structs containing the samples of this channel.     For details see below. 
 Struct of one sample:  <ul>
 <li><code>name</code>: (<span class="smallcaps">optional</span>) custom string, unique within this     function </li>
-<li><code>data</code>: struct containing the components <code>contents</code> and <code>errors</code>,     depicting the data contents and their errors. Both components are     arrays of the same length. </li>
+<li><code>data</code>: struct containing the components <code>contents</code> and <code>errors</code>, depicting the data contents and their errors. <code>errors</code> is <span class="smallcaps">optional</span>; if present, both components are arrays of the same length. If <code>errors</code> is absent, the sample contributes no statistical uncertainty to a <code>staterror</code> modifier. </li>
 <li><code>modifiers</code>: array of structs with each struct containing the modifiers for this sample.
 Struct of one modifier:<ul>
 <li><code>type</code>: type of the modifier</li>
 <li><code>parameter</code> or <code>parameters</code>: defining a string or an array of strings, respectively. Relating to the name or names of parameters controlling this modifier. Two modifiers are correlated exactly if they share the same parameters as indicated by <code>parameter</code> or <code>parameters</code>. In such a case, it is mandatory that they share the same constraint term. If this is not the case, the behavior is undefined. </li>
 <li><code>data</code>: <span class="smallcaps">optional</span> relevant data for modifier. Its format depends on <code>type</code>, which is described above.</li>
 <li><code>constraint</code>: <span class="smallcaps">optional</span> definition of how the modifier is constrained. Its format depends on <code>type</code>, which is described above.</li>
-<li><code>interpolation</code>: <span class="smallcaps">optional</span> struct defining how the effect of the modifier is calculated within and outside of the boundaries <span class="arithmatex">\(\theta=\pm 1\)</span>. It has the components <code>type</code>, <code>in</code> and <code>out</code> as described above. If this is omitted here for at least one modifier the top-level component <code>default_interpolation</code> becomes <span class="smallcaps">required</span>.</li>
+<li><code>interpolation</code>: <span class="smallcaps">optional</span> struct defining how the effect of the modifier is calculated within and outside of the boundaries <span class="arithmatex">\(\theta=\pm 1\)</span>. It has the components <code>type</code>, <code>in</code> and <code>out</code> as described above. If this is omitted here for at least one modifier the top-level component <code>default_interpolation</code> becomes <span class="smallcaps">required</span>. Implementations <span class="smallcaps">must not</span> assume a default interpolation of their own; a document in which a modifier omits <code>interpolation</code> and no <code>default_interpolation</code> is given is invalid and <span class="smallcaps">must</span> be rejected.</li>
 </ul>
 </li>
 </ul>

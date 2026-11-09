@@ -538,6 +538,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#double-sided-crystal-ball-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Double-sided Crystal Ball distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#decay-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1227,6 +1238,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#double-sided-crystal-ball-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Double-sided Crystal Ball distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#decay-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1477,6 +1499,37 @@ Asimov datasets [^asymptotics].</p>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 </ul>
 <h4 id="crystal-ball-distribution">Crystal Ball distribution<a class="headerlink" href="#crystal-ball-distribution" title="Permanent link">&para;</a></h4>
+<p>The single-sided Crystal Ball line shape, composed of a Gaussian distribution at the core, connected with a power-law distribution describing one of the tails, given by</p>
+<div class="arithmatex">\[
+\text{CrystalBallPdf}(m;m_0,\sigma,\alpha,n) = \frac{1}{\ensuremath{\mathcal{M}}} \begin{cases} \exp \left( - \frac{1}{2} t^2 \right), &amp; \mbox{for } t &gt; -\left| \alpha \right| \\ A \cdot \left(B - t\right)^{-n}, &amp; \mbox{for } t \leq -\left| \alpha \right| \end{cases}
+\]</div>
+<p>where <span class="arithmatex">\(t = \frac{m - m_0}{\sigma}\)</span> if <span class="arithmatex">\(\alpha &gt; 0\)</span> and <span class="arithmatex">\(t = -\frac{m - m_0}{\sigma}\)</span> if <span class="arithmatex">\(\alpha &lt; 0\)</span>, and</p>
+<div class="arithmatex">\[
+\begin{aligned} A &amp;= \left(\frac{n}{\left| \alpha \right|}\right)^{n} \cdot \exp\left(- \frac {\left| \alpha \right|^2}{2}\right) \\ B &amp;= \frac{n}{\left| \alpha \right|}  - \left| \alpha \right| \\ \end{aligned} 
+\]</div>
+<p>For <span class="arithmatex">\(\alpha &gt; 0\)</span> the power-law tail is on the low side of <span class="arithmatex">\(m_0\)</span>, for <span class="arithmatex">\(\alpha &lt; 0\)</span> it is on the high side of <span class="arithmatex">\(m_0\)</span>.</p>
+<p>The keys are </p>
+<ul>
+<li><code>name</code>: custom string </li>
+<li><code>type</code>: <code>crystalball_dist</code> </li>
+<li><code>m</code>: name of the variable <span class="arithmatex">\(m\)</span> </li>
+<li><code>m0</code>: name or value of the central value <span class="arithmatex">\(m_0\)</span> </li>
+<li><code>sigma</code>: value or name of the width <span class="arithmatex">\(\sigma\)</span></li>
+<li><code>alpha</code>: value or name of <span class="arithmatex">\(\alpha\)</span></li>
+<li><code>n</code>: value or name of <span class="arithmatex">\(n\)</span></li>
+</ul>
+<p>The keys <code>alpha_L</code>, <code>n_L</code>, <code>alpha_R</code>, <code>n_R</code>, <code>sigma_L</code> and <code>sigma_R</code> <span class="smallcaps">must not</span> be present. For a Crystal Ball distribution with two tails, see the double-sided Crystal Ball distribution below.</p>
+<div class="highlight"><span class="filename">Example: single-sided Crystal Ball distribution</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;crystalball_dist&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_peak&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_width&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;n&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.0</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="double-sided-crystal-ball-distribution">Double-sided Crystal Ball distribution<a class="headerlink" href="#double-sided-crystal-ball-distribution" title="Permanent link">&para;</a></h4>
 <p>The generalized Asymmetrical Double-Sided Crystal Ball line shape,
 composed of a Gaussian distribution at the core, connected with two
 power-law distributions describing the lower and upper tails, given by</p>
@@ -1490,19 +1543,41 @@ power-law distributions describing the lower and upper tails, given by</p>
 <p>The keys are </p>
 <ul>
 <li><code>name</code>: custom string </li>
-<li><code>type</code>: <code>crystalball_dist</code> </li>
+<li><code>type</code>: <code>crystalball_doublesided_dist</code> </li>
 <li><code>m</code>: name of the variable <span class="arithmatex">\(m\)</span> </li>
 <li><code>m0</code>: name or value of the central value <span class="arithmatex">\(m_0\)</span> </li>
-<li><code>alpha</code>: value or names of <span class="arithmatex">\(\alpha_L\)</span> and <span class="arithmatex">\(\alpha_R\)</span> from above.     <span class="smallcaps">must not</span> be used in conjuction with <code>alpha_L</code> or     <code>alpha_R</code>. </li>
-<li><code>alpha_L</code>: value or names of <span class="arithmatex">\(\alpha_L\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>alpha</code>. </li>
-<li><code>alpha_R</code>: value or names of <span class="arithmatex">\(\alpha_R\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>alpha</code>. </li>
-<li><code>n</code>: value or names of <span class="arithmatex">\(n_L\)</span> and <span class="arithmatex">\(n_R\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>n_L</code> or <code>n_R</code>. </li>
-<li><code>n_L</code>: value or names of <span class="arithmatex">\(n_L\)</span> from above. <span class="smallcaps">must not</span> be     used in conjuction with <code>n</code>. </li>
-<li><code>n_R</code>: value or names of <span class="arithmatex">\(n_R\)</span> from above. <span class="smallcaps">must not</span> be     used in conjuction with <code>n</code>. </li>
-<li><code>sigma</code>: value or names of <span class="arithmatex">\(\sigma_L\)</span> and <span class="arithmatex">\(\sigma_R\)</span> from above.     <span class="smallcaps">must not</span> be used in conjuction with <code>sigma_L</code> or     <code>sigma_R</code>. </li>
-<li><code>sigma_L</code>: value or names of <span class="arithmatex">\(\sigma_L\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>sigma</code>. </li>
-<li><code>sigma_R</code>: value or names of <span class="arithmatex">\(\sigma_R\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>sigma</code>. </li>
+<li><code>alpha_L</code>, <code>n_L</code>: values or names of <span class="arithmatex">\(\alpha_L\)</span> and <span class="arithmatex">\(n_L\)</span></li>
+<li><code>alpha_R</code>, <code>n_R</code>: values or names of <span class="arithmatex">\(\alpha_R\)</span> and <span class="arithmatex">\(n_R\)</span></li>
+<li><code>sigma</code>: value or name of <span class="arithmatex">\(\sigma = \sigma_L = \sigma_R\)</span>. <span class="smallcaps">must not</span> be used in conjunction with <code>sigma_L</code> or <code>sigma_R</code>.</li>
+<li><code>sigma_L</code>, <code>sigma_R</code>: values or names of <span class="arithmatex">\(\sigma_L\)</span> and <span class="arithmatex">\(\sigma_R\)</span>. <span class="smallcaps">must not</span> be used in conjunction with <code>sigma</code>.</li>
 </ul>
+<p>All four of <code>alpha_L</code>, <code>n_L</code>, <code>alpha_R</code> and <code>n_R</code> <span class="smallcaps">must</span> be present. The width <span class="smallcaps">must</span> be given either as <code>sigma</code> or as both <code>sigma_L</code> and <code>sigma_R</code>. The keys <code>alpha</code> and <code>n</code> <span class="smallcaps">must not</span> be present. There is no shorthand for symmetric tails: a symmetric double-sided Crystal Ball distribution is described by giving the same value, or referencing the same parameter, for both sides.</p>
+<div class="highlight"><span class="filename">Example: asymmetric double-sided Crystal Ball distribution</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_asym&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;crystalball_doublesided_dist&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_peak&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sigma_L&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_width_L&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sigma_R&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_width_R&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alpha_L&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;n_L&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alpha_R&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;n_R&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><span class="filename">Example: symmetric double-sided Crystal Ball distribution</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_sym&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;crystalball_doublesided_dist&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_peak&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_width&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alpha_L&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_alpha&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;n_L&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_n&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alpha_R&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_alpha&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;n_R&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_n&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 may contain distributions of type <code>crystalball_dist</code> with the keys <code>alpha_L</code>, <code>n_L</code>, <code>alpha_R</code> and <code>n_R</code> (or <code>sigma_L</code> and <code>sigma_R</code>). Implementations <span class="smallcaps">should</span> read these as <code>crystalball_doublesided_dist</code>; this is unambiguous from the key names. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use <code>crystalball_doublesided_dist</code> for the double-sided form. Note that <code>crystalball_dist</code> with <code>alpha</code> and <code>n</code> is now defined as the single-sided Crystal Ball distribution, in line with how existing documents were written in practice; earlier versions of this text read it as the symmetric double-sided form.</p>
 <h4 id="decay-distribution">Decay distribution<a class="headerlink" href="#decay-distribution" title="Permanent link">&para;</a></h4>
 <p>The decay distribution describes a single- or double-sided exponential decay convolved with a resolution model <span class="arithmatex">\(R\)</span>:</p>
 <div class="arithmatex">\[

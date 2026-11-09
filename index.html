@@ -914,13 +914,14 @@
   This work is published from: CERN, Geneva. </p>
 <hr />
 <h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h1>
-<p><em>This section is non-normative.</em> </p>
+<p><em>This introductory text is non-normative. Sections of this chapter that are non-normative are marked as such; all other sections are normative.</em> </p>
 <p>It is widely agreed upon that the publication of likelihood models from high energy physics experiments is imperative for the preservation and public access to these results. Detailed arguments have been made elsewhere already <sup id="fnref:Cranmer_2022"><a class="footnote-ref" href="#fn:Cranmer_2022">3</a></sup>. This document sets out to provide a standardized format to publish and archive statistical models of any size and across a wide range of mathematical formalisms in a way that is readable by both humans and machines. 
 With the introduction of <code>pyhf</code> <sup id="fnref:pyhf"><a class="footnote-ref" href="#fn:pyhf">4</a></sup><sup id="fnref:pyhf-joss"><a class="footnote-ref" href="#fn:pyhf-joss">5</a></sup>, a <code>JSON</code> format for likelihood serialization has been put forward. However, an interoperable format that encompasses likelihoods with a scope beyond stacks of binned histograms was lacking. With the release of <code>ROOT</code> 6.26/00 <sup id="fnref:root"><a class="footnote-ref" href="#fn:root">6</a></sup> and the experimental <code>RooJSONFactoryWSTool</code> therein, this gap has now been filled. 
 This document sets out to document the syntax and features of the Statistics Serialization Standard (HS<span class="arithmatex">\({}^3\)</span>) for likelihoods and statistical models in general, as to be adopted by any HS<span class="arithmatex">\({}^3\)</span>-compatible statistics framework. The examples in this document employ the <code>JSON</code> notation, but are intended to encompass also representations as <code>YAML</code> or <code>TOML</code>. </p>
 <h2 id="how-to-use-this-document">How to use this document<a class="headerlink" href="#how-to-use-this-document" title="Permanent link">&para;</a></h2>
+<p><em>This section is non-normative.</em> </p>
 <p>Developers of statistical toolkits are invited to specifically refer to versions of this document relating to the support of this standard in their respective implementations. 
-Please note that this document as well as the HS<span class="arithmatex">\({}^3\)</span> standard are still in development and can still undergo minor and major changes in the future. This document describes the syntax of HS<span class="arithmatex">\({}^3\)</span> v0.2.9. </p>
+Please note that this document as well as the HS<span class="arithmatex">\({}^3\)</span> standard are still in development and can still undergo minor and major changes in the future. This document describes the syntax of HS<span class="arithmatex">\({}^3\)</span> version 0.3. Documents conforming to this version identify themselves with <code>"hs3_version": "0.3"</code> (see <a href="#sec:metadata" reference="sec:metadata" reference-type="ref">Metadata</a>). </p>
 <h2 id="sec:hs3-semantics">Statistical semantics of HS<span class="arithmatex">\({}^3\)</span><a class="headerlink" href="#sec:hs3-semantics" title="Permanent link">&para;</a></h2>
 <h3 id="sec:models-and-parameters">Statistical models, probability distributions and parameters<a class="headerlink" href="#sec:models-and-parameters" title="Permanent link">&para;</a></h3>
 <p>HS<span class="arithmatex">\({}^3\)</span> takes a "forward-modelling" approach throughout: a statistical model <span class="arithmatex">\(m\)</span> maps a space <span class="arithmatex">\(\Theta\)</span> of free parameters <span class="arithmatex">\(\theta\)</span> to a space of probability distributions that describe the possible outcomes of a specific experiment. For any given parameters <span class="arithmatex">\(\theta\)</span>, the model returns a concrete probability distribution <span class="arithmatex">\(m(\theta)\)</span>. Observed data <span class="arithmatex">\(x\)</span> is then treated as random variate, presumed to be drawn from the model: <span class="arithmatex">\(x \sim m(\theta)\)</span>. 
@@ -939,6 +940,9 @@ priors (see <a href="#sec:bayesian-inference" reference="sec:bayesian-inference"
 <p>The names of all named HS<span class="arithmatex">\({}^3\)</span> objects (distributions, functions, likelihoods, data, parameters, variables, domains, parameter points, etc.) form a single namespace and must be unique within an HS<span class="arithmatex">\({}^3\)</span> document. The names assigned to variate record entries and data fields/axes are not part of the global namespace.</p>
 <p>HS<span class="arithmatex">\({}^3\)</span> implementations will typically provide a renaming/aliasing mechanism that can be used to resolve name clashes when using
 multiple HS<span class="arithmatex">\({}^3\)</span> documents together, e.g. for combined analyses.</p>
+<h4 id="sec:identifiers">Identifiers<a class="headerlink" href="#sec:identifiers" title="Permanent link">&para;</a></h4>
+<p>The names of HS<span class="arithmatex">\({}^3\)</span> objects that can be referenced from generic expressions, i.e. parameters, variables, functions and distributions, <span class="smallcaps">must</span> be identifiers matching the regular expression <code>[A-Za-z_][A-Za-z0-9_]*</code>: an ASCII letter or underscore, followed by any number of ASCII letters, digits or underscores. The generic expression language (see <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a>) relies on this, since symbols in an expression that are not defined by the expression language refer to these objects by name, and names containing other characters could not be written there without an escaping mechanism.</p>
+<p>The names of data sets, likelihoods, analyses, domains and parameter points <span class="smallcaps">should</span> follow the same rule, but are not required to.</p>
 <h3 id="sec:what-is-a-pdf">Probability density functions (PDFs)<a class="headerlink" href="#sec:what-is-a-pdf" title="Permanent link">&para;</a></h3>
 <p>Statistics literature often discriminates between probability density functions (PDF) for continuous probability distributions and probability mass functions (PMF) for discrete probability distributions. This standard use the term PDF for both continuous and discrete distributions. The concept of density is to be understood in terms of densities in the realm of measure theory here, that is the density of a probability measure (distribution) is its Radon-Nikodym derivative in respect to an (implied) reference measure. 
 The choice of reference measure would be arbitrary in principle, which scales likelihood functions 
@@ -953,8 +957,10 @@ This means that given a model <span class="arithmatex">\(m\)</span> and concrete
 <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>). In addition to using observed data, implementations may provide the option to use random data generated from 
 the model (see <a href="#sec:data-generation" reference="sec:data-generation" reference-type="ref">Data</a>) to check for Monte-Carlo closure. </p>
 <h3 id="sec:frequentist-inference">Frequentist parameter inference<a class="headerlink" href="#sec:frequentist-inference" title="Permanent link">&para;</a></h3>
+<p><em>This section is non-normative.</em> </p>
 <p>The standard method of frequentist inference is the maximum (or, respectively, profile) likelihood method. In the vast majority of cases, the test statistic used here is the likelihood ratio, that is, the ratio of two values of the likelihood corresponding to two different points in parameter space: one that maximizes the likelihood unconditionally, and one that maximizes the likelihood under some condition such as the values of the parameters of interest expected in the absence of a deviation from the null hypothesis. The corresponding building blocks for such an analysis, such as the list of parameters of interest and the likelihood function to be used, are specified in the analysis section of an HS<span class="arithmatex">\({}^3\)</span> configuration (Sec. <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>). </p>
 <h3 id="sec:bayesian-inference">Bayesian parameter inference<a class="headerlink" href="#sec:bayesian-inference" title="Permanent link">&para;</a></h3>
+<p><em>This section is non-normative.</em> </p>
 <p>The standard also encompasses the specification of Bayesian posterior distributions over parameters by combining (Sec. 
 <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>) likelihoods with probabilty distributions that acts the priors. Here concrete distributions are used to describe the prior probability of parameters in addition to parameterized distributions that are used to describe of the probability of observing specific data. </p>
 <h2 id="how-to-read-this-document">How to read this document<a class="headerlink" href="#how-to-read-this-document" title="Permanent link">&para;</a></h2>
@@ -977,8 +983,10 @@ The keywords <span class="smallcaps">optional</span> and <span class="smallcaps"
 <p>HS<span class="arithmatex">\({}^3\)</span> documents are encoded in the JSON format as defined in ISO/IEC 21778:2017 <sup id="fnref:json"><a class="footnote-ref" href="#fn:json">8</a></sup>. Implementations <span class="smallcaps">may</span> support other serialization formats that support a non-ambiguous mapping to JSON, such as TOML or YAML, in which case they <span class="smallcaps">should</span> use a different file extension.</p>
 <p>The recommended filename extension for HS<span class="arithmatex">\({}^3\)</span> JSON documents is <code>.hs3.json</code>.</p>
 <h2 id="validators">Validators<a class="headerlink" href="#validators" title="Permanent link">&para;</a></h2>
+<p><em>This section is non-normative.</em> </p>
 <p>Future versions of this standard will recommend official validator implementations and schemata. Currently, these have not been finalized. </p>
 <h2 id="how-to-get-in-touch">How to get in touch<a class="headerlink" href="#how-to-get-in-touch" title="Permanent link">&para;</a></h2>
+<p><em>This section is non-normative.</em> </p>
 <p>Visit the GitHub page <a href="https://github.com/hep-statistics-serialization-standard/hep-statistics-serialization-standard">https://github.com/hep-statistics-serialization-standard/hep-statistics-serialization-standard</a> </p>
 <h1 id="sec:toplevel">Top-level components<a class="headerlink" href="#sec:toplevel" title="Permanent link">&para;</a></h1>
 <p>In the following, the top-level <code>component</code>s of HS<span class="arithmatex">\(^3\)</span> and their parameters/arguments are described. Each component is completely <span class="smallcaps">optional</span>, but certain components <span class="smallcaps">may</span> depend on other components, which <span class="smallcaps">should</span> be provided in that case. The only exception is the component <code>metadata</code> containing the version of HS<span class="arithmatex">\(^3\)</span>, which is always <span class="smallcaps">required</span>. The supported top-level components are </p>
@@ -1095,6 +1103,37 @@ Asimov datasets <sup id="fnref:asymptotics"><a class="footnote-ref" href="#fn:as
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 </ul>
 <h4 id="crystal-ball-distribution">Crystal Ball distribution<a class="headerlink" href="#crystal-ball-distribution" title="Permanent link">&para;</a></h4>
+<p>The single-sided Crystal Ball line shape, composed of a Gaussian distribution at the core, connected with a power-law distribution describing one of the tails, given by</p>
+<div class="arithmatex">\[
+\text{CrystalBallPdf}(m;m_0,\sigma,\alpha,n) = \frac{1}{\ensuremath{\mathcal{M}}} \begin{cases} \exp \left( - \frac{1}{2} t^2 \right), &amp; \mbox{for } t &gt; -\left| \alpha \right| \\ A \cdot \left(B - t\right)^{-n}, &amp; \mbox{for } t \leq -\left| \alpha \right| \end{cases}
+\]</div>
+<p>where <span class="arithmatex">\(t = \frac{m - m_0}{\sigma}\)</span> if <span class="arithmatex">\(\alpha &gt; 0\)</span> and <span class="arithmatex">\(t = -\frac{m - m_0}{\sigma}\)</span> if <span class="arithmatex">\(\alpha &lt; 0\)</span>, and</p>
+<div class="arithmatex">\[
+\begin{aligned} A &amp;= \left(\frac{n}{\left| \alpha \right|}\right)^{n} \cdot \exp\left(- \frac {\left| \alpha \right|^2}{2}\right) \\ B &amp;= \frac{n}{\left| \alpha \right|}  - \left| \alpha \right| \\ \end{aligned} 
+\]</div>
+<p>For <span class="arithmatex">\(\alpha &gt; 0\)</span> the power-law tail is on the low side of <span class="arithmatex">\(m_0\)</span>, for <span class="arithmatex">\(\alpha &lt; 0\)</span> it is on the high side of <span class="arithmatex">\(m_0\)</span>.</p>
+<p>The keys are </p>
+<ul>
+<li><code>name</code>: custom string </li>
+<li><code>type</code>: <code>crystalball_dist</code> </li>
+<li><code>m</code>: name of the variable <span class="arithmatex">\(m\)</span> </li>
+<li><code>m0</code>: name or value of the central value <span class="arithmatex">\(m_0\)</span> </li>
+<li><code>sigma</code>: value or name of the width <span class="arithmatex">\(\sigma\)</span></li>
+<li><code>alpha</code>: value or name of <span class="arithmatex">\(\alpha\)</span></li>
+<li><code>n</code>: value or name of <span class="arithmatex">\(n\)</span></li>
+</ul>
+<p>The keys <code>alpha_L</code>, <code>n_L</code>, <code>alpha_R</code>, <code>n_R</code>, <code>sigma_L</code> and <code>sigma_R</code> <span class="smallcaps">must not</span> be present. For a Crystal Ball distribution with two tails, see the double-sided Crystal Ball distribution below.</p>
+<div class="highlight"><span class="filename">Example: single-sided Crystal Ball distribution</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;crystalball_dist&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_peak&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_width&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;n&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.0</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="double-sided-crystal-ball-distribution">Double-sided Crystal Ball distribution<a class="headerlink" href="#double-sided-crystal-ball-distribution" title="Permanent link">&para;</a></h4>
 <p>The generalized Asymmetrical Double-Sided Crystal Ball line shape,
 composed of a Gaussian distribution at the core, connected with two
 power-law distributions describing the lower and upper tails, given by</p>
@@ -1108,19 +1147,41 @@ power-law distributions describing the lower and upper tails, given by</p>
 <p>The keys are </p>
 <ul>
 <li><code>name</code>: custom string </li>
-<li><code>type</code>: <code>crystalball_dist</code> </li>
+<li><code>type</code>: <code>crystalball_doublesided_dist</code> </li>
 <li><code>m</code>: name of the variable <span class="arithmatex">\(m\)</span> </li>
 <li><code>m0</code>: name or value of the central value <span class="arithmatex">\(m_0\)</span> </li>
-<li><code>alpha</code>: value or names of <span class="arithmatex">\(\alpha_L\)</span> and <span class="arithmatex">\(\alpha_R\)</span> from above.     <span class="smallcaps">must not</span> be used in conjuction with <code>alpha_L</code> or     <code>alpha_R</code>. </li>
-<li><code>alpha_L</code>: value or names of <span class="arithmatex">\(\alpha_L\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>alpha</code>. </li>
-<li><code>alpha_R</code>: value or names of <span class="arithmatex">\(\alpha_R\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>alpha</code>. </li>
-<li><code>n</code>: value or names of <span class="arithmatex">\(n_L\)</span> and <span class="arithmatex">\(n_R\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>n_L</code> or <code>n_R</code>. </li>
-<li><code>n_L</code>: value or names of <span class="arithmatex">\(n_L\)</span> from above. <span class="smallcaps">must not</span> be     used in conjuction with <code>n</code>. </li>
-<li><code>n_R</code>: value or names of <span class="arithmatex">\(n_R\)</span> from above. <span class="smallcaps">must not</span> be     used in conjuction with <code>n</code>. </li>
-<li><code>sigma</code>: value or names of <span class="arithmatex">\(\sigma_L\)</span> and <span class="arithmatex">\(\sigma_R\)</span> from above.     <span class="smallcaps">must not</span> be used in conjuction with <code>sigma_L</code> or     <code>sigma_R</code>. </li>
-<li><code>sigma_L</code>: value or names of <span class="arithmatex">\(\sigma_L\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>sigma</code>. </li>
-<li><code>sigma_R</code>: value or names of <span class="arithmatex">\(\sigma_R\)</span> from above. <span class="smallcaps">must     not</span> be used in conjuction with <code>sigma</code>. </li>
+<li><code>alpha_L</code>, <code>n_L</code>: values or names of <span class="arithmatex">\(\alpha_L\)</span> and <span class="arithmatex">\(n_L\)</span></li>
+<li><code>alpha_R</code>, <code>n_R</code>: values or names of <span class="arithmatex">\(\alpha_R\)</span> and <span class="arithmatex">\(n_R\)</span></li>
+<li><code>sigma</code>: value or name of <span class="arithmatex">\(\sigma = \sigma_L = \sigma_R\)</span>. <span class="smallcaps">must not</span> be used in conjunction with <code>sigma_L</code> or <code>sigma_R</code>.</li>
+<li><code>sigma_L</code>, <code>sigma_R</code>: values or names of <span class="arithmatex">\(\sigma_L\)</span> and <span class="arithmatex">\(\sigma_R\)</span>. <span class="smallcaps">must not</span> be used in conjunction with <code>sigma</code>.</li>
 </ul>
+<p>All four of <code>alpha_L</code>, <code>n_L</code>, <code>alpha_R</code> and <code>n_R</code> <span class="smallcaps">must</span> be present. The width <span class="smallcaps">must</span> be given either as <code>sigma</code> or as both <code>sigma_L</code> and <code>sigma_R</code>. The keys <code>alpha</code> and <code>n</code> <span class="smallcaps">must not</span> be present. There is no shorthand for symmetric tails: a symmetric double-sided Crystal Ball distribution is described by giving the same value, or referencing the same parameter, for both sides.</p>
+<div class="highlight"><span class="filename">Example: asymmetric double-sided Crystal Ball distribution</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_asym&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;crystalball_doublesided_dist&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_peak&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sigma_L&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_width_L&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sigma_R&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_width_R&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alpha_L&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;n_L&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alpha_R&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;n_R&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><span class="filename">Example: symmetric double-sided Crystal Ball distribution</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_sym&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;crystalball_doublesided_dist&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_peak&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mass_width&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alpha_L&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_alpha&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;n_L&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_n&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alpha_R&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_alpha&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;n_R&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cb_n&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 may contain distributions of type <code>crystalball_dist</code> with the keys <code>alpha_L</code>, <code>n_L</code>, <code>alpha_R</code> and <code>n_R</code> (or <code>sigma_L</code> and <code>sigma_R</code>). Implementations <span class="smallcaps">should</span> read these as <code>crystalball_doublesided_dist</code>; this is unambiguous from the key names. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use <code>crystalball_doublesided_dist</code> for the double-sided form. Note that <code>crystalball_dist</code> with <code>alpha</code> and <code>n</code> is now defined as the single-sided Crystal Ball distribution, in line with how existing documents were written in practice; earlier versions of this text read it as the symmetric double-sided form.</p>
 <h4 id="decay-distribution">Decay distribution<a class="headerlink" href="#decay-distribution" title="Permanent link">&para;</a></h4>
 <p>The decay distribution describes a single- or double-sided exponential decay convolved with a resolution model <span class="arithmatex">\(R\)</span>:</p>
 <div class="arithmatex">\[
@@ -1842,8 +1903,10 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <li><code>axes</code>: array of parameters and variables in this domain in terms of individual axes. These can be continuous or categorical, mirroring the axis types defined in <a href="#sec:axes" reference="sec:axes" reference-type="ref">Axis Specifications</a>.<ul>
 <li>A continuous axis has the components:  <ul>
 <li><code>name</code>: custom string</li>
-<li><code>max</code>: upper bound of range </li>
-<li><code>min</code>: lower bound of range.</li>
+<li><code>max</code>: (<span class="smallcaps">optional</span>) upper bound of range. If absent, the range is unbounded from above (<span class="arithmatex">\(+\infty\)</span>).</li>
+<li><code>min</code>: (<span class="smallcaps">optional</span>) lower bound of range. If absent, the range is unbounded from below (<span class="arithmatex">\(-\infty\)</span>).</li>
+<li><code>nbins</code>: (<span class="smallcaps">optional</span>) number of equal-width bins of the default binning of this parameter or variable</li>
+<li><code>edges</code>: (<span class="smallcaps">optional</span>) array of bin boundaries of the default binning of this parameter or variable</li>
 </ul>
 </li>
 <li>A categorical axis has the components: <ul>
@@ -1854,6 +1917,8 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 </ul>
 </li>
 </ul>
+<p>An axis is categorical if and only if it contains the component <code>categories</code>; otherwise it is continuous. A continuous axis <span class="smallcaps">should</span> contain at least one of <code>min</code> and <code>max</code>. An axis with neither is valid and places no restriction on the range of the parameter; it still counts as listing the parameter in the domain (see <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>). Since JSON has no literal for infinity, omitting <code>min</code> or <code>max</code> is the only way to express an unbounded range.</p>
+<p>The components <code>nbins</code> and <code>edges</code> specify a default binning, e.g. for plotting or for binned evaluation by an implementation that requires one. They have the same meaning and are subject to the same constraints as on continuous axes of binned data (see <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a> and <a href="#sec:axes" reference="sec:axes" reference-type="ref">Axis Specifications</a>): <code>nbins</code> and <code>edges</code> <span class="smallcaps">must not</span> both be present, either of them requires both <code>min</code> and <code>max</code> to be present, and with <code>edges</code>, <code>min</code> and <code>max</code> <span class="smallcaps">must</span> be equal to the first and last entry of <code>edges</code>, respectively. Categorical axes <span class="smallcaps">must not</span> carry <code>nbins</code> or <code>edges</code>.</p>
 <div class="highlight"><span class="filename">Example: Domains</span><pre><span></span><code><span class="nt">&quot;domains&quot;</span><span class="p">:[</span><span class="w"> </span>
 <span class="w">  </span><span class="p">{</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;domain1&quot;</span><span class="p">,</span><span class="w"> </span>
@@ -1861,6 +1926,9 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <span class="w">    </span><span class="nt">&quot;axes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">4.78</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;obs_x&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;obs_y&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;edges&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;channel&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;categories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="s2">&quot;CR&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="err">...</span><span class="w"> </span>
 <span class="w">    </span><span class="p">]</span><span class="w"> </span>
@@ -1875,7 +1943,7 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <li><code>parameters</code>: array of parameter structs (see below) 
 The component <code>parameters</code> is an array of components each containing: <ul>
 <li><code>name</code>: custom string </li>
-<li><code>value</code>: number, value of variable </li>
+<li><code>value</code>: value of the parameter: a number, or a string for a categorical parameter. A string value <span class="smallcaps">must</span> be one of the <code>categories</code> of a categorical axis of the same name in the domain(s) the parameter point is used with, e.g. the <code>domains</code> of an analysis that references it as <code>init</code> (see <a href="#sec:domains" reference="sec:domains" reference-type="ref">Domains</a>). </li>
 <li><code>const</code>: (<span class="smallcaps">optional</span>) boolean, whether variable is     constant or not. Default is <code>false</code>. </li>
 </ul>
 </li>
@@ -1886,6 +1954,7 @@ The component <code>parameters</code> is an array of components each containing:
 <span class="w">    </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;const&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;channel&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SR&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="err">...</span><span class="w"> </span>
 <span class="w">     </span><span class="p">]</span><span class="w"> </span>
 <span class="w">  </span><span class="p">},</span><span class="w"> </span>
@@ -1897,19 +1966,18 @@ The component <code>parameters</code> is an array of components each containing:
 <ul>
 <li><code>name</code>: long custom string </li>
 <li><code>likelihood</code>: name as reference to a likelihood defined in the top-level component <code>likelihoods</code> </li>
-<li><code>parameter_of_interest</code>: (<span class="smallcaps">optional</span>) array of names as reference to parameters that are interesting for the analysis at hand </li>
-<li><code>domain</code>: name of a domain to be used for the parameters, defined in the top-level component <code>domains</code> </li>
+<li><code>parameters_of_interest</code>: (<span class="smallcaps">optional</span>) array of names as reference to parameters that are interesting for the analysis at hand </li>
+<li><code>domains</code>: array of names of domains to be used for the parameters, defined in the top-level component <code>domains</code>. The effective domain of the analysis is the Cartesian product of the listed domains. If two of the listed domains contain an axis with the same name, the document is invalid. </li>
 <li><code>init</code>: (<span class="smallcaps">optional</span>) name of an initial value to be used, defined in the top-level component <code>parameter_points</code> </li>
 <li><code>prior</code>: (<span class="smallcaps">optional</span>) name of a prior distribution, defined in the top-level component <code>distributions</code>. This is only used for Bayesian interpretations and should not be confused with auxiliary distributions listed in the likelihood section. The prior could, for example, be a product distribution of all the individual priors. If for any parameter, both a prior and a parameter domain are given, the prior should be truncated to the given parameter domain. Otherwise, implicit flat priors over the given parameter domain are assumed. </li>
 </ul>
-<p>All parameters of all distributions in the likelihood must either be listed under the domain referenced, or set to <code>const</code> in the parameter point referenced. </p>
+<p>All parameters of all distributions in the likelihood must either be listed in one of the domains referenced, or set to <code>const</code> in the parameter point referenced. </p>
 <div class="highlight"><span class="filename">Example: Analyses</span><pre><span></span><code><span class="nt">&quot;analyses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
 <span class="w">  </span><span class="p">{</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;analysis1&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">&quot;likelihood&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;likelihood1&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;aux_likelihood_terms&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;distribtion_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;distribution_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">]</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">&quot;parameters_of_interest&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;param1&quot;</span><span class="p">],</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">&quot;domain&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;domain1&quot;</span><span class="w"> </span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">&quot;domains&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;domain1&quot;</span><span class="p">],</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">&quot;init&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;starting_values&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">&quot;prior&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prior_dist&quot;</span><span class="w"> </span>
 <span class="w">  </span><span class="p">},</span><span class="w"> </span>
@@ -1919,14 +1987,14 @@ The component <code>parameters</code> is an array of components each containing:
 <h2 id="sec:metadata">Metadata<a class="headerlink" href="#sec:metadata" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>metadata</code> contains meta-information related to the creation of the file. The component <code>hs3_version</code> stores the HS<span class="arithmatex">\(^3\)</span> version and is <span class="smallcaps">required</span> for now. Overview of the components: </p>
 <ul>
-<li><code>hs3_version</code>: (<span class="smallcaps">required</span>) HS<span class="arithmatex">\(^3\)</span> version number as     String for reference </li>
+<li><code>hs3_version</code>: (<span class="smallcaps">required</span>) string identifying the version of HS<span class="arithmatex">\(^3\)</span> the document conforms to, in the form <code>"MAJOR.MINOR"</code>, where <code>MAJOR</code> and <code>MINOR</code> are non-negative integers in decimal notation without leading zeros (e.g. <code>"0.3"</code>). The value is a JSON string, not a number. Revisions of this document that do not change what constitutes a valid HS<span class="arithmatex">\(^3\)</span> document do not change the version string; there is no patch-level component. </li>
 <li><code>packages</code>: (<span class="smallcaps">optional</span>) array of structs defining     packages and their version number used in the creation of this file,     depicted with the components <code>name</code> and <code>version</code> respectively </li>
 <li><code>authors</code>: (<span class="smallcaps">optional</span>) array of authors, either     individual persons, or collaborations </li>
 <li><code>publications</code>: (<span class="smallcaps">optional</span>) array of document     identifiers of publications associated with this file </li>
 <li><code>description</code>: (<span class="smallcaps">optional</span>) short abstract/description     for this file </li>
 </ul>
 <div class="highlight"><span class="filename">Example: Metadata</span><pre><span></span><code><span class="nt">&quot;metadata&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">  </span><span class="nt">&quot;hs3_version&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.2.0&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">&quot;hs3_version&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.3&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">  </span><span class="nt">&quot;packages&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ROOT&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6.28.02&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
 <span class="w">  </span><span class="nt">&quot;authors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;The ATLAS Collaboration&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;The CMS Collaboration&quot;</span><span class="p">],</span><span class="w"> </span>
 <span class="w">  </span><span class="nt">&quot;publications&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doiABCDEFG&quot;</span><span class="p">]</span>
@@ -2212,14 +2280,14 @@ S_2=\tfrac12(u\log^2 u+v\log^2 v) \quad A_2=\tfrac12(u\log^2 u-v\log^2 v)
 <li><code>samples</code>: array of structs containing the samples of this channel.     For details see below. 
 Struct of one sample:  <ul>
 <li><code>name</code>: (<span class="smallcaps">optional</span>) custom string, unique within this     function </li>
-<li><code>data</code>: struct containing the components <code>contents</code> and <code>errors</code>,     depicting the data contents and their errors. Both components are     arrays of the same length. </li>
+<li><code>data</code>: struct containing the components <code>contents</code> and <code>errors</code>, depicting the data contents and their errors. <code>errors</code> is <span class="smallcaps">optional</span>; if present, both components are arrays of the same length. If <code>errors</code> is absent, the sample contributes no statistical uncertainty to a <code>staterror</code> modifier. </li>
 <li><code>modifiers</code>: array of structs with each struct containing the modifiers for this sample.
 Struct of one modifier:<ul>
 <li><code>type</code>: type of the modifier</li>
 <li><code>parameter</code> or <code>parameters</code>: defining a string or an array of strings, respectively. Relating to the name or names of parameters controlling this modifier. Two modifiers are correlated exactly if they share the same parameters as indicated by <code>parameter</code> or <code>parameters</code>. In such a case, it is mandatory that they share the same constraint term. If this is not the case, the behavior is undefined. </li>
 <li><code>data</code>: <span class="smallcaps">optional</span> relevant data for modifier. Its format depends on <code>type</code>, which is described above.</li>
 <li><code>constraint</code>: <span class="smallcaps">optional</span> definition of how the modifier is constrained. Its format depends on <code>type</code>, which is described above.</li>
-<li><code>interpolation</code>: <span class="smallcaps">optional</span> struct defining how the effect of the modifier is calculated within and outside of the boundaries <span class="arithmatex">\(\theta=\pm 1\)</span>. It has the components <code>type</code>, <code>in</code> and <code>out</code> as described above. If this is omitted here for at least one modifier the top-level component <code>default_interpolation</code> becomes <span class="smallcaps">required</span>.</li>
+<li><code>interpolation</code>: <span class="smallcaps">optional</span> struct defining how the effect of the modifier is calculated within and outside of the boundaries <span class="arithmatex">\(\theta=\pm 1\)</span>. It has the components <code>type</code>, <code>in</code> and <code>out</code> as described above. If this is omitted here for at least one modifier the top-level component <code>default_interpolation</code> becomes <span class="smallcaps">required</span>. Implementations <span class="smallcaps">must not</span> assume a default interpolation of their own; a document in which a modifier omits <code>interpolation</code> and no <code>default_interpolation</code> is given is invalid and <span class="smallcaps">must</span> be rejected.</li>
 </ul>
 </li>
 </ul>
