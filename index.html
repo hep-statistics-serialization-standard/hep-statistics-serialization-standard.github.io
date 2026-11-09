@@ -925,7 +925,7 @@ Please note that this document as well as the HS<span class="arithmatex">\({}^3\
 <h2 id="sec:hs3-semantics">Statistical semantics of HS<span class="arithmatex">\({}^3\)</span><a class="headerlink" href="#sec:hs3-semantics" title="Permanent link">&para;</a></h2>
 <h3 id="sec:models-and-parameters">Statistical models, probability distributions and parameters<a class="headerlink" href="#sec:models-and-parameters" title="Permanent link">&para;</a></h3>
 <p>HS<span class="arithmatex">\({}^3\)</span> takes a "forward-modelling" approach throughout: a statistical model <span class="arithmatex">\(m\)</span> maps a space <span class="arithmatex">\(\Theta\)</span> of free parameters <span class="arithmatex">\(\theta\)</span> to a space of probability distributions that describe the possible outcomes of a specific experiment. For any given parameters <span class="arithmatex">\(\theta\)</span>, the model returns a concrete probability distribution <span class="arithmatex">\(m(\theta)\)</span>. Observed data <span class="arithmatex">\(x\)</span> is then treated as random variate, presumed to be drawn from the model: <span class="arithmatex">\(x \sim m(\theta)\)</span>. 
-Parameters in HS<span class="arithmatex">\({}^3\)</span> are always named, so semantically the elements of a parameter space <span class="arithmatex">\(\Theta\)</span> are records <span class="arithmatex">\(\theta\)</span> (i.e. tuples in which every entry has a name). Even if there is only a single free parameter, <span class="arithmatex">\(\theta\)</span> should be thought of as a single-entry record. In the current version of this standard, parameter tuples must be flat and only consist of real numbers (or strings for categorical parameters); vector-valued or nested entries are not supported yet. Future versions of the standard will likely be less restrictive, especially with respect to discrete or vector-valued parameters. Parameter domains defined as part of this standard may be of various types, even though the current version only supports product domains. Future versions are likely to be less restrictive in this regard. 
+Parameters in HS<span class="arithmatex">\({}^3\)</span> are always named, so semantically the elements of a parameter space <span class="arithmatex">\(\Theta\)</span> are records <span class="arithmatex">\(\theta\)</span> (i.e. tuples in which every entry has a name). Even if there is only a single free parameter, <span class="arithmatex">\(\theta\)</span> should be thought of as a single-entry record. In the current version of this standard, parameter tuples <span class="smallcaps">must</span> be flat and only consist of real numbers (or strings for categorical parameters); vector-valued or nested entries are not supported yet. Future versions of the standard will likely be less restrictive, especially with respect to discrete or vector-valued parameters. Parameter domains defined as part of this standard may be of various types, even though the current version only supports product domains. Future versions are likely to be less restrictive in this regard. 
 Mathematically and computationally, it is often convenient to treat parameters as flat real-valued vectors instead of records, it is the responsibility of the implementation to map between these different views of parameters when and where necessary.
 Probability distributions in HS<span class="arithmatex">\({}^3\)</span> (see 
 <a href="#sec:distributions" reference="sec:distributions" reference-type="ref">Distributions</a>) are typically parameterized. Any instance of a distribution that has some of its parameters bound to names instead of concrete values, e.g. <span class="arithmatex">\(m = d_{\mu = a, \sigma = 0.7, \lambda = b, ...}\)</span>, constitutes a valid statistical model <span class="arithmatex">\(m(\theta)\)</span> with model parameters <span class="arithmatex">\(\theta = (a, b)\)</span>. 
@@ -937,7 +937,8 @@ priors (see <a href="#sec:bayesian-inference" reference="sec:bayesian-inference"
 <p>The variates of all distributions (so the possible results of random draws from them) are currently always records (this may be relaxed in future versions of this standard). So even instances of univariate distributions, like the normal distribution, have variates structured like <span class="arithmatex">\((a = \ldots,)\)</span>. Individual names are assigned to each entry of such record-valued variates.</p>
 <p>Future versions of the standard may support array-shaped and record-of-arrays-shaped variates and parameters.</p>
 <h3 id="sec:global-namespace">Global namespace<a class="headerlink" href="#sec:global-namespace" title="Permanent link">&para;</a></h3>
-<p>The names of all named HS<span class="arithmatex">\({}^3\)</span> objects (distributions, functions, likelihoods, data, parameters, variables, domains, parameter points, etc.) form a single namespace and must be unique within an HS<span class="arithmatex">\({}^3\)</span> document. The names assigned to variate record entries and data fields/axes are not part of the global namespace.</p>
+<p>The names of all named HS<span class="arithmatex">\({}^3\)</span> objects (distributions, functions, likelihoods, data, parameters, variables, domains, parameter points, etc.) form a single namespace and <span class="smallcaps">must</span> be unique within an HS<span class="arithmatex">\({}^3\)</span> document. The names assigned to variate record entries and data fields/axes are not part of the global namespace. Neither are the names of analyses (see <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>): the names of analyses <span class="smallcaps">must</span> be unique among all analyses in an HS<span class="arithmatex">\({}^3\)</span> document, but an analysis <span class="smallcaps">may</span> have the same name as an object in the global namespace, for example the likelihood it refers to. Future versions of this standard may restrict the latter.</p>
+<p>Only the definition of a named object introduces a name into the global namespace. Places where a name is merely used to refer to an existing object do not introduce a new name. In particular, the entries of <code>parameters</code> in a parameter point (see <a href="#sec:parameterpoints" reference="sec:parameterpoints" reference-type="ref">Parameter points</a>) refer to parameters of the model rather than defining new named objects, so the same parameter name may appear in several parameter points without violating the uniqueness requirement.</p>
 <p>HS<span class="arithmatex">\({}^3\)</span> implementations will typically provide a renaming/aliasing mechanism that can be used to resolve name clashes when using
 multiple HS<span class="arithmatex">\({}^3\)</span> documents together, e.g. for combined analyses.</p>
 <h4 id="sec:identifiers">Identifiers<a class="headerlink" href="#sec:identifiers" title="Permanent link">&para;</a></h4>
@@ -950,7 +951,7 @@ The choice of reference measure would be arbitrary in principle, which scales li
 Here we use <span class="arithmatex">\(\text{PDF}(m(\theta), x)\)</span> to denote the density value of the probability distribution/measure <span class="arithmatex">\(m\)</span>, parameterized by <span class="arithmatex">\(\theta\)</span>, at the point/variate <span class="arithmatex">\(x\)</span>, in respect to the implied reference for <span class="arithmatex">\(m\)</span>. </p>
 <h3 id="sec:data-generation">Observed and simulated data<a class="headerlink" href="#sec:data-generation" title="Permanent link">&para;</a></h3>
 <p>The term data refers here to any collection of values that represents the outcome of an experiment. Data takes the same form as variates of distributions (see 
-<a href="#sec:distributions" reference="sec:distributions" reference-type="ref">Distributions</a>, i. e.&nbsp;a record of real values or vectors. To compare given data with a given model, the names and shapes of the data entries must match the variates of the probability distributions <span class="arithmatex">\(m(\theta)\)</span> that the model returns for a specific choice of parameters <span class="arithmatex">\(\theta\)</span>. 
+<a href="#sec:distributions" reference="sec:distributions" reference-type="ref">Distributions</a>, i. e.&nbsp;a record of real values or vectors. To compare given data with a given model, the names and shapes of the data entries <span class="smallcaps">must</span> match the variates of the probability distributions <span class="arithmatex">\(m(\theta)\)</span> that the model returns for a specific choice of parameters <span class="arithmatex">\(\theta\)</span>. 
 This means that given a model <span class="arithmatex">\(m\)</span> and concrete parameter values <span class="arithmatex">\(\theta\)</span>, drawing a set of random values from the probability distribution <span class="arithmatex">\(m(\theta)\)</span> produces a valid set of simulated observations. Implementations can use this to provide mock-data generation capabilities. </p>
 <h3 id="sec:likelihood-definition">Likelihood functions<a class="headerlink" href="#sec:likelihood-definition" title="Permanent link">&para;</a></h3>
 <p>The concrete probability distribution <span class="arithmatex">\(m(\theta)\)</span> that a model <span class="arithmatex">\(m\)</span> returns for specific parameter values <span class="arithmatex">\(\theta\)</span> can be compared to observed data <span class="arithmatex">\(x\)</span>. This gives rise to a likelihood <span class="arithmatex">\(\mathcal{L}_{m,x}(\theta) = \text{PDF}(m(\theta), x)\)</span> that is a real-valued function on the parameter space. Multiple distributions/models that describe different modes of observation can be combined with multiple sets of data that cover those modes of observation into a single likelihood (Sec. 
@@ -966,7 +967,7 @@ the model (see <a href="#sec:data-generation" reference="sec:data-generation" re
 <h2 id="how-to-read-this-document">How to read this document<a class="headerlink" href="#how-to-read-this-document" title="Permanent link">&para;</a></h2>
 <p>In the context of this document, any <code>JSON</code> object is referred to as a struct. A key-value-pair inside such a struct is referred to as a component. If not explicitly stated otherwise, all components mentioned are mandatory. 
 The components located inside the top-level struct are referred to as top-level components. 
-The keywords <span class="smallcaps">optional</span> and <span class="smallcaps">required</span>, as well as <span class="smallcaps">should</span> and <span class="smallcaps">may</span> are used in accordance with IETF requirement levels <sup id="fnref:rfc2119"><a class="footnote-ref" href="#fn:rfc2119">7</a></sup>. </p>
+The keywords <span class="smallcaps">must</span>, <span class="smallcaps">must not</span>, <span class="smallcaps">required</span>, <span class="smallcaps">should</span>, <span class="smallcaps">should not</span>, <span class="smallcaps">may</span> and <span class="smallcaps">optional</span> are used in accordance with IETF requirement levels <sup id="fnref:rfc2119"><a class="footnote-ref" href="#fn:rfc2119">7</a></sup>. </p>
 <h2 id="terms-and-types">Terms and Types<a class="headerlink" href="#terms-and-types" title="Permanent link">&para;</a></h2>
 <p>This is a list of used types and terms in this document. </p>
 <ul>
@@ -977,10 +978,11 @@ The keywords <span class="smallcaps">optional</span> and <span class="smallcaps"
 <li><code>number</code>: either floating or integer type values </li>
 <li><code>boolean</code>: boolean values; they can be encoded as <code>true</code> and <code>false</code> </li>
 </ul>
-<p>All <code>struct</code>s defining functions, distributions, parameters, variables, domains, likelihoods, data or parameter points will be referred to as <code>object</code>s. All <code>object</code>s <span class="smallcaps">must</span> always have a component <code>name</code> that <span class="smallcaps">must</span> be unique among all <code>object</code>s. </p>
+<p>All <code>struct</code>s defining functions, distributions, parameters, variables, domains, likelihoods, data or parameter points will be referred to as <code>object</code>s. All <code>object</code>s <span class="smallcaps">must</span> always have a component <code>name</code>. These names are subject to the uniqueness rule given in <a href="#sec:global-namespace" reference="sec:global-namespace" reference-type="ref">Global namespace</a>. </p>
 <p>Within most top-level <code>component</code>s, any one <code>string</code> given as a value to any component <span class="smallcaps">should</span> refer to the <code>name</code> of another <code>object</code>, unless explicitly stated otherwise. Top-level <code>component</code>s in which this is not the case are explicitly marked as such. </p>
 <h2 id="file-format">File format<a class="headerlink" href="#file-format" title="Permanent link">&para;</a></h2>
 <p>HS<span class="arithmatex">\({}^3\)</span> documents are encoded in the JSON format as defined in ISO/IEC 21778:2017 <sup id="fnref:json"><a class="footnote-ref" href="#fn:json">8</a></sup>. Implementations <span class="smallcaps">may</span> support other serialization formats that support a non-ambiguous mapping to JSON, such as TOML or YAML, in which case they <span class="smallcaps">should</span> use a different file extension.</p>
+<p>An HS<span class="arithmatex">\({}^3\)</span> document that contains a JSON object with two or more members of the same name is invalid. All numeric values <span class="smallcaps">must</span> be finite IEEE-754 double-precision numbers that are representable as JSON numbers; the non-standard literals <code>NaN</code>, <code>Infinity</code> and <code>-Infinity</code> <span class="smallcaps">must not</span> be used.</p>
 <p>The recommended filename extension for HS<span class="arithmatex">\({}^3\)</span> JSON documents is <code>.hs3.json</code>.</p>
 <h2 id="validators">Validators<a class="headerlink" href="#validators" title="Permanent link">&para;</a></h2>
 <p><em>This section is non-normative.</em> </p>
@@ -1330,7 +1332,7 @@ defined in a <code>histfactory</code> function.</p>
 <li><code>type</code>: <code>multivariate_normal_dist</code> </li>
 <li><code>x</code>: array of names of the variables <span class="arithmatex">\(\mathbf{x}\)</span>. This also     includes mixed arrays of values and names. </li>
 <li><code>mean</code>: array of length <span class="arithmatex">\(k\)</span> of values or names of the parameters     used as mean values <span class="arithmatex">\(\boldsymbol\mu\)</span> </li>
-<li><code>covariances</code>: an array comprised of <span class="arithmatex">\(k\)</span> sub-arrays, each of which     is also of length <span class="arithmatex">\(k\)</span>, designed to store values or names of the     entries of the covariance matrix <span class="arithmatex">\(\boldsymbol\Sigma\)</span>. In general,     the covariance matrix <span class="arithmatex">\(\boldsymbol\Sigma\)</span> <span class="smallcaps">must</span> be     symmetric and positive semi-definite. </li>
+<li><code>covariances</code>: an array comprised of <span class="arithmatex">\(k\)</span> sub-arrays, each of which     is also of length <span class="arithmatex">\(k\)</span>, designed to store values or names of the     entries of the covariance matrix <span class="arithmatex">\(\boldsymbol\Sigma\)</span>. In general,     the covariance matrix <span class="arithmatex">\(\boldsymbol\Sigma\)</span> <span class="smallcaps">must</span> be     symmetric and positive-definite, so that its inverse <span class="arithmatex">\(\boldsymbol\Sigma^{-1}\)</span> appearing in the density exists. </li>
 </ul>
 <h4 id="generic-distribution">Generic distribution<a class="headerlink" href="#generic-distribution" title="Permanent link">&para;</a></h4>
 <p><em>Note: Users should prefer the specific distributions defined in this standard over generic distributions where possible, as implementations of these will typically be more optimized. Generic distributions should only be used if no equivalent specific distribution is defined.</em> </p>
@@ -1355,36 +1357,86 @@ The distribution is normalized by the implementation, so a normalization term <s
 <li>all further components as defined in Section <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a> </li>
 </ul>
 <h4 id="relativistic-breit-wigner-distribution">Relativistic Breit-Wigner distribution<a class="headerlink" href="#relativistic-breit-wigner-distribution" title="Permanent link">&para;</a></h4>
-<p>The relativistic Breit-Wigner distribution describes the line-shape of a resonance in the mass spectrum of a two-particle system. It is assumed that the resonance can decay into a list of channels. </p>
-<p>The first channel in the list indicates the system for which mass
-distribution is modelled.</p>
+<p>The relativistic Breit-Wigner distribution describes the line shape of a resonance in the mass spectrum of a two-particle system. The resonance couples to a non-empty list of two-body channels. The first channel specifies the observed final state.</p>
+<p>The variate <span class="arithmatex">\(m\)</span> is the invariant (running) mass of the observed two-particle system. The parameter <span class="arithmatex">\(m_\text{BW}\)</span> is the nominal mass of the resonance; it is not, in general, its pole mass. For <span class="arithmatex">\(m&gt;m_{11}+m_{21}\)</span>, the density is</p>
 <div class="arithmatex">\[
-\begin{aligned}  \label{eq:relativistic_breit_wigner_dist} \text{BreitWignerPDF}(m, m_\text{BW}) &amp;= \frac{1}{\ensuremath{\mathcal{M}}}\frac{m \Gamma_1(m)}{\left|m_\text{BW}^2-m^2 - i m_\text{BW} \Gamma(m)\right|^2} ,\\ \nonumber \Gamma(m) &amp;= \sum_i \Gamma_i(m) ,\\ \nonumber \end{aligned} 
+\begin{aligned}
+\label{eq:relativistic_breit_wigner_dist}
+\text{BreitWignerPDF}(m,m_\text{BW})
+&amp;=\frac{1}{\mathcal{M}}\frac{m\Gamma_1(m)}
+{\left|m_\text{BW}^2-m^2-i m_\text{BW}\Gamma(m)\right|^2},\\
+\Gamma(m)&amp;=\sum_i\Gamma_i(m).
+\end{aligned}
 \]</div>
-<p>When modelling the mass spectrum, the term <span class="arithmatex">\(m\)</span> in the numerator of 
-Eq. <a href="#eq:relativistic_breit_wigner_dist" reference="eq:relativistic_breit_wigner_dist" reference-type="eqref">(Breit-Wigner)</a> accounts for a jacobian of transformation from <span class="arithmatex">\(m^2\)</span> to <span class="arithmatex">\(m\)</span>. The width term <span class="arithmatex">\(\Gamma_1(m)\)</span> adds for the phase space factor for the channel of interest </p>
+<p>The density is zero below the observed-channel threshold. Values at the threshold itself are defined by the limit from above, when finite; an integrable endpoint singularity does not change the probability distribution. <span class="arithmatex">\(\mathcal{M}\)</span> normalizes the density over the current domain. The parameters and domain <span class="smallcaps">must</span> give a finite, strictly positive normalization integral.</p>
+<p>The factor <span class="arithmatex">\(m\)</span> in the numerator accounts for the Jacobian of the transformation from <span class="arithmatex">\(m^2\)</span> to <span class="arithmatex">\(m\)</span>; its constant factor of two is absorbed in <span class="arithmatex">\(\mathcal{M}\)</span>. The factor <span class="arithmatex">\(\Gamma_1(m)\)</span> includes the observed-channel phase space and angular-momentum dependence. This specifies a line-shape model without additional mass-dependent production factors or interference terms.</p>
 <ul>
-<li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>relativistic_breit_wigner_dist</code> </li>
-<li><code>mass</code>: name of the mass variable <span class="arithmatex">\(m_\text{BW}\)</span> </li>
-<li><code>channels</code>: list of <code>structs</code> encoding the channels </li>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>relativistic_breit_wigner_dist</code></li>
+<li><code>mass</code>: name of the observable mass variable <span class="arithmatex">\(m\)</span></li>
+<li><code>resonance</code>: value or name of the parameter <span class="arithmatex">\(m_\text{BW}\)</span>, the nominal mass</li>
+<li><code>channels</code>: non-empty array of channel structs, with the observed channel first</li>
 </ul>
-<p>Each of the channels is defined by the partial width <span class="arithmatex">\(\Gamma_i(m)\)</span>, given as </p>
+<p>The nominal mass <span class="smallcaps">must</span> be strictly positive. For an open channel, the contribution is defined by</p>
 <div class="arithmatex">\[
-\begin{aligned} \Gamma_i(m) &amp;= \Gamma_{\text{BW},i}  n_{li}^2(m)\rho_i(m) ,\\ \nonumber \rho_i(m) &amp;= 2q_i(m)/m ,\\ \nonumber q_i(m) &amp;= \sqrt{(m^2-(m_{1i}+m_{2i})^2)(m^2-(m_{1i}-m_{2i})^2)} / (2m) ,\\ \nonumber n_{li}(m) &amp;= z_i^{li}(m)   h_{li}(z_i(m)) ,\\ \nonumber z_i(m) &amp;= q_i(m)R_i  \end{aligned} 
+\begin{aligned}
+\Gamma_i(m)&amp;=\Gamma_{\text{BW},i}\,n_{l_i i}^2(m)\rho_i(m),\\
+\rho_i(m)&amp;=\frac{2q_i(m)}{m},\\
+q_i(m)&amp;=\frac{\sqrt{\bigl(m^2-(m_{1i}+m_{2i})^2\bigr)
+\bigl(m^2-(m_{1i}-m_{2i})^2\bigr)}}{2m},\\
+n_{l_i i}^2(m)&amp;=z_i^{2l_i}(m)h_{l_i}^2(z_i(m)),\\
+z_i(m)&amp;=q_i(m)R_i.
+\end{aligned}
 \]</div>
-<p>The <span class="arithmatex">\(h_l(z)\)</span> is the standard Blatt-Weisskopf form-factors, <span class="arithmatex">\(h_0^2(z) = 1/(1+z^2)\)</span>, <span class="arithmatex">\(h_1^2(z) = 1/(9+3z^2+z^4)\)</span>, and so on (Eqs.(50.30-50.35) in Ref.&nbsp;<sup id="fnref:pdg2023"><a class="footnote-ref" href="#fn:pdg2023">11</a></sup>).\ The <code>struct</code>s defining the channels should contain the following keys: </p>
+<p>Here <span class="arithmatex">\(q_i(m)\)</span> is the real, non-negative breakup momentum. If the evaluation range includes closed channels, use the analytic continuation described in the note below.</p>
+<p>The Blatt-Weisskopf factors use the convention of Eqs. (50.33)-(50.34) in Ref.&nbsp;<sup id="fnref:pdg2023"><a class="footnote-ref" href="#fn:pdg2023">11</a></sup>:</p>
+<div class="arithmatex">\[
+h_0^2(z)=1,\qquad
+h_1^2(z)=\frac{1}{1+z^2},\qquad
+h_2^2(z)=\frac{1}{9+3z^2+z^4}.
+\]</div>
+<p>For completeness, the same convention for any non-negative integer <span class="arithmatex">\(l\)</span> is fixed by the polynomials</p>
+<div class="arithmatex">\[
+P_0(z)=1,\qquad P_1(z)=1-iz,\qquad
+P_{l+1}(z)=(2l+1)P_l(z)-z^2P_{l-1}(z)\quad(l\geq1),\qquad
+h_l^2(z)=\frac{1}{P_l(z)P_l(-z)}.
+\]</div>
+<p>Each channel struct contains:</p>
 <ul>
-<li><code>name</code>: name of the final state (<span class="smallcaps">optional</span>) </li>
-<li><code>Gamma</code>: partial width <span class="arithmatex">\(\Gamma_{\text{BW}}\)</span> of the resonance </li>
-<li><code>m1</code>: mass <span class="arithmatex">\(m_1\)</span> of the first particle the resonance decays into     (default value <span class="arithmatex">\(0\)</span>) </li>
-<li><code>m2</code>: mass <span class="arithmatex">\(m_2\)</span> of the second particle the resonance decays into     (default value <span class="arithmatex">\(0\)</span>) </li>
-<li><code>l</code>: orbital angular momentum <span class="arithmatex">\(l\)</span> (default value <span class="arithmatex">\(0\)</span>) </li>
-<li><code>R</code>: form-factor size parameter <span class="arithmatex">\(R\)</span> (default value <span class="arithmatex">\(3\)</span> GeV) 
-For non-zero angular momentum, <span class="arithmatex">\(\Gamma_i(m_\text{BW})\)</span> gives an approximation to the partial width of the resonance, not <span class="arithmatex">\(\Gamma_{\text{BW},i}\)</span>. 
-A commonly used approximation of the relativistic Breit-Wigner function with the constant width is a special case of the 
-Eq. <a href="#eq:relativistic_breit_wigner_dist" reference="eq:relativistic_breit_wigner_dist" reference-type="eqref">(Breit-Wigner)</a>, where the <code>[channels]</code> argument contains a single channel with <span class="arithmatex">\(m_1=0\)</span>, <span class="arithmatex">\(m_2=0\)</span>, and <span class="arithmatex">\(l=0\)</span>. </li>
+<li><code>name</code>: name of the final state (<span class="smallcaps">optional</span>)</li>
+<li><code>Gamma</code>: value or name of the non-negative width coefficient <span class="arithmatex">\(\Gamma_{\text{BW},i}\)</span>, with units of mass; it is not generally the partial width at the nominal mass</li>
+<li><code>m1</code>: value or name of the non-negative mass <span class="arithmatex">\(m_{1i}\)</span> of the first daughter (<span class="smallcaps">optional</span>, default <span class="arithmatex">\(0\)</span>)</li>
+<li><code>m2</code>: value or name of the non-negative mass <span class="arithmatex">\(m_{2i}\)</span> of the second daughter (<span class="smallcaps">optional</span>, default <span class="arithmatex">\(0\)</span>)</li>
+<li><code>l</code>: non-negative integer orbital angular momentum <span class="arithmatex">\(l_i\)</span> (<span class="smallcaps">optional</span>, default <span class="arithmatex">\(0\)</span>)</li>
+<li><code>R</code>: value or name of the strictly positive radius parameter <span class="arithmatex">\(R_i\)</span>, with units of inverse mass (<span class="smallcaps">optional</span>, default <span class="arithmatex">\(3\,\mathrm{GeV}^{-1}\)</span>)</li>
 </ul>
+<p>The first channel's <code>Gamma</code> <span class="smallcaps">must</span> be strictly positive. Masses and width coefficients <span class="smallcaps">must</span> use a common mass unit, and radii <span class="smallcaps">must</span> use the corresponding inverse unit so that <span class="arithmatex">\(q_iR_i\)</span> is dimensionless. The default radius is converted accordingly when masses are expressed in a unit other than GeV.</p>
+<p>For a channel open at <span class="arithmatex">\(m_\text{BW}\)</span>, its partial width evaluated at the nominal mass is</p>
+<div class="arithmatex">\[
+\Gamma_i(m_\text{BW})=\Gamma_{\text{BW},i}\,
+ n_{l_i i}^2(m_\text{BW})\rho_i(m_\text{BW}).
+\]</div>
+<p>The coefficient <code>Gamma</code> is therefore not generally equal to that partial width, even for <span class="arithmatex">\(l_i=0\)</span>. This definition retains the unnormalized phase-space and barrier factors; it does not use the nominal-partial-width convention of Eq. (50.35) in Ref.&nbsp;<sup id="fnref2:pdg2023"><a class="footnote-ref" href="#fn:pdg2023">11</a></sup>. No division by a phase-space factor at the nominal mass is made, so a channel may also have its threshold at or above <span class="arithmatex">\(m_\text{BW}\)</span>.</p>
+<p>A constant-width special case is one channel with <span class="arithmatex">\(m_1=m_2=0\)</span> and <span class="arithmatex">\(l=0\)</span>. For <span class="arithmatex">\(m&gt;0\)</span>, <span class="arithmatex">\(q=m/2\)</span>, <span class="arithmatex">\(\rho=1\)</span>, and <span class="arithmatex">\(n_0^2=h_0^2=1\)</span>, giving <span class="arithmatex">\(\Gamma(m)=\Gamma_{\text{BW},1}\)</span> independently of <span class="arithmatex">\(R\)</span>.</p>
+<p>For example, a constant-width model with masses in GeV can be encoded as</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;resonance_shape&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;relativistic_breit_wigner_dist&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mass&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;resonance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;Gamma&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;m1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;m2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;l&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Note on analytic continuation.</strong> A model with several channels may be evaluated in a mass range where the observed channel is open but some other channels are closed. Those channels still contribute to the denominator. When <span class="arithmatex">\(q_i^2(m)&lt;0\)</span>, their breakup momentum is computed as <span class="arithmatex">\(q_i(m)=+i\sqrt{-q_i^2(m)}\)</span>, as in Eq. (50.36) of Ref.&nbsp;<sup id="fnref3:pdg2023"><a class="footnote-ref" href="#fn:pdg2023">11</a></sup>, and their <span class="arithmatex">\(\Gamma_i(m)\)</span> can consequently be complex. These continued contributions <span class="smallcaps">must</span> be retained, rather than set to zero; they are not physical decay widths below threshold.</p>
+<p>The physical-sheet prescription, including the region below the pseudothreshold for unequal daughter masses, is</p>
+<div class="arithmatex">\[
+q_i(m)=\lim_{\epsilon\to0^+}
+\frac{\sqrt{m^2-(m_{1i}+m_{2i})^2+i\epsilon}\,
+\sqrt{m^2-(m_{1i}-m_{2i})^2+i\epsilon}}{2m},
+\]</div>
+<p>with principal square roots for real <span class="arithmatex">\(m&gt;0\)</span>. Thus <span class="arithmatex">\(q_i\)</span> is positive imaginary between <span class="arithmatex">\(|m_{1i}-m_{2i}|\)</span> and <span class="arithmatex">\(m_{1i}+m_{2i}\)</span>, and negative real below <span class="arithmatex">\(|m_{1i}-m_{2i}|\)</span>. Values at <span class="arithmatex">\(m=0\)</span>, if needed as a domain endpoint, are taken as limits from above. The rational barrier factors are continued as written: neither <span class="arithmatex">\(h_l^2(z)\)</span> nor <span class="arithmatex">\(n_{l_i i}^2(m)\)</span> denotes a modulus squared for complex arguments. Removable singularities of the complete line shape are evaluated by continuity. The observed-channel numerator is used only above its own threshold, where it is real and non-negative; the density remains zero below that threshold.</p>
 <h3 id="composite-distributions">Composite distributions<a class="headerlink" href="#composite-distributions" title="Permanent link">&para;</a></h3>
 <p>This section contains composite distributions in the sense that they refer to other distribution which they combine or modify in some way. </p>
 <h4 id="mixture-distribution">Mixture distribution<a class="headerlink" href="#mixture-distribution" title="Permanent link">&para;</a></h4>
@@ -1469,10 +1521,10 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 <li><code>function</code>: The density function <span class="arithmatex">\(f\)</span> </li>
 </ul>
 </li>
-<li><code>log_density_function_dist</code>: Specified via the PDF <span class="arithmatex">\(f(x)\)</span> <ul>
+<li><code>log_density_function_dist</code>: Specified via the log-density <span class="arithmatex">\(\log(f(x))\)</span> <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>log_density_function_dist</code> </li>
-<li><code>function</code>: The density function <span class="arithmatex">\(f\)</span> </li>
+<li><code>function</code>: The logarithm <span class="arithmatex">\(\log f\)</span> of the non-normalized density function <span class="arithmatex">\(f\)</span> </li>
 </ul>
 </li>
 </ul>
@@ -1519,25 +1571,27 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 \begin{aligned} \text{BinCountsPdf}(x) &amp;= \prod_i^k \text{PoissonPdf}(x_i, \nu_i) \end{aligned} 
 \]</div>
 <ul>
-<li><code>bincounts_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span> and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: <ul>
+<li>
+<p><code>bincounts_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span> and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: </p>
+<ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>bincounts_extended_dist</code> </li>
 <li><code>rate</code>: The global rate <span class="arithmatex">\(\lambda\)</span> </li>
 <li><code>dist</code>: The underlying distribution <span class="arithmatex">\(m\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the in <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. <span class="smallcaps">optional</span> if <code>dist</code> is a binned distribution, in which case the same binning is used by default.  </li>
+<li><code>axes</code>: a definition of the binning to be used, following the definitions in <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. <span class="smallcaps">optional</span> if <code>dist</code> is a binned distribution, in which case the same binning is used by default.  </li>
 </ul>
+<p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying distribution. The underlying distribution <span class="smallcaps">must</span> not be referred to from other components of the statistical model. </p>
 </li>
-</ul>
-<p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying distribution. The underlying distribution <span class="smallcaps">must</span> not be referred to from other components of the statistical model. 
-<code>bincounts_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
-<p>More formally, the distribution corresponds to the inhomogeneous Poisson point process that is defined by a non-normalized rate measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </p>
+<li>
+<p><code>bincounts_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
 <ul>
-<li><code>name</code>: custom string <ul>
+<li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>bincounts_density_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>density</code>: The rate-density function <span class="arithmatex">\(f\)</span> </li>
 <li><code>axes</code>: a definition of the binning to be used, following the definitions in <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. </li>
 </ul>
+<p>More formally, the distribution corresponds to the inhomogeneous Poisson point process that is defined by a non-normalized rate measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </p>
 </li>
 </ul>
 <h2 id="sec:functions">Functions<a class="headerlink" href="#sec:functions" title="Permanent link">&para;</a></h2>
@@ -1941,8 +1995,8 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <ul>
 <li><code>name</code>: custom string </li>
 <li><code>parameters</code>: array of parameter structs (see below) 
-The component <code>parameters</code> is an array of components each containing: <ul>
-<li><code>name</code>: custom string </li>
+The component <code>parameters</code> is an array of structs, each of which assigns a value to one parameter of the model. The <code>name</code> of such an entry refers to that parameter; it does not define a new named object. Consequently, the same parameter may appear in any number of parameter points (see <a href="#sec:global-namespace" reference="sec:global-namespace" reference-type="ref">Global namespace</a>). Each entry contains: <ul>
+<li><code>name</code>: name of the parameter this entry refers to </li>
 <li><code>value</code>: value of the parameter: a number, or a string for a categorical parameter. A string value <span class="smallcaps">must</span> be one of the <code>categories</code> of a categorical axis of the same name in the domain(s) the parameter point is used with, e.g. the <code>domains</code> of an analysis that references it as <code>init</code> (see <a href="#sec:domains" reference="sec:domains" reference-type="ref">Domains</a>). </li>
 <li><code>const</code>: (<span class="smallcaps">optional</span>) boolean, whether variable is     constant or not. Default is <code>false</code>. </li>
 </ul>
@@ -2267,7 +2321,7 @@ S_2=\tfrac12(u\log^2 u+v\log^2 v) \quad A_2=\tfrac12(u\log^2 u-v\log^2 v)
 </li>
 </ul>
 <p>Modifiers can be constrained. This is indicated by the component <code>constraint</code>, which identifies the type of the constraint term. In essence, the likelihood picks up a penalty term for changing the corresponding parameter too far away from its nominal value. The nominal value is, by convention, defined by the type of constraint, and is 0 for all modifiers of type <code>sys</code> (<code>histosys</code>, <code>normsys</code>) and is 1 for all modifiers of type <code>factor</code> (<code>normfactor</code>, <code>shapefactor</code>). The strength of the constraint is always such that the standard deviation of constraint distribution is <span class="arithmatex">\(1\)</span>. </p>
-<p>The supported constraint distributions, also called constraint types, are <code>Gauss</code> for a gaussian with unit width (a gaussian distribution with a variance of <span class="arithmatex">\(1\)</span>), <code>Poisson</code> for a unit Poissonian (e.g. a continous Poissonian with a central value 1), or <code>LogNormal</code> for a unit LogNormal,. If a constraint is given, a corresponding distribution will be considered in addition to the <code>aux_likelihood</code> section of the likelihood, constraining the parameter to its nominal value. </p>
+<p>The supported constraint distributions, also called constraint types, are <code>Gauss</code> for a gaussian with unit width (a gaussian distribution with a variance of <span class="arithmatex">\(1\)</span>), <code>Poisson</code> for a unit Poissonian (e.g. a continous Poissonian with a central value 1), or <code>LogNormal</code> for a unit LogNormal,. If a constraint is given, a corresponding distribution will be considered in addition to the <code>aux_distributions</code> of the likelihood (see <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>), constraining the parameter to its nominal value. </p>
 <p>An exception to this is provided by the <code>staterror</code> modifier as described above, and the <code>shapesys</code> for which a Poissonian constraint is defined with the central values defined as the squares of the values defined in <code>vals</code>. </p>
 <p>The constraint terms belong to the prediction and not to its representation: a likelihood that contains a <code>histfactory_dist</code>, or a distribution that depends on a <code>histfactory</code> function, considers the constraint terms of all modifiers of that prediction in addition to the <code>aux_likelihood</code> section of the likelihood, in the same way for both representations. </p>
 <p>The components of a HistFactory prediction are: </p>
@@ -2367,7 +2421,7 @@ Struct of one modifier:<ul>
 <p>Glen Cowan, Kyle Cranmer, Eilam Gross, and Ofer Vitells. Asymptotic formulae for likelihood-based tests of new physics. <em>Eur. Phys. J. C</em>, 71:1554, 2011. [Erratum: Eur.Phys.J.C 73, 2501 (2013)]. <a href="https://arxiv.org/abs/1007.1727">arXiv:1007.1727</a>, <a href="https://doi.org/10.1140/epjc/s10052-011-1554-0">doi:10.1140/epjc/s10052-011-1554-0</a>.&#160;<a class="footnote-backref" href="#fnref:asymptotics" title="Jump back to footnote 10 in the text">&#8617;</a></p>
 </li>
 <li id="fn:pdg2023">
-<p>R. L. Workman and Others. Review of Particle Physics. <em>PTEP</em>, 2022:083C01, 2022. <a href="https://doi.org/10.1093/ptep/ptac097">doi:10.1093/ptep/ptac097</a>.&#160;<a class="footnote-backref" href="#fnref:pdg2023" title="Jump back to footnote 11 in the text">&#8617;</a></p>
+<p>R. L. Workman and Others. Review of Particle Physics. <em>PTEP</em>, 2022:083C01, 2022. <a href="https://doi.org/10.1093/ptep/ptac097">doi:10.1093/ptep/ptac097</a>.&#160;<a class="footnote-backref" href="#fnref:pdg2023" title="Jump back to footnote 11 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:pdg2023" title="Jump back to footnote 11 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:pdg2023" title="Jump back to footnote 11 in the text">&#8617;</a></p>
 </li>
 <li id="fn:hf">
 <p>Kyle Cranmer, George Lewis, Lorenzo Moneta, Akira Shibata, and Wouter Verkerke. HistFactory: A tool for creating statistical models for use with RooFit and RooStats. Technical Report, New York U., New York, jan 2012. URL: <a href="https://cds.cern.ch/record/1456844">https://cds.cern.ch/record/1456844</a>, <a href="https://doi.org/10.17181/CERN-OPEN-2012-016">doi:10.17181/CERN-OPEN-2012-016</a>.&#160;<a class="footnote-backref" href="#fnref:hf" title="Jump back to footnote 12 in the text">&#8617;</a></p>

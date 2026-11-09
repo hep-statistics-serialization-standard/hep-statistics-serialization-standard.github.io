@@ -976,8 +976,8 @@
 <ul>
 <li><code>name</code>: custom string </li>
 <li><code>parameters</code>: array of parameter structs (see below) 
-The component <code>parameters</code> is an array of components each containing: <ul>
-<li><code>name</code>: custom string </li>
+The component <code>parameters</code> is an array of structs, each of which assigns a value to one parameter of the model. The <code>name</code> of such an entry refers to that parameter; it does not define a new named object. Consequently, the same parameter may appear in any number of parameter points (see <a href="#sec:global-namespace" reference="sec:global-namespace" reference-type="ref">Global namespace</a>). Each entry contains: <ul>
+<li><code>name</code>: name of the parameter this entry refers to </li>
 <li><code>value</code>: value of the parameter: a number, or a string for a categorical parameter. A string value <span class="smallcaps">must</span> be one of the <code>categories</code> of a categorical axis of the same name in the domain(s) the parameter point is used with, e.g. the <code>domains</code> of an analysis that references it as <code>init</code> (see <a href="#sec:domains" reference="sec:domains" reference-type="ref">Domains</a>). </li>
 <li><code>const</code>: (<span class="smallcaps">optional</span>) boolean, whether variable is     constant or not. Default is <code>false</code>. </li>
 </ul>

@@ -1726,7 +1726,7 @@ defined in a <code>histfactory</code> function.</p>
 <li><code>type</code>: <code>multivariate_normal_dist</code> </li>
 <li><code>x</code>: array of names of the variables <span class="arithmatex">\(\mathbf{x}\)</span>. This also     includes mixed arrays of values and names. </li>
 <li><code>mean</code>: array of length <span class="arithmatex">\(k\)</span> of values or names of the parameters     used as mean values <span class="arithmatex">\(\boldsymbol\mu\)</span> </li>
-<li><code>covariances</code>: an array comprised of <span class="arithmatex">\(k\)</span> sub-arrays, each of which     is also of length <span class="arithmatex">\(k\)</span>, designed to store values or names of the     entries of the covariance matrix <span class="arithmatex">\(\boldsymbol\Sigma\)</span>. In general,     the covariance matrix <span class="arithmatex">\(\boldsymbol\Sigma\)</span> <span class="smallcaps">must</span> be     symmetric and positive semi-definite. </li>
+<li><code>covariances</code>: an array comprised of <span class="arithmatex">\(k\)</span> sub-arrays, each of which     is also of length <span class="arithmatex">\(k\)</span>, designed to store values or names of the     entries of the covariance matrix <span class="arithmatex">\(\boldsymbol\Sigma\)</span>. In general,     the covariance matrix <span class="arithmatex">\(\boldsymbol\Sigma\)</span> <span class="smallcaps">must</span> be     symmetric and positive-definite, so that its inverse <span class="arithmatex">\(\boldsymbol\Sigma^{-1}\)</span> appearing in the density exists. </li>
 </ul>
 <h4 id="generic-distribution">Generic distribution<a class="headerlink" href="#generic-distribution" title="Permanent link">&para;</a></h4>
 <p><em>Note: Users should prefer the specific distributions defined in this standard over generic distributions where possible, as implementations of these will typically be more optimized. Generic distributions should only be used if no equivalent specific distribution is defined.</em> </p>
@@ -1751,36 +1751,86 @@ The distribution is normalized by the implementation, so a normalization term <s
 <li>all further components as defined in Section <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a> </li>
 </ul>
 <h4 id="relativistic-breit-wigner-distribution">Relativistic Breit-Wigner distribution<a class="headerlink" href="#relativistic-breit-wigner-distribution" title="Permanent link">&para;</a></h4>
-<p>The relativistic Breit-Wigner distribution describes the line-shape of a resonance in the mass spectrum of a two-particle system. It is assumed that the resonance can decay into a list of channels. </p>
-<p>The first channel in the list indicates the system for which mass
-distribution is modelled.</p>
+<p>The relativistic Breit-Wigner distribution describes the line shape of a resonance in the mass spectrum of a two-particle system. The resonance couples to a non-empty list of two-body channels. The first channel specifies the observed final state.</p>
+<p>The variate <span class="arithmatex">\(m\)</span> is the invariant (running) mass of the observed two-particle system. The parameter <span class="arithmatex">\(m_\text{BW}\)</span> is the nominal mass of the resonance; it is not, in general, its pole mass. For <span class="arithmatex">\(m&gt;m_{11}+m_{21}\)</span>, the density is</p>
 <div class="arithmatex">\[
-\begin{aligned}  \label{eq:relativistic_breit_wigner_dist} \text{BreitWignerPDF}(m, m_\text{BW}) &amp;= \frac{1}{\ensuremath{\mathcal{M}}}\frac{m \Gamma_1(m)}{\left|m_\text{BW}^2-m^2 - i m_\text{BW} \Gamma(m)\right|^2} ,\\ \nonumber \Gamma(m) &amp;= \sum_i \Gamma_i(m) ,\\ \nonumber \end{aligned} 
+\begin{aligned}
+\label{eq:relativistic_breit_wigner_dist}
+\text{BreitWignerPDF}(m,m_\text{BW})
+&amp;=\frac{1}{\mathcal{M}}\frac{m\Gamma_1(m)}
+{\left|m_\text{BW}^2-m^2-i m_\text{BW}\Gamma(m)\right|^2},\\
+\Gamma(m)&amp;=\sum_i\Gamma_i(m).
+\end{aligned}
 \]</div>
-<p>When modelling the mass spectrum, the term <span class="arithmatex">\(m\)</span> in the numerator of 
-Eq. <a href="#eq:relativistic_breit_wigner_dist" reference="eq:relativistic_breit_wigner_dist" reference-type="eqref">(Breit-Wigner)</a> accounts for a jacobian of transformation from <span class="arithmatex">\(m^2\)</span> to <span class="arithmatex">\(m\)</span>. The width term <span class="arithmatex">\(\Gamma_1(m)\)</span> adds for the phase space factor for the channel of interest </p>
+<p>The density is zero below the observed-channel threshold. Values at the threshold itself are defined by the limit from above, when finite; an integrable endpoint singularity does not change the probability distribution. <span class="arithmatex">\(\mathcal{M}\)</span> normalizes the density over the current domain. The parameters and domain <span class="smallcaps">must</span> give a finite, strictly positive normalization integral.</p>
+<p>The factor <span class="arithmatex">\(m\)</span> in the numerator accounts for the Jacobian of the transformation from <span class="arithmatex">\(m^2\)</span> to <span class="arithmatex">\(m\)</span>; its constant factor of two is absorbed in <span class="arithmatex">\(\mathcal{M}\)</span>. The factor <span class="arithmatex">\(\Gamma_1(m)\)</span> includes the observed-channel phase space and angular-momentum dependence. This specifies a line-shape model without additional mass-dependent production factors or interference terms.</p>
 <ul>
-<li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>relativistic_breit_wigner_dist</code> </li>
-<li><code>mass</code>: name of the mass variable <span class="arithmatex">\(m_\text{BW}\)</span> </li>
-<li><code>channels</code>: list of <code>structs</code> encoding the channels </li>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>relativistic_breit_wigner_dist</code></li>
+<li><code>mass</code>: name of the observable mass variable <span class="arithmatex">\(m\)</span></li>
+<li><code>resonance</code>: value or name of the parameter <span class="arithmatex">\(m_\text{BW}\)</span>, the nominal mass</li>
+<li><code>channels</code>: non-empty array of channel structs, with the observed channel first</li>
 </ul>
-<p>Each of the channels is defined by the partial width <span class="arithmatex">\(\Gamma_i(m)\)</span>, given as </p>
+<p>The nominal mass <span class="smallcaps">must</span> be strictly positive. For an open channel, the contribution is defined by</p>
 <div class="arithmatex">\[
-\begin{aligned} \Gamma_i(m) &amp;= \Gamma_{\text{BW},i}  n_{li}^2(m)\rho_i(m) ,\\ \nonumber \rho_i(m) &amp;= 2q_i(m)/m ,\\ \nonumber q_i(m) &amp;= \sqrt{(m^2-(m_{1i}+m_{2i})^2)(m^2-(m_{1i}-m_{2i})^2)} / (2m) ,\\ \nonumber n_{li}(m) &amp;= z_i^{li}(m)   h_{li}(z_i(m)) ,\\ \nonumber z_i(m) &amp;= q_i(m)R_i  \end{aligned} 
+\begin{aligned}
+\Gamma_i(m)&amp;=\Gamma_{\text{BW},i}\,n_{l_i i}^2(m)\rho_i(m),\\
+\rho_i(m)&amp;=\frac{2q_i(m)}{m},\\
+q_i(m)&amp;=\frac{\sqrt{\bigl(m^2-(m_{1i}+m_{2i})^2\bigr)
+\bigl(m^2-(m_{1i}-m_{2i})^2\bigr)}}{2m},\\
+n_{l_i i}^2(m)&amp;=z_i^{2l_i}(m)h_{l_i}^2(z_i(m)),\\
+z_i(m)&amp;=q_i(m)R_i.
+\end{aligned}
 \]</div>
-<p>The <span class="arithmatex">\(h_l(z)\)</span> is the standard Blatt-Weisskopf form-factors, <span class="arithmatex">\(h_0^2(z) = 1/(1+z^2)\)</span>, <span class="arithmatex">\(h_1^2(z) = 1/(9+3z^2+z^4)\)</span>, and so on (Eqs.(50.30-50.35) in Ref.&nbsp;[^pdg2023]).\ The <code>struct</code>s defining the channels should contain the following keys: </p>
+<p>Here <span class="arithmatex">\(q_i(m)\)</span> is the real, non-negative breakup momentum. If the evaluation range includes closed channels, use the analytic continuation described in the note below.</p>
+<p>The Blatt-Weisskopf factors use the convention of Eqs. (50.33)-(50.34) in Ref.&nbsp;[^pdg2023]:</p>
+<div class="arithmatex">\[
+h_0^2(z)=1,\qquad
+h_1^2(z)=\frac{1}{1+z^2},\qquad
+h_2^2(z)=\frac{1}{9+3z^2+z^4}.
+\]</div>
+<p>For completeness, the same convention for any non-negative integer <span class="arithmatex">\(l\)</span> is fixed by the polynomials</p>
+<div class="arithmatex">\[
+P_0(z)=1,\qquad P_1(z)=1-iz,\qquad
+P_{l+1}(z)=(2l+1)P_l(z)-z^2P_{l-1}(z)\quad(l\geq1),\qquad
+h_l^2(z)=\frac{1}{P_l(z)P_l(-z)}.
+\]</div>
+<p>Each channel struct contains:</p>
 <ul>
-<li><code>name</code>: name of the final state (<span class="smallcaps">optional</span>) </li>
-<li><code>Gamma</code>: partial width <span class="arithmatex">\(\Gamma_{\text{BW}}\)</span> of the resonance </li>
-<li><code>m1</code>: mass <span class="arithmatex">\(m_1\)</span> of the first particle the resonance decays into     (default value <span class="arithmatex">\(0\)</span>) </li>
-<li><code>m2</code>: mass <span class="arithmatex">\(m_2\)</span> of the second particle the resonance decays into     (default value <span class="arithmatex">\(0\)</span>) </li>
-<li><code>l</code>: orbital angular momentum <span class="arithmatex">\(l\)</span> (default value <span class="arithmatex">\(0\)</span>) </li>
-<li><code>R</code>: form-factor size parameter <span class="arithmatex">\(R\)</span> (default value <span class="arithmatex">\(3\)</span> GeV) 
-For non-zero angular momentum, <span class="arithmatex">\(\Gamma_i(m_\text{BW})\)</span> gives an approximation to the partial width of the resonance, not <span class="arithmatex">\(\Gamma_{\text{BW},i}\)</span>. 
-A commonly used approximation of the relativistic Breit-Wigner function with the constant width is a special case of the 
-Eq. <a href="#eq:relativistic_breit_wigner_dist" reference="eq:relativistic_breit_wigner_dist" reference-type="eqref">(Breit-Wigner)</a>, where the <code>[channels]</code> argument contains a single channel with <span class="arithmatex">\(m_1=0\)</span>, <span class="arithmatex">\(m_2=0\)</span>, and <span class="arithmatex">\(l=0\)</span>. </li>
+<li><code>name</code>: name of the final state (<span class="smallcaps">optional</span>)</li>
+<li><code>Gamma</code>: value or name of the non-negative width coefficient <span class="arithmatex">\(\Gamma_{\text{BW},i}\)</span>, with units of mass; it is not generally the partial width at the nominal mass</li>
+<li><code>m1</code>: value or name of the non-negative mass <span class="arithmatex">\(m_{1i}\)</span> of the first daughter (<span class="smallcaps">optional</span>, default <span class="arithmatex">\(0\)</span>)</li>
+<li><code>m2</code>: value or name of the non-negative mass <span class="arithmatex">\(m_{2i}\)</span> of the second daughter (<span class="smallcaps">optional</span>, default <span class="arithmatex">\(0\)</span>)</li>
+<li><code>l</code>: non-negative integer orbital angular momentum <span class="arithmatex">\(l_i\)</span> (<span class="smallcaps">optional</span>, default <span class="arithmatex">\(0\)</span>)</li>
+<li><code>R</code>: value or name of the strictly positive radius parameter <span class="arithmatex">\(R_i\)</span>, with units of inverse mass (<span class="smallcaps">optional</span>, default <span class="arithmatex">\(3\,\mathrm{GeV}^{-1}\)</span>)</li>
 </ul>
+<p>The first channel's <code>Gamma</code> <span class="smallcaps">must</span> be strictly positive. Masses and width coefficients <span class="smallcaps">must</span> use a common mass unit, and radii <span class="smallcaps">must</span> use the corresponding inverse unit so that <span class="arithmatex">\(q_iR_i\)</span> is dimensionless. The default radius is converted accordingly when masses are expressed in a unit other than GeV.</p>
+<p>For a channel open at <span class="arithmatex">\(m_\text{BW}\)</span>, its partial width evaluated at the nominal mass is</p>
+<div class="arithmatex">\[
+\Gamma_i(m_\text{BW})=\Gamma_{\text{BW},i}\,
+ n_{l_i i}^2(m_\text{BW})\rho_i(m_\text{BW}).
+\]</div>
+<p>The coefficient <code>Gamma</code> is therefore not generally equal to that partial width, even for <span class="arithmatex">\(l_i=0\)</span>. This definition retains the unnormalized phase-space and barrier factors; it does not use the nominal-partial-width convention of Eq. (50.35) in Ref.&nbsp;[^pdg2023]. No division by a phase-space factor at the nominal mass is made, so a channel may also have its threshold at or above <span class="arithmatex">\(m_\text{BW}\)</span>.</p>
+<p>A constant-width special case is one channel with <span class="arithmatex">\(m_1=m_2=0\)</span> and <span class="arithmatex">\(l=0\)</span>. For <span class="arithmatex">\(m&gt;0\)</span>, <span class="arithmatex">\(q=m/2\)</span>, <span class="arithmatex">\(\rho=1\)</span>, and <span class="arithmatex">\(n_0^2=h_0^2=1\)</span>, giving <span class="arithmatex">\(\Gamma(m)=\Gamma_{\text{BW},1}\)</span> independently of <span class="arithmatex">\(R\)</span>.</p>
+<p>For example, a constant-width model with masses in GeV can be encoded as</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;resonance_shape&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;relativistic_breit_wigner_dist&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mass&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;resonance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;Gamma&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;m1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;m2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;l&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Note on analytic continuation.</strong> A model with several channels may be evaluated in a mass range where the observed channel is open but some other channels are closed. Those channels still contribute to the denominator. When <span class="arithmatex">\(q_i^2(m)&lt;0\)</span>, their breakup momentum is computed as <span class="arithmatex">\(q_i(m)=+i\sqrt{-q_i^2(m)}\)</span>, as in Eq. (50.36) of Ref.&nbsp;[^pdg2023], and their <span class="arithmatex">\(\Gamma_i(m)\)</span> can consequently be complex. These continued contributions <span class="smallcaps">must</span> be retained, rather than set to zero; they are not physical decay widths below threshold.</p>
+<p>The physical-sheet prescription, including the region below the pseudothreshold for unequal daughter masses, is</p>
+<div class="arithmatex">\[
+q_i(m)=\lim_{\epsilon\to0^+}
+\frac{\sqrt{m^2-(m_{1i}+m_{2i})^2+i\epsilon}\,
+\sqrt{m^2-(m_{1i}-m_{2i})^2+i\epsilon}}{2m},
+\]</div>
+<p>with principal square roots for real <span class="arithmatex">\(m&gt;0\)</span>. Thus <span class="arithmatex">\(q_i\)</span> is positive imaginary between <span class="arithmatex">\(|m_{1i}-m_{2i}|\)</span> and <span class="arithmatex">\(m_{1i}+m_{2i}\)</span>, and negative real below <span class="arithmatex">\(|m_{1i}-m_{2i}|\)</span>. Values at <span class="arithmatex">\(m=0\)</span>, if needed as a domain endpoint, are taken as limits from above. The rational barrier factors are continued as written: neither <span class="arithmatex">\(h_l^2(z)\)</span> nor <span class="arithmatex">\(n_{l_i i}^2(m)\)</span> denotes a modulus squared for complex arguments. Removable singularities of the complete line shape are evaluated by continuity. The observed-channel numerator is used only above its own threshold, where it is real and non-negative; the density remains zero below that threshold.</p>
 
 
 
