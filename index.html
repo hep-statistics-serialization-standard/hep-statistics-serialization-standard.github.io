@@ -834,6 +834,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="chapters/3.4_auxiliary_measurements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auxiliary Measurements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1528,6 +1556,101 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 </ul>
 </li>
 </ul>
+<h4 id="sec:array-distribution" label="sec:array-distribution">Array distribution<a class="headerlink" href="#sec:array-distribution" title="Permanent link">&para;</a></h4>
+<p>The Array distribution is a product of <span class="arithmatex">\(n\)</span> independent, one-dimensional distributions of one type, each over its own named observable:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\text{ArrayPdf}(\vec{x}) &amp;= \prod_{i=1}^{n} m(x_i; p_{i,1},\cdots,p_{i,k})
+\end{aligned}
+\]</div>
+<p>where <span class="arithmatex">\(x_i\)</span> is the observable named by <code>x</code> of the <span class="arithmatex">\(i\)</span>-th entry of <code>components</code> and <span class="arithmatex">\(p_{i,1},\cdots,p_{i,k}\)</span> are the <span class="arithmatex">\(k\)</span> type-specific parameters of <span class="arithmatex">\(m\)</span> assigned in that entry or in <code>default_parameters</code>. The observables <span class="arithmatex">\(x_i\)</span> <span class="smallcaps">must</span> be pairwise distinct. It is semantically equivalent to a <a href="#sec:product-distribution" reference="sec:product-distribution" reference-type="ref">Product distribution</a> of <span class="arithmatex">\(n\)</span> one-dimensional distributions of the given type, but declared flat and explicit such that engines <span class="smallcaps">may</span> use a dedicated, vectorized implementation. Unlike an array of separate distributions, one draw from an Array distribution contains every component, and its evaluation returns one joint density.</p>
+<p>An Array distribution is a struct defined by the following components:</p>
+<ul>
+<li><code>name</code>: custom unique string</li>
+<li><code>type</code>: <code>array_dist</code></li>
+<li><code>component_type</code>: <code>type</code> of the distribution <span class="arithmatex">\(m\)</span> shared by all components. This determines the parameters that <span class="smallcaps">must</span> be specified for each component, either in its entry of <code>components</code> or in <code>default_parameters</code></li>
+<li><code>components</code>: array of structs, one per component of the product, each with:</li>
+<li><code>x</code>: name of the observable <span class="arithmatex">\(x_i\)</span>. No two entries of <code>components</code> <span class="smallcaps">may</span> name the same observable.</li>
+<li>the parameters <span class="arithmatex">\(p_{i,j}\)</span> of the distribution <span class="arithmatex">\(m\)</span>, each assigned to a number or name. If at least one parameter of at least one component is omitted here, the top-level component <code>default_parameters</code> becomes <span class="smallcaps">required</span> and a default <span class="smallcaps">must</span> be declared for that parameter.</li>
+<li><code>default_parameters</code>: (<span class="smallcaps">optional</span>) struct assigning parameters <span class="arithmatex">\(p_{i,j}\)</span> of the distribution <span class="arithmatex">\(m\)</span> to a number or name, applied to every component that does not specify them on its own</li>
+</ul>
+<p>Names given in <code>components</code> or <code>default_parameters</code> <span class="smallcaps">must</span> resolve to either a data set axis, parameter or function.</p>
+<p>The parameters <span class="arithmatex">\(p_{i,j}\)</span> <span class="smallcaps">must not</span> depend, directly or through functions, on any observable <span class="arithmatex">\(x_k\)</span> of the same Array distribution; they <span class="smallcaps">may</span> share model parameters between components. Distinct observable names alone do not make the factors independent, and a dependence between them would leave the product unnormalized.</p>
+<p>The typical usage, shown below, pairs the observables named by <code>x</code> with the axes of one unbinned data set holding auxiliary-measurement data for the constraint, with one axis per component and a single entry.</p>
+<div class="highlight"><span class="filename">Example: Array distribution of type gaussian_dist</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>
+<span class="w">        </span><span class="err">...</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;gauss_constraints&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;array_dist&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;component_type&quot;</span><span class="p">:</span><span class="s2">&quot;gaussian_dist&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;default_parameters&quot;</span><span class="p">:{</span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="s2">&quot;gaussian_constraints_sigma&quot;</span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;components&quot;</span><span class="p">:[</span>
+<span class="w">                    </span><span class="p">{</span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;np_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="s2">&quot;np_1_sigma&quot;</span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;np_2&quot;</span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;np_3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="mf">31.622</span><span class="p">}</span>
+<span class="w">                </span><span class="p">]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="err">...</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">        </span><span class="err">...</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;entries&quot;</span><span class="p">:[[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">]],</span>
+<span class="w">            </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">                </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span>
+<span class="w">                </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span>
+<span class="w">                </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="err">...</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><span class="filename">Example: Array distribution of type poisson_dist</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>
+<span class="w">        </span><span class="err">...</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;poisson_constraints&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;array_dist&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;component_type&quot;</span><span class="p">:</span><span class="s2">&quot;poisson_dist&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;default_parameters&quot;</span><span class="p">:{</span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;lambda_poisson&quot;</span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;components&quot;</span><span class="p">:[</span>
+<span class="w">                    </span><span class="p">{</span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_2&quot;</span><span class="p">}</span>
+<span class="w">                </span><span class="p">]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="err">...</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;functions&quot;</span><span class="p">:[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;product&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;factors&quot;</span><span class="p">:[</span><span class="mf">20.0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;np_1&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;lambda_poisson&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;product&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;factors&quot;</span><span class="p">:[</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;np_poisson&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">        </span><span class="err">...</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;entries&quot;</span><span class="p">:[[</span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">]],</span>
+<span class="w">            </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">                </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">100</span><span class="p">},</span>
+<span class="w">                </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">100</span><span class="p">}</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="err">...</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
 <h4 id="dist:poisson-point-process" label="dist:poisson-point-process">Poisson point process<a class="headerlink" href="#dist:poisson-point-process" title="Permanent link">&para;</a></h4>
 <p>A Poisson point process distribution is understood here as the distribution of the outcomes of a (typically inhomogeneous) Poisson point process. In particle physics, such a distribution is often called an extended distribution <sup id="fnref2:barlow-extended-ml"><a class="footnote-ref" href="#fn:barlow-extended-ml">9</a></sup>.
 In HS<sup>3</sup>, a Poisson point process distribution is specified using a global-rate parameter <span class="arithmatex">\(\lambda\)</span> and an underlying distribution <span class="arithmatex">\(m\)</span>, either explicitly or implicitly (see below). 
@@ -1949,6 +2072,7 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <span class="w">  </span><span class="err">...</span><span class="w"> </span>
 <span class="p">]</span><span class="w"> </span>
 </code></pre></div>
+<p>Encoding of auxiliary measurements and global observables is discussed in <a href="#sec:aux-measurements" reference="sec:aux-measurements" reference-type="ref">Auxiliary measurements</a>.</p>
 <h2 id="sec:domains">Domains<a class="headerlink" href="#sec:domains" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>domains</code> contains an array of domains giving information on the ranges of parameters and variables in struct format. Within a specified domain, the corresponding model is expected to yield valid values. Each domain must contain a <code>name</code> and a <code>type</code> although right now only the <code>product_domain</code> type is supported, even though others like e. g.&nbsp;a simplex domain might be added later. A domain consists of the following components: </p>
 <ul>
@@ -2189,17 +2313,19 @@ P(\mathbf{n}\mid\theta)=\prod_i\operatorname{Pois}(n_i\mid\lambda_i(\theta)),
 <div class="arithmatex">\[
 \begin{aligned} d_s(x) = \chi^{y_s}_{b}(x) \end{aligned} 
 \]</div>
-<p>In this section, <span class="arithmatex">\(\chi^{y_s}_{b}(x)\)</span> denotes a generic step function in the binning <span class="arithmatex">\(b\)</span> such that <span class="arithmatex">\(\chi_{b}(x) = y_{s,i}\)</span>, some constant, if <span class="arithmatex">\(x\in[b_i,b_{i+1})\)</span>. The <span class="arithmatex">\(y_{s,i}\)</span> in this case are the bin contents (yields) of the histograms. 
+<p>In this section, <span class="arithmatex">\(\chi^{y_s}_{b}(x)\)</span> denotes a generic step function in the binning <span class="arithmatex">\(b\)</span> such that <span class="arithmatex">\(\chi_{b}(x) = y_{s,i}\)</span>, some constant, if <span class="arithmatex">\(x\in&lt;span class="smallcaps"&gt;b_i,b_{i+1})\)</span>. The <span class="arithmatex">\(y_{s,i}\)</span> in this case are the bin contents (yields) of the histograms. 
 The <span class="arithmatex">\(M_\kappa\)</span> are the multiplicative modifiers, the <span class="arithmatex">\(M_\delta\)</span> are the additive modifiers. Each of the modifiers is either multiplicative (<span class="arithmatex">\(\kappa\)</span>) or additive (<span class="arithmatex">\(\delta\)</span>). All samples and modifiers share the same binning <span class="arithmatex">\(b\)</span>. 
 The modifiers depend on the model parameters <span class="arithmatex">\(\theta\)</span>. Each modifier can only depend on one <span class="arithmatex">\(\theta_i\)</span>, but the <span class="arithmatex">\(\theta_i\)</span> can take the form of vectors and the same <span class="arithmatex">\(\theta_i\)</span> can be shared by several modifiers. By convention, these are denoted <span class="arithmatex">\(\alpha\)</span> if they affect all bins in a correlated way, and <span class="arithmatex">\(\gamma\)</span> if they affect only one bin at a time. The types of modifiers are</p>
 <ul>
-<li>A <em>uncorrelated shape systematic</em> or <code>shapefactor</code> modifier is a     multiplicative modifier that scales each single bin by the value of     some independent parameter <span class="arithmatex">\(\gamma\)</span>. Here, <span class="arithmatex">\(\theta_i=\vec{\gamma}\)</span>,     where the length of <span class="arithmatex">\(\vec{\gamma}\)</span> is equal to the number of bins in     this region. <em>This type of modifier is sometimes called <code>shapesys</code>,     with some nuance in the meaning. However, both are synonymous in the     context of this standard.</em> </li>
+<li>A <em>shape factor</em> or <code>shapefactor</code> modifier is a multiplicative modifier that scales each single bin by the value of an independent parameter <span class="arithmatex">\(\gamma\)</span>. Here, <span class="arithmatex">\(\theta_i=\vec{\gamma}\)</span>, where the length of <span class="arithmatex">\(\vec{\gamma}\)</span> is equal to the number of bins in this region, and <code>parameters</code> holds one entry per bin. The parameters are constrained by the distributions named in <code>constraints</code>, if given, and free otherwise; individual entries of <code>constraints</code> [may</span> be <code>null</code>.</li>
+<li><code>shapesys</code> is a deprecated alias of <code>shapefactor</code>. Documents conforming to version 0.3 or later of this standard <span class="smallcaps">should not</span> use it. Documents conforming to earlier versions may contain <code>shapesys</code> modifiers with bin-wise values in <code>data.vals</code> and a constraint type in <code>constraint</code>; implementations <span class="smallcaps">should</span> read these according to the version of the standard the document conforms to, as given by <code>hs3_version</code> in its metadata.</li>
 <li>A <em>correlated shape systematic</em> or <code>histosys</code> modifier is an     additive modifier that adds or subtracts a constant step function     <span class="arithmatex">\(\chi^f\)</span>, scaled with a single factor <span class="arithmatex">\(\alpha\)</span>. The modifier     contains a <code>data</code> section, which contains the subsections     <span class="arithmatex">\(\texttt{hi}\)</span> and <span class="arithmatex">\(\texttt{lo}\)</span> that help to define the step     function <span class="arithmatex">\(\chi^f\)</span>. They contain <code>contents</code>, which define the     bin-wise additions or subtractions for <span class="arithmatex">\(\alpha=1\)</span>. The functional form of <span class="arithmatex">\(\chi^f\)</span> for intermediate and outlying <span class="arithmatex">\(\alpha\)</span> is set by the <code>interpolation</code> component, described below. Here,     <span class="arithmatex">\(\theta_i=\alpha\)</span>. </li>
 <li>A <em>normalization systematic</em> or <code>normsys</code> modifier is a     multiplicative modifier that scales the entire sample with the same     constant factor <span class="arithmatex">\(f\)</span> that is a function of <span class="arithmatex">\(\alpha\)</span>. The modifier     contains a <code>data</code> section, which contains the values <span class="arithmatex">\(\texttt{hi}\)</span>     and <span class="arithmatex">\(\texttt{lo}\)</span> that help to define <span class="arithmatex">\(f\)</span>. There are different     functional forms that can be chosen for <span class="arithmatex">\(f\)</span>. However, by convention     <span class="arithmatex">\(f(\alpha=0)=1\)</span>, <span class="arithmatex">\(f(\alpha=+1)=\)</span>"<code>hi</code>" and     <span class="arithmatex">\(f(\alpha=-1)=\)</span>"<code>lo</code>". The functional form of <span class="arithmatex">\(f\)</span> for intermediate and outlying <span class="arithmatex">\(\alpha\)</span> is set by the <code>interpolation</code> component, described below. In this case, <span class="arithmatex">\(\theta_i=\alpha\)</span>. </li>
 <li>A <em>normalization factor</em> or <code>normfactor</code> modifier is a     multiplicative modifier that scales the entire sample in this region     with the value of the parameter <span class="arithmatex">\(\mu\)</span> itself. In this case,     <span class="arithmatex">\(\theta_i=\mu\)</span>. </li>
-<li>The <code>staterror</code> modifier is a shorthand for encoding uncorrelated     statistical uncertainties on the values of the step-functions, using     a variant<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> of the Barlow-Beeston Method <sup id="fnref:barlowbeeston"><a class="footnote-ref" href="#fn:barlowbeeston">14</a></sup>. Here,     the relative uncertainty on the sum of all samples in this region     containing the <code>staterror</code> modifier is computed bin-by-bin. Then, a     constrained <em>uncorrelated shape systematic</em> (<code>shapesys</code>) is created,     encoding these relative uncertainties in the corresponding <code>Poisson</code>     (or <code>Gaussian</code>) constraint term. </li>
+<li>The <code>staterror</code> modifier is a shorthand for encoding uncorrelated statistical uncertainties on the values of the step-functions, using a variant<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> of the Barlow-Beeston Method <sup id="fnref:barlowbeeston"><a class="footnote-ref" href="#fn:barlowbeeston">14</a></sup>. It acts as a <code>shapefactor</code> whose per-bin relative uncertainty is derived from the samples: <span class="arithmatex">\(\delta_i=\sqrt{\sum_s \sigma_{s,i}^2}\,/\sum_s y_{s,i}\)</span>, with <span class="arithmatex">\(y_{s,i}\)</span> and <span class="arithmatex">\(\sigma_{s,i}\)</span> the <code>contents</code> and <code>errors</code> of all samples in this region carrying a <code>staterror</code> modifier. The distributions named in <code>constraints</code> <span class="smallcaps">should</span> be constructed as a <code>barlow_beeston_lite_poisson_constraint_dist</code> with <code>x</code> naming the <span class="arithmatex">\(\gamma_i\)</span> and <code>expected</code> holding <span class="arithmatex">\(\tau_i=\delta_i^{-2}\)</span>. Its parameters <span class="arithmatex">\(\vec{\gamma}\)</span> are shared by all samples of the region that carry a <code>staterror</code> modifier. </li>
+<li>A <code>custom</code> modifier is a multiplicative modifier that scales the sample with the value of an arbitrary function <span class="arithmatex">\(f\)</span> defined in the top-level component <code>functions</code> (see <a href="#sec:functions">Functions</a>). The <code>name</code> of the modifier is the name of <span class="arithmatex">\(f\)</span>. If <span class="arithmatex">\(f\)</span> depends on the observables, it acts as a shape factor, otherwise as a normalization factor. Here, <span class="arithmatex">\(\theta_i\)</span> are the parameters of <span class="arithmatex">\(f\)</span>; the components <code>parameters</code>, <code>data</code> and <code>constraints</code> are not used for this type. </li>
 </ul>
-<p>The different modifies and their descriptions are also summarized in the following table: </p>
+<p>The different modifiers and their descriptions are also summarized in the following table: </p>
 <table>
 <thead>
 <tr>
@@ -2239,9 +2365,15 @@ The modifiers depend on the model parameters <span class="arithmatex">\(\theta\)
 <td><span class="arithmatex">\(\gamma_0\)</span>, ..., <span class="arithmatex">\(\gamma_n\)</span></td>
 <td>#bins</td>
 </tr>
+<tr>
+<td><code>custom</code></td>
+<td>Custom function</td>
+<td><span class="arithmatex">\(\kappa(x,\vec{\theta}) = f(x,\vec{\theta})\)</span></td>
+<td>parameters of <span class="arithmatex">\(f\)</span></td>
+<td>#parameters of <span class="arithmatex">\(f\)</span></td>
+</tr>
 </tbody>
 </table>
-<p>The <code>staterror</code> modifier is a special subtype of <code>shapefactor</code>, where the mean of the constraint is given as the sum of the predictions of all the samples carrying a <code>staterror</code> modifier in this bin.  </p>
 <p>The way modifiers affect the yield in the corresponding bin is subject to an interpolation function. The <code>histosys</code> and <code>normsys</code> modifiers thus allow for an additional component <code>interpolation</code>, a struct with the components </p>
 <ul>
 <li><code>type</code>: how the response combines with the sample prediction, <code>add</code> or <code>mult</code>, for additive or multiplicative, respectively, </li>
@@ -2320,63 +2452,63 @@ S_2=\tfrac12(u\log^2 u+v\log^2 v) \quad A_2=\tfrac12(u\log^2 u-v\log^2 v)
 </ul>
 </li>
 </ul>
-<p>Modifiers can be constrained. This is indicated by the component <code>constraint</code>, which identifies the type of the constraint term. In essence, the likelihood picks up a penalty term for changing the corresponding parameter too far away from its nominal value. The nominal value is, by convention, defined by the type of constraint, and is 0 for all modifiers of type <code>sys</code> (<code>histosys</code>, <code>normsys</code>) and is 1 for all modifiers of type <code>factor</code> (<code>normfactor</code>, <code>shapefactor</code>). The strength of the constraint is always such that the standard deviation of constraint distribution is <span class="arithmatex">\(1\)</span>. </p>
-<p>The supported constraint distributions, also called constraint types, are <code>Gauss</code> for a gaussian with unit width (a gaussian distribution with a variance of <span class="arithmatex">\(1\)</span>), <code>Poisson</code> for a unit Poissonian (e.g. a continous Poissonian with a central value 1), or <code>LogNormal</code> for a unit LogNormal,. If a constraint is given, a corresponding distribution will be considered in addition to the <code>aux_distributions</code> of the likelihood (see <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>), constraining the parameter to its nominal value. </p>
-<p>An exception to this is provided by the <code>staterror</code> modifier as described above, and the <code>shapesys</code> for which a Poissonian constraint is defined with the central values defined as the squares of the values defined in <code>vals</code>. </p>
+<p>Modifiers can be constrained. This is indicated by the component <code>constraints</code>, which names one or more distributions defined in the top-level component <code>distributions</code>. These are typically of type <code>gaussian_dist</code> or <code>poisson_dist</code>, but any distribution type is allowed. In essence, the likelihood picks up a penalty term for changing a constrained parameter too far away from its nominal value. By convention, the nominal value is 0 for the parameters of <code>histosys</code> and <code>normsys</code> modifiers and 1 for those of all other types. Constraints on <code>histosys</code> and <code>normsys</code> parameters <span class="smallcaps">should</span> be a <code>gaussian_dist</code> with <code>mean</code> 0 and <code>sigma</code> 1, such that <span class="arithmatex">\(\alpha=\pm1\)</span> corresponds to the <code>hi</code> and <code>lo</code> variations. </p>
 <p>The constraint terms belong to the prediction and not to its representation: a likelihood that contains a <code>histfactory_dist</code>, or a distribution that depends on a <code>histfactory</code> function, considers the constraint terms of all modifiers of that prediction in addition to the <code>aux_likelihood</code> section of the likelihood, in the same way for both representations. </p>
 <p>The components of a HistFactory prediction are: </p>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>histfactory</code> (function) or <code>histfactory_dist</code> (distribution) </li>
-<li><code>axes</code>: array of structs representing the axes. If given each struct     needs to have the component <code>name</code>. Further,     (<span class="smallcaps">optional</span>) components are <code>max</code>, <code>min</code> and <code>nbins</code>,     or, alternatively, <code>edges</code>. The definition of the axes follows the     format for binned data (see Section 
-    <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>). </li>
+<li><code>axes</code>: array of binned axis structs as defined for binned data in <a href="#sec:axes">Axis Specifications</a>. </li>
 <li><code>default_interpolation</code>: <span class="smallcaps">optional</span> struct defining the default interpolation behaviour, for modifiers that do not specify it on their own. It has the components <code>type</code>, <code>in</code> and <code>out</code>, as described above.</li>
 <li><code>samples</code>: array of structs containing the samples of this channel.     For details see below. 
 Struct of one sample:  <ul>
 <li><code>name</code>: (<span class="smallcaps">optional</span>) custom string, unique within this     function </li>
-<li><code>data</code>: struct containing the components <code>contents</code> and <code>errors</code>, depicting the data contents and their errors. <code>errors</code> is <span class="smallcaps">optional</span>; if present, both components are arrays of the same length. If <code>errors</code> is absent, the sample contributes no statistical uncertainty to a <code>staterror</code> modifier. </li>
+<li><code>data</code>: struct containing the component <code>contents</code> and the (<span class="smallcaps">optional</span>) component <code>errors</code>, depicting the sample contents and their per-bin uncertainties. Both components are arrays with length equal to the number of bins. If <code>errors</code> is absent, no per-bin uncertainty is associated with the sample. This <code>data</code> is the template of the sample, i.e. the predicted yields and their uncertainties, not observed data. </li>
 <li><code>modifiers</code>: array of structs with each struct containing the modifiers for this sample.
 Struct of one modifier:<ul>
+<li><code>name</code>: (<span class="smallcaps">optional</span>) custom string, unique within this sample. <span class="smallcaps">required</span> for <code>custom</code> modifiers, where it names a function defined in the top-level component <code>functions</code>.</li>
 <li><code>type</code>: type of the modifier</li>
-<li><code>parameter</code> or <code>parameters</code>: defining a string or an array of strings, respectively. Relating to the name or names of parameters controlling this modifier. Two modifiers are correlated exactly if they share the same parameters as indicated by <code>parameter</code> or <code>parameters</code>. In such a case, it is mandatory that they share the same constraint term. If this is not the case, the behavior is undefined. </li>
+<li><code>parameters</code>: array of strings naming the parameters controlling this modifier.</li>
 <li><code>data</code>: <span class="smallcaps">optional</span> relevant data for modifier. Its format depends on <code>type</code>, which is described above.</li>
-<li><code>constraint</code>: <span class="smallcaps">optional</span> definition of how the modifier is constrained. Its format depends on <code>type</code>, which is described above.</li>
+<li><code>constraints</code>: <span class="smallcaps">optional</span> array of distribution names, with one entry for each parameter in <code>parameters</code>. Individual entries <span class="smallcaps">may</span> be <code>null</code>, leaving the corresponding parameter unconstrained. </li>
 <li><code>interpolation</code>: <span class="smallcaps">optional</span> struct defining how the effect of the modifier is calculated within and outside of the boundaries <span class="arithmatex">\(\theta=\pm 1\)</span>. It has the components <code>type</code>, <code>in</code> and <code>out</code> as described above. If this is omitted here for at least one modifier the top-level component <code>default_interpolation</code> becomes <span class="smallcaps">required</span>. Implementations <span class="smallcaps">must not</span> assume a default interpolation of their own; a document in which a modifier omits <code>interpolation</code> and no <code>default_interpolation</code> is given is invalid and <span class="smallcaps">must</span> be rejected.</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
+<p>For modifiers controlling a single parameter (<code>histosys</code>, <code>normsys</code>, <code>normfactor</code>), the arrays <code>parameters</code> and <code>constraints</code> hold a single entry each. </p>
+<p>Two modifiers are correlated if and only if they share the same parameters as indicated by <code>parameters</code>. In such a case, they <span class="smallcaps">must</span> share the same constraint term in <code>constraints</code>. </p>
 <div class="highlight"><span class="filename">HistFactory</span><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myAnalysisChannel&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;histfactory_dist&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;axes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
 <span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myRegion&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;myChannel1&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;default_interpolation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mult&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;in&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;poly6&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;out&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;exp&quot;</span><span class="w"> </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;samples&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span><span class="w"> </span>
 <span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mySignal&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.7</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;modifiers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lumi&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normfactor&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mu_signal_strength&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normfactor&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gauss&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;hi&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;lo&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">          </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_normalization_systematic_1&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Lumi&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normfactor&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;mu_signal_strength&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normfactor&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;my_normalization_systematic_1_constraint&quot;</span><span class="p">],</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;hi&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;lo&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;my_normalization_systematic_1&quot;</span><span class="p">],</span><span class="w"> </span>
 <span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normsys&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Poisson&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;staterror&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;gamma_stat_1_constraint&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;gamma_stat_2_constraint&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;staterror&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">          </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;gamma_stat_1&quot;</span><span class="p">,</span><span class="s2">&quot;gamma_stat_2&quot;</span><span class="p">]},</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gauss&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;histosys&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;my_correlated_shape_systematic_1_constraint&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;histosys&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">          </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
 <span class="w">            </span><span class="nt">&quot;hi&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">-2.5</span><span class="p">,</span><span class="w"> </span><span class="mf">-3.1</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">            </span><span class="nt">&quot;lo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">2.2</span><span class="p">,</span><span class="w"> </span><span class="mf">3.7</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
 <span class="w">           </span><span class="p">},</span><span class="w"> </span>
 <span class="w">           </span><span class="nt">&quot;interpolation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;add&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;in&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;poly6&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;out&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;poly1&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">           </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_correlated_shape_systematic_1&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Poisson&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;vals&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.2</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">          </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_uncorrelated_shape_systematic_2&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;shapesys&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">           </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;my_correlated_shape_systematic_1&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;my_shapesys_2_bin0_constraint&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_shapesys_2_bin1_constraint&quot;</span><span class="p">],</span>
+<span class="w">          </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;my_uncorrelated_shape_systematic_2_bin0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_uncorrelated_shape_systematic_2_bin1&quot;</span><span class="p">],</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;shapefactor&quot;</span><span class="w"> </span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span><span class="w"> </span>
@@ -2386,6 +2518,108 @@ Struct of one modifier:<ul>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span><span class="w"> </span>
 </code></pre></div>
+<h2 id="sec:aux-measurements">Auxiliary measurements and global observables<a class="headerlink" href="#sec:aux-measurements" title="Permanent link">&para;</a></h2>
+<p><em>This section is non-normative.</em></p>
+<p>Auxiliary measurements commonly constrain nuisance parameters through additional likelihood terms. Their observed values, sometimes known as <em>global observables</em>, can be fixed and are generally not part of the primary data.
+The mechanisms described in <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a> can already accommodate such terms in several ways. Both forms presented here are mathematically equivalent and differ only in presentation and verbosity.</p>
+<p>Each constraint distribution can enter the likelihood directly, paired with a point data set:</p>
+<div class="highlight"><span class="filename">Example: Auxiliary measurements as constraint distributions paired with point datasets</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="err">...</span>
+<span class="w">  </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;gauss_constraint_alpha_1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;gaussian_dist&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;alpha_1&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;gauss_constraint_alpha_2&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;gaussian_dist&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_2&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;alpha_2&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;gauss_constraint_alpha_3&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;gaussian_dist&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_3&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;alpha_3&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;obs_nom_alpha_1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;point&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;axes&quot;</span><span class="p">:[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_1&quot;</span><span class="p">,</span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-5</span><span class="p">,</span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">}]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;obs_nom_alpha_2&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;point&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;axes&quot;</span><span class="p">:[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_2&quot;</span><span class="p">,</span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-5</span><span class="p">,</span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">}]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;obs_nom_alpha_3&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;point&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;axes&quot;</span><span class="p">:[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_3&quot;</span><span class="p">,</span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-5</span><span class="p">,</span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">}]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;likelihoods&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;likelihood1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span><span class="s2">&quot;channel1_pdf&quot;</span><span class="p">,</span><span class="s2">&quot;gauss_constraint_alpha_1&quot;</span><span class="p">,</span><span class="s2">&quot;gauss_constraint_alpha_2&quot;</span><span class="p">,</span><span class="s2">&quot;gauss_constraint_alpha_3&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;data&quot;</span><span class="p">:[</span><span class="s2">&quot;channel1_data&quot;</span><span class="p">,</span><span class="s2">&quot;obs_nom_alpha_1&quot;</span><span class="p">,</span><span class="s2">&quot;obs_nom_alpha_2&quot;</span><span class="p">,</span><span class="s2">&quot;obs_nom_alpha_3&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>For models with many constraints, listing one term per auxiliary measurement becomes lengthy. 
+When the constraint terms are independent and of the same kind (e.g. unit Gaussians or Poisson terms) they can instead be collected into a single pair: an <code>unbinned</code> data set with one continuous axis per auxiliary observable and a single entry holding the auxiliary-measurement values, paired with an <a href="#sec:array-distribution" reference="sec:array-distribution" reference-type="ref">Array distribution</a> that evaluates one constraint term per axis:</p>
+<div class="highlight"><span class="filename">Example: Auxiliary measurements as an array constraint</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="err">...</span>
+<span class="w">  </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;gauss_constraints&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;array_dist&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;component_type&quot;</span><span class="p">:</span><span class="s2">&quot;gaussian_dist&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;default_parameters&quot;</span><span class="p">:{</span><span class="nt">&quot;sigma&quot;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;components&quot;</span><span class="p">:[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_1&quot;</span><span class="p">,</span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;alpha_1&quot;</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_2&quot;</span><span class="p">,</span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;alpha_2&quot;</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_3&quot;</span><span class="p">,</span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;alpha_3&quot;</span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;global_observables&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;entries&quot;</span><span class="p">:[[</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]],</span>
+<span class="w">      </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;likelihoods&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;likelihood1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span><span class="s2">&quot;channel1_pdf&quot;</span><span class="p">,</span><span class="s2">&quot;gauss_constraints&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;data&quot;</span><span class="p">:[</span><span class="s2">&quot;channel1_data&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;global_observables&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The single entry of the unbinned data set contributes exactly one factor per component to the likelihood, so each constraint term enters exactly once. Encoding constraint terms as an array distribution paired with an unbinned data set is recommended over listing individual pairs as described above.</p>
 <h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
 <div class="footnote">
 <hr />
