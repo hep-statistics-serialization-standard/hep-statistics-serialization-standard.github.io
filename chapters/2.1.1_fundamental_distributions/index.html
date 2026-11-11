@@ -654,17 +654,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#barlow-beeston-lite-constraint-distribution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Barlow-Beeston-Lite Constraint distribution
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#multivariate-normal-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1382,17 +1371,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#barlow-beeston-lite-constraint-distribution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Barlow-Beeston-Lite Constraint distribution
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#multivariate-normal-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1730,19 +1708,6 @@ In this case, the behavior for non-integer values of <span class="arithmatex">\(
 <h3 id="multivariate-fundamental-distributions">Multivariate fundamental distributions<a class="headerlink" href="#multivariate-fundamental-distributions" title="Permanent link">&para;</a></h3>
 <p>This section contains multivariate fundamental distributions. They may
 refer to functions, parameters and more than one variable.</p>
-<h4 id="barlow-beeston-lite-constraint-distribution">Barlow-Beeston-Lite Constraint distribution<a class="headerlink" href="#barlow-beeston-lite-constraint-distribution" title="Permanent link">&para;</a></h4>
-<p>This distribution represents a product of Poisson distributions
-defining the statistical uncertainties of the histogram templates
-defined in a <code>histfactory</code> function.</p>
-<div class="arithmatex">\[
-\begin{aligned} \text{BarlowBeestonLitePoissonConstraintPdf}(x) &amp;= \frac{1}{\ensuremath{\mathcal{M}}} \prod_i^n \text{PoissonPdf}(x_i\cdot \tau_i,\tau_i) \end{aligned} 
-\]</div>
-<ul>
-<li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>barlow_beeston_lite_poisson_constraint_dist</code> </li>
-<li><code>x</code>: array of names of the variables <span class="arithmatex">\(x_i\)</span>. This also includes mixed arrays of values and names. </li>
-<li><code>expected</code>: array of central values <span class="arithmatex">\(\tau_i\)</span> </li>
-</ul>
 <h4 id="multivariate-normal-distribution">Multivariate normal distribution<a class="headerlink" href="#multivariate-normal-distribution" title="Permanent link">&para;</a></h4>
 <p>The multivariate normal distribution is defined as </p>
 <div class="arithmatex">\[
