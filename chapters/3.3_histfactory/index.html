@@ -848,6 +848,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3.5_axes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Axes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1118,7 +1146,7 @@ S_2=\tfrac12(u\log^2 u+v\log^2 v) \quad A_2=\tfrac12(u\log^2 u-v\log^2 v)
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>histfactory</code> (function) or <code>histfactory_dist</code> (distribution) </li>
-<li><code>axes</code>: array of binned axis structs as defined for binned data in <a href="#sec:axes">Axis Specifications</a>. </li>
+<li><code>axes</code>: array of binned axis structs as defined for binned data in <a href="#sec:axes">Axis Specifications</a>. Bin-wise quantities such as bin weights are stored as one-dimensional arrays with one entry per bin of the (possibly multi-dimensional) binning, ordered as defined in <a href="#sec:axes-flattening" reference="sec:axes-flattening" reference-type="ref">Flattening of Binned Contents</a>. This applies to the <code>contents</code> and <code>errors</code> of the samples as well as to all bin-wise data of the modifiers. </li>
 <li><code>default_interpolation</code>: <span class="smallcaps">optional</span> struct defining the default interpolation behaviour, for modifiers that do not specify it on their own. It has the components <code>type</code>, <code>in</code> and <code>out</code>, as described above.</li>
 <li><code>samples</code>: array of structs containing the samples of this channel.     For details see below. 
 Struct of one sample:  <ul>

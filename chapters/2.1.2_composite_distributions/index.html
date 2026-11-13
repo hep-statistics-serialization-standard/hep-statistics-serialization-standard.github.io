@@ -1013,6 +1013,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3.5_axes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Axes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1467,32 +1495,32 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <div class="arithmatex">\[
 \begin{aligned} \nu_i &amp;= \lambda \cdot \int_{\text{bin}_i} \text{PDF}(y, m) dy \quad \text{equivalent to}\\ \nu_i &amp;= \int_{\text{bin}_i} f(y) dy \end{aligned} 
 \]</div>
-<p>The PDF of the bin-counts distribution at an outcome <span class="arithmatex">\(x\)</span> (a vector of length <span class="arithmatex">\(k\)</span>, same as the number of bins) is </p>
+<p>The PDF of the bin-counts distribution at an outcome <span class="arithmatex">\(x\)</span> (a vector of length <span class="arithmatex">\(k\)</span>, same as the number of bins, ordered as defined in <a href="#sec:axes-flattening" reference="sec:axes-flattening" reference-type="ref">Flattening of Binned Contents</a>) is </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{BinCountsPdf}(x) &amp;= \prod_i^k \text{PoissonPdf}(x_i, \nu_i) \end{aligned} 
 \]</div>
 <ul>
-<li>
-<p><code>bincounts_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span> and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: </p>
-<ul>
+<li><code>bincounts_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span> and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>bincounts_extended_dist</code> </li>
 <li><code>rate</code>: The global rate <span class="arithmatex">\(\lambda\)</span> </li>
 <li><code>dist</code>: The underlying distribution <span class="arithmatex">\(m\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the definitions in <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. <span class="smallcaps">optional</span> if <code>dist</code> is a binned distribution, in which case the same binning is used by default.  </li>
+<li><code>axes</code>: array of binned axes defining the binning to be used, as defined in <a href="#sec:axes-binned" reference="sec:axes-binned" reference-type="ref">Binned Axes</a>. <span class="smallcaps">optional</span> if <code>dist</code> is a binned distribution, in which case the same binning is used by default.  </li>
 </ul>
-<p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying distribution. The underlying distribution <span class="smallcaps">must</span> not be referred to from other components of the statistical model. </p>
 </li>
-<li>
-<p><code>bincounts_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
+</ul>
+<p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying distribution. The underlying distribution <span class="smallcaps">must</span> not be referred to from other components of the statistical model. 
+<code>bincounts_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
+<div class="highlight"><pre><span></span><code>The name of the variable $x$ is taken from the underlying distribution. The underlying distribution &lt;span class=&quot;smallcaps&quot;&gt;must&lt;/span&gt; not be referred to from other components of the statistical model.
+</code></pre></div>
 <ul>
+<li><code>bincounts_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>bincounts_density_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
 <li><code>density</code>: The rate-density function <span class="arithmatex">\(f\)</span> </li>
-<li><code>axes</code>: a definition of the binning to be used, following the definitions in <a href="#sec:binned-data" reference="sec:binned-data" reference-type="ref">Binned Data</a>. </li>
+<li><code>axes</code>: array of binned axes defining the binning to be used, as defined in <a href="#sec:axes-binned" reference="sec:axes-binned" reference-type="ref">Binned Axes</a>. </li>
 </ul>
-<p>More formally, the distribution corresponds to the inhomogeneous Poisson point process that is defined by a non-normalized rate measure which has density <span class="arithmatex">\(f\)</span> in respect to the Lebesgue measure. </p>
 </li>
 </ul>
 
