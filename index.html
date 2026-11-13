@@ -1087,25 +1087,6 @@ functions, parameters and exactly one variable.</p>
 <li><code>slope</code>: value or name of the parameter used as slope <span class="arithmatex">\(c\)</span> </li>
 <li><code>power</code>: value or name of the parameter used as exponent <span class="arithmatex">\(p\)</span>. </li>
 </ul>
-<h4 id="continued-poisson-distribution">Continued Poisson distribution<a class="headerlink" href="#continued-poisson-distribution" title="Permanent link">&para;</a></h4>
-<p>The continued Poisson distribution of the variable <span class="arithmatex">\(x\)</span> is defined as </p>
-<div class="arithmatex">\[
-\begin{aligned} \text{ContinuedPoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left(x \cdot \ln \lambda - \lambda - \ln \Gamma(x+1)\right), \end{aligned} 
-\]</div>
-<p>where <span class="arithmatex">\(\Gamma\)</span> denotes the Euler Gamma function. </p>
-<p>This function is similar to the Poisson distribution (see <a href="#dist:poisson">Poisson
-distribution</a>{reference-type="ref"
-reference="dist:poisson"}), but can accept non-integer values for
-<span class="arithmatex">\(x\)</span>. Notably, the differences between the two might be significant for
-small values of <span class="arithmatex">\(x\)</span> (below <span class="arithmatex">\(1\)</span>). Nevertheless, the distribution is
-useful to deal with datasets with non-integer event counts, such as
-Asimov datasets <sup id="fnref:asymptotics"><a class="footnote-ref" href="#fn:asymptotics">10</a></sup>.</p>
-<ul>
-<li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>poisson_dist</code> </li>
-<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span> for the     standard integer case) </li>
-<li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
-</ul>
 <h4 id="chebychev-distribution">Chebychev distribution<a class="headerlink" href="#chebychev-distribution" title="Permanent link">&para;</a></h4>
 <p>The Chebychev distribution is defined as a polynomial in Chebychev polynomials of the first kind:</p>
 <div class="arithmatex">\[
@@ -1310,18 +1291,31 @@ to avoid disfavouring a pure solution.)</p>
 <li><code>sigma</code>: value or name of the scale parameter <span class="arithmatex">\(\sigma\)</span></li>
 </ul>
 <h4 id="dist:poisson" label="dist:poisson">Poisson distribution<a class="headerlink" href="#dist:poisson" title="Permanent link">&para;</a></h4>
-<p>The Poisson distribution of the variable <span class="arithmatex">\(x\)</span> is defined as </p>
+<p>The Poisson distribution of the integer variable <span class="arithmatex">\(x\)</span> is defined as </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{PoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \frac{\lambda^x}{x!}  \text{e}^{-\lambda}. \end{aligned} 
 \]</div>
-<p>where <span class="arithmatex">\(x\)</span> is required to be an integer. 
-In this case, the behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. </p>
+<p>This is a discrete distribution: <span class="arithmatex">\(x\)</span> <span class="smallcaps">must</span> be a non-negative integer, and <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the sum of the expression over the integers in the current domain of <span class="arithmatex">\(x\)</span>. The behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. A variable that can take non-integer values, such as the event count of an Asimov data set or the global observable of a constraint term, <span class="smallcaps">must</span> instead be described by the continuous Poisson distribution (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>).</p>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>poisson_dist</code> </li>
-<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span> for the     standard integer case) </li>
+<li><code>x</code>: name of the integer variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span>) </li>
 <li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
 </ul>
+<h4 id="dist:poisson-continuous" label="dist:poisson-continuous">Continuous Poisson distribution<a class="headerlink" href="#dist:poisson-continuous" title="Permanent link">&para;</a></h4>
+<p>The continuous Poisson distribution of the real variable <span class="arithmatex">\(x\)</span> is defined as </p>
+<div class="arithmatex">\[
+\begin{aligned} \text{ContinuousPoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \frac{\lambda^x}{\Gamma(x+1)} \text{e}^{-\lambda} = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left(x \cdot \ln \lambda - \lambda - \ln \Gamma(x+1)\right), \end{aligned} 
+\]</div>
+<p>where <span class="arithmatex">\(\Gamma\)</span> denotes the Euler Gamma function. </p>
+<p>This is the continuation of the Poisson distribution (see <a href="#dist:poisson" reference="dist:poisson" reference-type="ref">Poisson distribution</a>) to non-negative real values of <span class="arithmatex">\(x\)</span>. At integer values of <span class="arithmatex">\(x\)</span> the two expressions coincide, but the two distributions differ in the admissible values of <span class="arithmatex">\(x\)</span> and in their normalization: here <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the integral of the expression over the current domain of <span class="arithmatex">\(x\)</span>, which is in general not equal to the sum over the integers. Notably, the differences between the two might be significant for small values of <span class="arithmatex">\(x\)</span> (below <span class="arithmatex">\(1\)</span>). The continuous Poisson distribution is useful to deal with data sets with non-integer event counts, such as Asimov data sets <sup id="fnref:asymptotics"><a class="footnote-ref" href="#fn:asymptotics">10</a></sup>, and for constraint terms whose global observable is not an integer, such as the Barlow-Beeston-lite constraints of HistFactory (see <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>).</p>
+<ul>
+<li><code>name</code>: custom unique string </li>
+<li><code>type</code>: <code>poisson_continuous_dist</code> </li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
+<li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
+</ul>
+<p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 use the type <code>poisson_dist</code> for both the discrete and the continuous Poisson distribution. Such documents were in practice written by ROOT, which distinguishes the two by a boolean key <code>integer</code> that is not part of this standard: <code>integer: false</code> denotes the continuous form, <code>integer: true</code> the discrete form. Implementations reading documents conforming to versions before 0.3 <span class="smallcaps">should</span> read a <code>poisson_dist</code> with <code>integer: false</code> as <code>poisson_continuous_dist</code>, and a <code>poisson_dist</code> with <code>integer: true</code> or without the key <code>integer</code> as the discrete distribution. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use <code>poisson_continuous_dist</code> for the continuous form; in these documents, <code>poisson_dist</code> always denotes the discrete distribution and the key <code>integer</code> <span class="smallcaps">must not</span> be present on either type.</p>
 <h4 id="polynomial-distribution">Polynomial distribution<a class="headerlink" href="#polynomial-distribution" title="Permanent link">&para;</a></h4>
 <p>The polynomial distribution is defined as </p>
 <div class="arithmatex">\[
@@ -1596,13 +1590,13 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 <span class="w">    </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
-<div class="highlight"><span class="filename">Example: Array distribution of type poisson_dist</span><pre><span></span><code><span class="p">{</span>
+<div class="highlight"><span class="filename">Example: Array distribution of type poisson_continuous_dist</span><pre><span></span><code><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>
 <span class="w">        </span><span class="err">...</span>
 <span class="w">            </span><span class="p">{</span>
 <span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;poisson_constraints&quot;</span><span class="p">,</span>
 <span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;array_dist&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;component_type&quot;</span><span class="p">:</span><span class="s2">&quot;poisson_dist&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;component_type&quot;</span><span class="p">:</span><span class="s2">&quot;poisson_continuous_dist&quot;</span><span class="p">,</span>
 <span class="w">                </span><span class="nt">&quot;default_parameters&quot;</span><span class="p">:{</span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;lambda_poisson&quot;</span><span class="p">},</span>
 <span class="w">                </span><span class="nt">&quot;components&quot;</span><span class="p">:[</span>
 <span class="w">                    </span><span class="p">{</span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="s2">&quot;nom_np_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mean&quot;</span><span class="p">:</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">},</span>
@@ -2319,7 +2313,7 @@ The modifiers depend on the model parameters <span class="arithmatex">\(\theta\)
 <p>The <code>staterror</code> modifier is a shorthand for encoding uncorrelated statistical uncertainties on the values of the step-functions, using a variant<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> of the Barlow-Beeston Method <sup id="fnref:barlowbeeston"><a class="footnote-ref" href="#fn:barlowbeeston">14</a></sup>. It acts as a <code>shapefactor</code> whose per-bin relative uncertainty is derived from the samples: <span class="arithmatex">\(\delta_i=\sqrt{\sum_s \sigma_{s,i}^2}\,/\sum_s y_{s,i}\)</span>, with <span class="arithmatex">\(y_{s,i}\)</span> and <span class="arithmatex">\(\sigma_{s,i}\)</span> the <code>contents</code> and <code>errors</code> of all samples in this region carrying a <code>staterror</code> modifier. The distributions named in <code>constraints</code> <span class="smallcaps">should</span> all be one and the same <a href="#sec:array-distribution" reference="sec:array-distribution" reference-type="ref">Array distribution</a> with one component per bin <span class="arithmatex">\(i\)</span>, so that the same name is repeated for every <span class="arithmatex">\(\gamma_i\)</span>. By the rule on repeated constraints below, it enters the likelihood once. Its <code>component_type</code> <span class="smallcaps">should</span> be <code>gaussian_dist</code>; the alternative form is described below. Its parameters <span class="arithmatex">\(\vec{\gamma}\)</span> are shared by all samples of the region that carry a <code>staterror</code> modifier. The component <span class="arithmatex">\(i\)</span> takes the form</p>
 <ul>
 <li>for <code>component_type</code> <code>gaussian_dist</code>: <code>mean</code> is <span class="arithmatex">\(\gamma_i\)</span>, <code>sigma</code> is <span class="arithmatex">\(\delta_i\)</span>, and <code>x</code> is a global observable with nominal value 1. This is the default of ROOT's HistFactory and the treatment of pyhf;</li>
-<li>for <code>component_type</code> <code>poisson_dist</code>: <code>mean</code> is <span class="arithmatex">\(\gamma_i\tau_i\)</span>, for instance a <code>product</code> function of <span class="arithmatex">\(\gamma_i\)</span> and the constant <span class="arithmatex">\(\tau_i=\delta_i^{-2}\)</span>, and <code>x</code> is a global observable with nominal value <span class="arithmatex">\(\tau_i\)</span>. This is the Barlow-Beeston-lite form, which versions of this standard before 0.3 encoded as a <code>barlow_beeston_lite_poisson_constraint_dist</code>; that type has been removed. Since <span class="arithmatex">\(\tau_i\)</span> is in general not an integer, it relies on <code>poisson_dist</code> being evaluated at non-integer <code>x</code>.</li>
+<li>for <code>component_type</code> <code>poisson_continuous_dist</code>: <code>mean</code> is <span class="arithmatex">\(\gamma_i\tau_i\)</span>, for instance a <code>product</code> function of <span class="arithmatex">\(\gamma_i\)</span> and the constant <span class="arithmatex">\(\tau_i=\delta_i^{-2}\)</span>, and <code>x</code> is a global observable with nominal value <span class="arithmatex">\(\tau_i\)</span>. This is the Barlow-Beeston-lite form, which versions of this standard before 0.3 encoded as a <code>barlow_beeston_lite_poisson_constraint_dist</code>; that type has been removed. Since <span class="arithmatex">\(\tau_i\)</span> is in general not an integer, the component type is the continuous Poisson distribution <code>poisson_continuous_dist</code> (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>), not the discrete <code>poisson_dist</code>.</li>
 </ul>
 </li>
 <li>
@@ -2453,7 +2447,7 @@ S_2=\tfrac12(u\log^2 u+v\log^2 v) \quad A_2=\tfrac12(u\log^2 u-v\log^2 v)
 </ul>
 </li>
 </ul>
-<p>Modifiers can be constrained. This is indicated by the component <code>constraints</code>, which names one or more distributions defined in the top-level component <code>distributions</code>. These are typically of type <code>gaussian_dist</code> or <code>poisson_dist</code>, but any distribution type is allowed. In essence, the likelihood picks up a penalty term for changing a constrained parameter too far away from its nominal value. By convention, the nominal value is 0 for the parameters of <code>histosys</code> and <code>normsys</code> modifiers and 1 for those of all other types. Constraints on <code>histosys</code> and <code>normsys</code> parameters <span class="smallcaps">should</span> be a <code>gaussian_dist</code> with <code>mean</code> 0 and <code>sigma</code> 1, such that <span class="arithmatex">\(\alpha=\pm1\)</span> corresponds to the <code>hi</code> and <code>lo</code> variations. </p>
+<p>Modifiers can be constrained. This is indicated by the component <code>constraints</code>, which names one or more distributions defined in the top-level component <code>distributions</code>. These are typically of type <code>gaussian_dist</code> or <code>poisson_continuous_dist</code>, but any distribution type is allowed. The global observable of a Poisson constraint term is in general not an integer, so such terms use the continuous Poisson distribution <code>poisson_continuous_dist</code> (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>), not the discrete <code>poisson_dist</code>. In essence, the likelihood picks up a penalty term for changing a constrained parameter too far away from its nominal value. By convention, the nominal value is 0 for the parameters of <code>histosys</code> and <code>normsys</code> modifiers and 1 for those of all other types. Constraints on <code>histosys</code> and <code>normsys</code> parameters <span class="smallcaps">should</span> be a <code>gaussian_dist</code> with <code>mean</code> 0 and <code>sigma</code> 1, such that <span class="arithmatex">\(\alpha=\pm1\)</span> corresponds to the <code>hi</code> and <code>lo</code> variations. </p>
 <p>A distribution may be named in <code>constraints</code> for several parameters, for example for all parameters of a modifier, or in several modifiers, samples or channels. This is how a single distribution covering several parameters, such as an <a href="#sec:array-distribution" reference="sec:array-distribution" reference-type="ref">Array distribution</a>, is attached to all of them. Such a distribution is identified by its name and enters the likelihood exactly once, however many times it is named. Implementations <span class="smallcaps">must not</span> include a constraint term once per parameter or once per modifier that names it.</p>
 <p>The constraint terms belong to the prediction and not to its representation: a likelihood that contains a <code>histfactory_dist</code>, or a distribution that depends on a <code>histfactory</code> function, considers the constraint terms of all modifiers of that prediction in addition to the <code>aux_likelihood</code> section of the likelihood, in the same way for both representations. </p>
 <p>The components of a HistFactory prediction are: </p>

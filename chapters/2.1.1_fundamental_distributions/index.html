@@ -494,17 +494,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#continued-poisson-distribution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Continued Poisson distribution
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#chebychev-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -619,6 +608,17 @@
     <span class="md-ellipsis">
       
         Poisson distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dist:poisson-continuous" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuous Poisson distribution
       
     </span>
   </a>
@@ -1211,17 +1211,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#continued-poisson-distribution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Continued Poisson distribution
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#chebychev-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1336,6 +1325,17 @@
     <span class="md-ellipsis">
       
         Poisson distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dist:poisson-continuous" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuous Poisson distribution
       
     </span>
   </a>
@@ -1458,25 +1458,6 @@ functions, parameters and exactly one variable.</p>
 <li><code>resonance</code>: value or name of the parameter used as resonance <span class="arithmatex">\(m_0\)</span> </li>
 <li><code>slope</code>: value or name of the parameter used as slope <span class="arithmatex">\(c\)</span> </li>
 <li><code>power</code>: value or name of the parameter used as exponent <span class="arithmatex">\(p\)</span>. </li>
-</ul>
-<h4 id="continued-poisson-distribution">Continued Poisson distribution<a class="headerlink" href="#continued-poisson-distribution" title="Permanent link">&para;</a></h4>
-<p>The continued Poisson distribution of the variable <span class="arithmatex">\(x\)</span> is defined as </p>
-<div class="arithmatex">\[
-\begin{aligned} \text{ContinuedPoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left(x \cdot \ln \lambda - \lambda - \ln \Gamma(x+1)\right), \end{aligned} 
-\]</div>
-<p>where <span class="arithmatex">\(\Gamma\)</span> denotes the Euler Gamma function. </p>
-<p>This function is similar to the Poisson distribution (see <a href="#dist:poisson">Poisson
-distribution</a>{reference-type="ref"
-reference="dist:poisson"}), but can accept non-integer values for
-<span class="arithmatex">\(x\)</span>. Notably, the differences between the two might be significant for
-small values of <span class="arithmatex">\(x\)</span> (below <span class="arithmatex">\(1\)</span>). Nevertheless, the distribution is
-useful to deal with datasets with non-integer event counts, such as
-Asimov datasets [^asymptotics].</p>
-<ul>
-<li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>poisson_dist</code> </li>
-<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span> for the     standard integer case) </li>
-<li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
 </ul>
 <h4 id="chebychev-distribution">Chebychev distribution<a class="headerlink" href="#chebychev-distribution" title="Permanent link">&para;</a></h4>
 <p>The Chebychev distribution is defined as a polynomial in Chebychev polynomials of the first kind:</p>
@@ -1682,18 +1663,31 @@ to avoid disfavouring a pure solution.)</p>
 <li><code>sigma</code>: value or name of the scale parameter <span class="arithmatex">\(\sigma\)</span></li>
 </ul>
 <h4 id="dist:poisson" label="dist:poisson">Poisson distribution<a class="headerlink" href="#dist:poisson" title="Permanent link">&para;</a></h4>
-<p>The Poisson distribution of the variable <span class="arithmatex">\(x\)</span> is defined as </p>
+<p>The Poisson distribution of the integer variable <span class="arithmatex">\(x\)</span> is defined as </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{PoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \frac{\lambda^x}{x!}  \text{e}^{-\lambda}. \end{aligned} 
 \]</div>
-<p>where <span class="arithmatex">\(x\)</span> is required to be an integer. 
-In this case, the behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. </p>
+<p>This is a discrete distribution: <span class="arithmatex">\(x\)</span> <span class="smallcaps">must</span> be a non-negative integer, and <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the sum of the expression over the integers in the current domain of <span class="arithmatex">\(x\)</span>. The behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. A variable that can take non-integer values, such as the event count of an Asimov data set or the global observable of a constraint term, <span class="smallcaps">must</span> instead be described by the continuous Poisson distribution (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>).</p>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>poisson_dist</code> </li>
-<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span> for the     standard integer case) </li>
+<li><code>x</code>: name of the integer variable <span class="arithmatex">\(x\)</span> (usually referred to as <span class="arithmatex">\(k\)</span>) </li>
 <li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
 </ul>
+<h4 id="dist:poisson-continuous" label="dist:poisson-continuous">Continuous Poisson distribution<a class="headerlink" href="#dist:poisson-continuous" title="Permanent link">&para;</a></h4>
+<p>The continuous Poisson distribution of the real variable <span class="arithmatex">\(x\)</span> is defined as </p>
+<div class="arithmatex">\[
+\begin{aligned} \text{ContinuousPoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \frac{\lambda^x}{\Gamma(x+1)} \text{e}^{-\lambda} = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left(x \cdot \ln \lambda - \lambda - \ln \Gamma(x+1)\right), \end{aligned} 
+\]</div>
+<p>where <span class="arithmatex">\(\Gamma\)</span> denotes the Euler Gamma function. </p>
+<p>This is the continuation of the Poisson distribution (see <a href="#dist:poisson" reference="dist:poisson" reference-type="ref">Poisson distribution</a>) to non-negative real values of <span class="arithmatex">\(x\)</span>. At integer values of <span class="arithmatex">\(x\)</span> the two expressions coincide, but the two distributions differ in the admissible values of <span class="arithmatex">\(x\)</span> and in their normalization: here <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the integral of the expression over the current domain of <span class="arithmatex">\(x\)</span>, which is in general not equal to the sum over the integers. Notably, the differences between the two might be significant for small values of <span class="arithmatex">\(x\)</span> (below <span class="arithmatex">\(1\)</span>). The continuous Poisson distribution is useful to deal with data sets with non-integer event counts, such as Asimov data sets [^asymptotics], and for constraint terms whose global observable is not an integer, such as the Barlow-Beeston-lite constraints of HistFactory (see <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>).</p>
+<ul>
+<li><code>name</code>: custom unique string </li>
+<li><code>type</code>: <code>poisson_continuous_dist</code> </li>
+<li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
+<li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
+</ul>
+<p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 use the type <code>poisson_dist</code> for both the discrete and the continuous Poisson distribution. Such documents were in practice written by ROOT, which distinguishes the two by a boolean key <code>integer</code> that is not part of this standard: <code>integer: false</code> denotes the continuous form, <code>integer: true</code> the discrete form. Implementations reading documents conforming to versions before 0.3 <span class="smallcaps">should</span> read a <code>poisson_dist</code> with <code>integer: false</code> as <code>poisson_continuous_dist</code>, and a <code>poisson_dist</code> with <code>integer: true</code> or without the key <code>integer</code> as the discrete distribution. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use <code>poisson_continuous_dist</code> for the continuous form; in these documents, <code>poisson_dist</code> always denotes the discrete distribution and the key <code>integer</code> <span class="smallcaps">must not</span> be present on either type.</p>
 <h4 id="polynomial-distribution">Polynomial distribution<a class="headerlink" href="#polynomial-distribution" title="Permanent link">&para;</a></h4>
 <p>The polynomial distribution is defined as </p>
 <div class="arithmatex">\[
