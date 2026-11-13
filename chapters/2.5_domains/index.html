@@ -619,6 +619,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Domains">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sec:joint-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Selection keys
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -975,6 +992,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Domains">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sec:joint-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Selection keys
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1015,7 +1049,7 @@
 </li>
 <li>A categorical axis has the components: <ul>
 <li><code>name</code>: custom string</li>
-<li><code>categories</code>: array of unique strings enumerating the allowed values</li>
+<li><code>categories</code>: array of unique strings enumerating the allowed labels. This is an unordered set: the order of the array has no meaning.</li>
 </ul>
 </li>
 <li>A fixed axis has the components: <ul>
@@ -1039,13 +1073,16 @@
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;par_3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;obs_x&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nbins&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;obs_y&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;max&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;edges&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;channel&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;categories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="s2">&quot;CR&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;regions&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;categories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="s2">&quot;CR&quot;</span><span class="p">,</span><span class="s2">&quot;VR&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;observables&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;categories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;physics&quot;</span><span class="p">,</span><span class="s2">&quot;global&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
 <span class="w">      </span><span class="err">...</span><span class="w"> </span>
 <span class="w">    </span><span class="p">]</span><span class="w"> </span>
 <span class="w">  </span><span class="p">},</span><span class="w"> </span>
 <span class="w">  </span><span class="err">...</span><span class="w"> </span>
 <span class="p">]</span>
 </code></pre></div>
+<h3 id="sec:joint-selection">Selection keys<a class="headerlink" href="#sec:joint-selection" title="Permanent link">&para;</a></h3>
+<p>A <code>key</code> is an array of labels selecting one component of a structure. The structure names, in a parallel array (<code>columns</code>, <code>categorical_parameter</code> or <code>categorical_variable</code>), one categorical axis per position of the <code>key</code>. Each of these axes <span class="smallcaps">must</span> be declared in a domain of the document; if several domains declare an axis of the same name, their <code>categories</code> <span class="smallcaps">must</span> agree. The axis declares the allowed labels: <code>key[i]</code> <span class="smallcaps">must</span> be one of the <code>categories</code> of the axis named in position <span class="arithmatex">\(i\)</span>. The possible keys are all combinations of labels. Two keys are equal only if they agree in every position. A structure listing keys <span class="smallcaps">need not</span> list every possible key and defines nothing for those it omits. For <code>columns</code> the axis only declares the labels of a selection column and introduces no variable, variate or observable. For <code>categorical_parameter</code> and <code>categorical_variable</code> the axis is the domain of that parameter or variable, as for any other axis. Each axis is declared once, independent of the combinations it is used in.</p>
 
 
 

@@ -590,7 +590,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#categorical-axes" class="md-nav__link">
+  <a href="#sec:categorical-axes" class="md-nav__link">
     <span class="md-ellipsis">
       
         Categorical Axes
@@ -654,6 +654,17 @@
     <span class="md-ellipsis">
       
         Binned Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combined-data-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combined data set
       
     </span>
   </a>
@@ -1102,7 +1113,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#categorical-axes" class="md-nav__link">
+  <a href="#sec:categorical-axes" class="md-nav__link">
     <span class="md-ellipsis">
       
         Categorical Axes
@@ -1172,6 +1183,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#combined-data-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combined data set
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1224,11 +1246,11 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 </ul>
 <p>These fields define the domain over which PDFs are normalized.</p>
 <p><strong>Note on normalization</strong>: Any PDF depending on a continuous observable <span class="arithmatex">\(x\)</span> must be normalized over the domain <span class="arithmatex">\([\text{min}, \text{max}]\)</span> defined by that observable's axis, not over <span class="arithmatex">\((-\infty, \infty)\)</span>.</p>
-<h4 id="categorical-axes">Categorical Axes<a class="headerlink" href="#categorical-axes" title="Permanent link">&para;</a></h4>
+<h4 id="sec:categorical-axes">Categorical Axes<a class="headerlink" href="#sec:categorical-axes" title="Permanent link">&para;</a></h4>
 <p>A categorical axis describes a discrete-valued observable that takes one of a finite set of named states. A categorical axis <span class="smallcaps">must</span> include:</p>
 <ul>
 <li><code>name</code>: identifier matching the categorical observable in the PDF</li>
-<li><code>categories</code>: array of unique strings enumerating the allowed values. <code>categories</code> defines a set: the order in which values appear in the array <span class="smallcaps">must not</span> affect evaluation.</li>
+<li><code>categories</code>: array of unique strings enumerating the allowed values. <code>categories</code> defines a set: the order in which values appear in the array <span class="smallcaps">must not</span> affect evaluation. For binned data it only fixes the layout of <code>contents</code>.</li>
 </ul>
 <p>The <code>categories</code> array itself defines the domain of the axis; the fields <code>min</code>, <code>max</code>, <code>nbins</code> and <code>edges</code> <span class="smallcaps">must not</span> be present.  </p>
 <h4 id="forbidden-attributes">Forbidden Attributes<a class="headerlink" href="#forbidden-attributes" title="Permanent link">&para;</a></h4>
@@ -1388,6 +1410,41 @@ Here the first column of <code>entries</code> refers to the <code>cat1</code> ax
 <span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </code></pre></div>
+<h3 id="combined-data-set">Combined data set<a class="headerlink" href="#combined-data-set" title="Permanent link">&para;</a></h3>
+<p>Combined data sets merge multiple data structs into one. The sub-data sets can be of any <code>type</code> described above. Their <code>axes</code> names are pairwise distinct, since each sub-data set is paired with a component of a combined distribution and those components share no variate.<br />
+A combined data set is defined with the components:  </p>
+<ul>
+<li><code>name</code>: custom string</li>
+<li><code>type</code>: <code>combined</code></li>
+<li><code>columns</code>: array of names. Each name is a selection column whose allowed labels are declared by a categorical axis of that name in the domains, see <a href="#sec:joint-selection">Selection keys</a>; the axis declares labels only and introduces no variable or observable. The labels of a single column, or the combinations of labels of several columns, are the possible values of a <code>key</code>. <code>axes</code> <span class="smallcaps">must not</span> be present.</li>
+<li><code>components</code>: array of structs, each assigning one sub-data set to one <code>key</code>. Each struct <span class="smallcaps">must</span> have the components:<ul>
+<li><code>key</code>: array of strings, one per entry of <code>columns</code>. No two entries of <code>components</code> <span class="smallcaps">may</span> have the same <code>key</code>.</li>
+<li><code>dataset</code>: <code>name</code> of the referenced data set</li>
+</ul>
+</li>
+</ul>
+<p><code>components</code> <span class="smallcaps">need not</span> cover every possible <code>key</code>.</p>
+<div class="highlight"><span class="filename">Example: Combined data set</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;combined_data&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;combined&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;columns&quot;</span><span class="p">:[</span><span class="s2">&quot;regions&quot;</span><span class="p">,</span><span class="s2">&quot;observables&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;components&quot;</span><span class="p">:[</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;key&quot;</span><span class="p">:[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="s2">&quot;physics&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;dataset&quot;</span><span class="p">:</span><span class="s2">&quot;data_sr&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;key&quot;</span><span class="p">:[</span><span class="s2">&quot;CR&quot;</span><span class="p">,</span><span class="s2">&quot;physics&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;dataset&quot;</span><span class="p">:</span><span class="s2">&quot;data_cr&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;key&quot;</span><span class="p">:[</span><span class="s2">&quot;VR&quot;</span><span class="p">,</span><span class="s2">&quot;physics&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;dataset&quot;</span><span class="p">:</span><span class="s2">&quot;data_vr&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;key&quot;</span><span class="p">:[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span><span class="s2">&quot;global&quot;</span><span class="p">],</span><span class="w">  </span><span class="nt">&quot;dataset&quot;</span><span class="p">:</span><span class="s2">&quot;global_obs_sr&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;key&quot;</span><span class="p">:[</span><span class="s2">&quot;CR&quot;</span><span class="p">,</span><span class="s2">&quot;global&quot;</span><span class="p">],</span><span class="w">  </span><span class="nt">&quot;dataset&quot;</span><span class="p">:</span><span class="s2">&quot;global_obs_cr&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data_sr&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;binned&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:[</span><span class="err">...</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="err">...</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data_cr&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;entries&quot;</span><span class="p">:[</span><span class="err">...</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="err">...</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data_vr&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;entries&quot;</span><span class="p">:[</span><span class="err">...</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="err">...</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;global_obs_sr&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;entries&quot;</span><span class="p">:[</span><span class="err">...</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="err">...</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;global_obs_cr&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;unbinned&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;entries&quot;</span><span class="p">:[</span><span class="err">...</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span><span class="err">...</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>Note that region <code>VR</code> has no <code>global</code> entry in <code>components</code>: the combination <code>(VR, global)</code> is simply absent, which is valid.</p>
 
 
 
