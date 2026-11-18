@@ -451,6 +451,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Distributions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sec:normalization-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Normalization range
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1003,6 +1020,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Distributions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sec:normalization-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Normalization range
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1028,7 +1062,7 @@
   <h1>Distributions</h1>
 
 <h2 id="sec:distributions">Distributions<a class="headerlink" href="#sec:distributions" title="Permanent link">&para;</a></h2>
-<p>The top-level component <code>distributions</code> contains an array of distributions in struct format. Distributions <span class="smallcaps">must</span> be normalized, thus, the letter <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> in the following descriptions will always relate to the normalization of the distribution. The value of <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is conditional on the current domain. It <span class="smallcaps">must</span> be chosen such that the integral of the distribution over the current domain equals one. The implementations might chose to perform this integral using analytical or numerical means. 
+<p>The top-level component <code>distributions</code> contains an array of distributions in struct format. Distributions <span class="smallcaps">must</span> be normalized, thus, the letter <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> in the following descriptions will always relate to the normalization of the distribution. The value of <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is conditional on the current domain of the variates of the distribution, which is defined in <a href="#sec:normalization-range" reference="sec:normalization-range" reference-type="ref">Normalization range</a>. It <span class="smallcaps">must</span> be chosen such that the integral of the distribution over the current domain (for discrete variates, the sum) equals one. The implementations might chose to perform this integral using analytical or numerical means. 
 Each distribution <span class="smallcaps">must</span> have the components <code>type</code>, denoting the kind of distribution described, and a component <code>name</code>, which acts as a unique identifier of this distribution among all other named objects. Distributions in general have the following keys: </p>
 <ul>
 <li><code>name</code>: custom unique string (<span class="smallcaps">required</span>), e.     g.&nbsp;<code>my_distribution_of_x</code> </li>
@@ -1060,10 +1094,18 @@ Each distribution <span class="smallcaps">must</span> have the components <code>
 <span class="w">    </span><span class="err">...</span>
 <span class="p">]</span><span class="w"> </span>
 </code></pre></div>
-<p>Distributions can be treated either as <code>extended</code> or as non-<code>extended</code> [^barlow-extended-ml]. Some distributions are always extended, others can never be extended, yet others can be used in extended and non-extended scenarios and have a switch selecting between the two. An non-extended distribution is always normalized to the unity. An extended distribution, on the other hand, can yield values larger than unity, where the yield is interpreted as the number of predicted events. That is to say, the distribution is augmented by a factor that is a Poisson constraint term for the total number of events. 
-In the following, all distributions supported in HS<span class="arithmatex">\({}^3\)</span> v0.2.9 are listed in detail. Future versions will expand upon this list. 
-Entries explicitly identified as current draft spellings document ongoing post-v0.2.9 work and have not yet been assigned to a new HS<span class="arithmatex">\({}^3\)</span> version.</p>
+<p>Distributions can be treated either as <code>extended</code> or as non-<code>extended</code> [^barlow-extended-ml]. Some distributions are always extended, others can never be extended, yet others can be used in extended and non-extended scenarios and have a switch selecting between the two. A non-extended distribution is always normalized to unity. An extended distribution additionally predicts the total number of events <span class="arithmatex">\(\nu\)</span>: its contribution to a likelihood is that of the corresponding non-extended distribution, multiplied by a Poisson factor for the observed number of events given <span class="arithmatex">\(\nu\)</span>. 
+The following sections define the distributions of version 0.3 of HS<span class="arithmatex">\({}^3\)</span>. Future versions will expand upon this list. </p>
 <p>In Cartesian products of distributions, their variate records are concatenated.</p>
+<h3 id="sec:normalization-range">Normalization range<a class="headerlink" href="#sec:normalization-range" title="Permanent link">&para;</a></h3>
+<p>The current domain of a distribution is the product of the ranges of its variates. The range of a variate is determined as follows, in this order:</p>
+<ol>
+<li>If the distribution is paired with a data set in a likelihood (see <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>), the range is given by the axis of the data set that carries the name of the variate.</li>
+<li>Without such an axis, the range is given by the axis of that name in the domains of the analysis (see <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>).</li>
+<li>Without either axis, or where the axis in use gives no lower or no upper bound, the range extends to the corresponding end of the natural support of the distribution, i.e. the set of values of the variate for which the distribution is defined: for example the real line for <code>gaussian_dist</code> and the non-negative integers for <code>poisson_dist</code>. A fixed axis (see <a href="#sec:domains" reference="sec:domains" reference-type="ref">Domains</a>) gives a value but no range, so that a distribution whose variate has a fixed axis is normalized over its natural support.</li>
+</ol>
+<p>If the paired data set and the domains of the analysis both contain an axis for the same variate, the two axes <span class="smallcaps">must</span> give the same range: the same lower bound and the same upper bound, where an absent bound is equal only to an absent bound. A document in which they differ is invalid.</p>
+<p>The ranges of names that are not variates of the distribution do not enter its normalization.</p>
 
 
 

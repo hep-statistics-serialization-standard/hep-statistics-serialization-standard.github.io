@@ -1257,7 +1257,7 @@
 <h3 id="product">Product<a class="headerlink" href="#product" title="Permanent link">&para;</a></h3>
 <p>A product of values or functions <span class="arithmatex">\(a_i\)</span>. </p>
 <div class="arithmatex">\[
-\begin{aligned} \text{Prod} &amp;= \prod_i^n a_i \end{aligned} 
+\begin{aligned} \text{Prod} &amp;= \prod_{i=1}^n a_i \end{aligned} 
 \]</div>
 <ul>
 <li><code>name</code>: custom unique string </li>
@@ -1267,7 +1267,7 @@
 <h3 id="sum">Sum<a class="headerlink" href="#sum" title="Permanent link">&para;</a></h3>
 <p>A sum of values or functions <span class="arithmatex">\(a_i\)</span>. </p>
 <div class="arithmatex">\[
-\begin{aligned} \text{Sum} &amp;= \sum_i^n a_i \end{aligned} 
+\begin{aligned} \text{Sum} &amp;= \sum_{i=1}^n a_i \end{aligned} 
 \]</div>
 <ul>
 <li><code>name</code>: custom unique string </li>
@@ -1286,7 +1286,7 @@
 <li><code>name</code>: custom unique string</li>
 <li><code>type</code>: <code>polynomial</code></li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
-<li><code>coefficients</code>: array of coefficients <span class="arithmatex">\(a_i\)</span>. The length of this array implies the degree of the polynomial.</li>
+<li><code>coefficients</code>: array of coefficients <span class="arithmatex">\(a_i\)</span>, starting with <span class="arithmatex">\(a_0\)</span>. An array of length <span class="arithmatex">\(n+1\)</span> describes a polynomial of degree at most <span class="arithmatex">\(n\)</span>.</li>
 </ul>
 <h3 id="derivative-function">Derivative Function<a class="headerlink" href="#derivative-function" title="Permanent link">&para;</a></h3>
 <p>The derivative function represents a numerical derivative of another function with respect to a variable:</p>
@@ -1306,7 +1306,8 @@
 <li><code>normalization</code>: array of names defining the normalization set (<span class="smallcaps">optional</span>)</li>
 </ul>
 <h3 id="gaussian-resolution-model">Gaussian Resolution Model<a class="headerlink" href="#gaussian-resolution-model" title="Permanent link">&para;</a></h3>
-<p>The Gaussian resolution model represents a Gaussian smearing model in the convolution variable <span class="arithmatex">\(x\)</span>:</p>
+<p><strong>Provisional.</strong> This type is provisional. The representation of resolution models and analytical convolutions is under revision, and this type is expected to be replaced in a future version of this standard, possibly without a backward-compatibility provision. Documents intended for long-term preservation <span class="smallcaps">should not</span> rely on it.
+The Gaussian resolution model represents a Gaussian smearing model in the convolution variable <span class="arithmatex">\(x\)</span>:</p>
 <div class="arithmatex">\[
 \begin{aligned}
 \text{GaussModel}(x,\mu,\sigma) =
@@ -1322,7 +1323,8 @@
 <li><code>sigma</code>: value or name of the width parameter <span class="arithmatex">\(\sigma\)</span></li>
 </ul>
 <h3 id="truth-resolution-model">Truth Resolution Model<a class="headerlink" href="#truth-resolution-model" title="Permanent link">&para;</a></h3>
-<p>The truth resolution model corresponds to perfect resolution, represented by a delta function in the convolution variable:</p>
+<p><strong>Provisional.</strong> This type is provisional. The representation of resolution models and analytical convolutions is under revision, and this type is expected to be replaced in a future version of this standard, possibly without a backward-compatibility provision. Documents intended for long-term preservation <span class="smallcaps">should not</span> rely on it.
+The truth resolution model corresponds to perfect resolution, represented by a delta function in the convolution variable:</p>
 <div class="arithmatex">\[
 \begin{aligned}
 \text{TruthModel}(x) = \delta(x).
@@ -1362,14 +1364,15 @@
 <li>all further components as defined in Section <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a> </li>
 </ul>
 <h3 id="generic-function">Generic Function<a class="headerlink" href="#generic-function" title="Permanent link">&para;</a></h3>
-<p><em>Note: Users should prefer the specific functions defined in this standard over generic functions where possible, as implementations of these will typically be more optimized. Generic functions should only be used if no equivalent specific distribution is defined.</em> 
+<p><em>Note: Users should prefer the specific functions defined in this standard over generic functions where possible, as implementations of these will typically be more optimized. Generic functions should only be used if no equivalent specific function is defined.</em> 
 A generic function is defined by an expression. The expression must be a valid HS<sup>3</sup>-expression string (see Section 
 <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a>). </p>
 <ul>
 <li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>generic</code> (current draft spelling; <code>generic_function</code> is the legacy HS<span class="arithmatex">\({}^3\)</span> v0.2.9 key)</li>
-<li><code>expression</code>: a string with a generic mathematical expression.     Simple mathematical syntax common to programming languages should be     used here, such as <code>x-2*y+z</code>. For any non-elementary operations, the     behavior is undefined. </li>
+<li><code>type</code>: <code>generic</code></li>
+<li><code>expression</code>: a string with a generic mathematical expression. Simple mathematical syntax common to programming languages should be used here, such as <code>x-2*y+z</code>. The behavior of operations and functions that are not defined in <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a> is undefined. </li>
 </ul>
+<p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 use the type <code>generic_function</code> for this function. Implementations <span class="smallcaps">should</span> read <code>generic_function</code> in such documents as <code>generic</code>. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use <code>generic</code>.</p>
 
 
 

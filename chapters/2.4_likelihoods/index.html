@@ -591,6 +591,56 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Likelihoods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sec:likelihood-pairings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contribution of a pairing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sec:likelihood-sole-variate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data without axes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sec:likelihood-unpaired" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Distributions without paired data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sec:likelihood-pure-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pure models
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1003,6 +1053,56 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Likelihoods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sec:likelihood-pairings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contribution of a pairing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sec:likelihood-sole-variate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data without axes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sec:likelihood-unpaired" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Distributions without paired data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sec:likelihood-pure-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pure models
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1029,16 +1129,18 @@
 
 <h2 id="sec:likelihoods">Likelihoods<a class="headerlink" href="#sec:likelihoods" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>likelihoods</code> contains an array of likelihoods in struct format specifying mappings of distributions and observations. The corresponding distributions and observations are inserted as keys in string format referencing to distributions and observations defined in the respective top-level components, or as numbers for fixed data values. 
-The combination of parameterized distributions <span class="arithmatex">\(m_i(\theta_i)\)</span> with observations <span class="arithmatex">\(x_i\)</span> generates a likelihood function </p>
+The combination of parameterized distributions <span class="arithmatex">\(m_i(\theta)\)</span> with observations <span class="arithmatex">\(x_i\)</span> generates a likelihood function </p>
 <div class="arithmatex">\[
-\begin{aligned} \ensuremath{\mathscr{L}}(\theta_1, \theta_2, \ldots) &amp;=  \prod_i \text{PDF}(m_i(\theta_i), x_i) \end{aligned} 
+\begin{aligned} \ensuremath{\mathscr{L}}(\theta) &amp;=  \prod_i \text{PDF}(m_i(\theta), x_i), \end{aligned} 
 \]</div>
+<p>where <span class="arithmatex">\(\theta\)</span> is the record of the parameters of all distributions of the likelihood, merged by name: a parameter that occurs in several distributions is one and the same parameter.</p>
+<p>A likelihood consists of exactly the terms it lists: one term for each entry of <code>distributions</code>, evaluated on the entry of <code>data</code> at the same position, and one term for each entry of <code>aux_distributions</code>. Nothing else contributes. A likelihood whose <code>data</code> is <code>null</code> is a pure model (see <a href="#sec:likelihood-pure-model" reference="sec:likelihood-pure-model" reference-type="ref">Pure models</a>): its <code>distributions</code> are not paired with anything, so that it has no terms to evaluate until data is supplied. Also then, it comprises nothing but the distributions it lists. In particular, a distribution that is merely referred to elsewhere in the document, for example in the <code>constraints</code> of a HistFactory modifier (see <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>), contributes no term unless the likelihood lists it.</p>
 <p>The components of a likelihood struct are: </p>
 <ul>
 <li><code>name</code>: custom string </li>
-<li><code>distributions</code>: array of strings referencing the considered     distributions </li>
-<li><code>data</code>: array of strings referencing the used data, must be of the     same length as the array of <code>distributions</code>. Alternatively, the     data-values for single-dimensional distributions can be given     in-line. For example, this can be used for constraint terms     representing auxiliary measurements. </li>
-<li><code>aux_distributions</code>: (<span class="smallcaps">optional</span>) array of strings     referencing the considered auxiliary distributions defined in the     top-level component <code>distributions</code>. They can be used to encode     regularizers or penalty terms to aid the minimization. These     observed data for these distributions is implicit and not part of     <code>data</code>. </li>
+<li><code>distributions</code>: array of strings referencing the considered distributions </li>
+<li><code>data</code>: array of the same length as the array of <code>distributions</code>, or <code>null</code> for a pure model (see <a href="#sec:likelihood-pure-model" reference="sec:likelihood-pure-model" reference-type="ref">Pure models</a>). Each entry of the array is either a string referencing a data set, or a number giving a data value in-line (see <a href="#sec:likelihood-sole-variate" reference="sec:likelihood-sole-variate" reference-type="ref">Data without axes</a>). </li>
+<li><code>aux_distributions</code>: (<span class="smallcaps">optional</span>) array of strings referencing distributions defined in the top-level component <code>distributions</code> that enter the likelihood without paired data. They can be used to encode constraint terms, regularizers or penalty terms. Their evaluation is described in <a href="#sec:likelihood-unpaired" reference="sec:likelihood-unpaired" reference-type="ref">Distributions without paired data</a>. </li>
 </ul>
 <div class="highlight"><span class="filename">Example: Likelihoods</span><pre><span></span><code><span class="nt">&quot;likelihoods&quot;</span><span class="p">:[</span><span class="w"> </span>
 <span class="w">  </span><span class="p">{</span><span class="w"> </span>
@@ -1060,6 +1162,73 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <span class="w">  </span><span class="err">...</span><span class="w"> </span>
 <span class="p">]</span><span class="w"> </span>
 </code></pre></div>
+<h3 id="sec:likelihood-pairings">Contribution of a pairing<a class="headerlink" href="#sec:likelihood-pairings" title="Permanent link">&para;</a></h3>
+<p>The following table states what the basic pairings of a distribution <span class="arithmatex">\(m\)</span> with a data set contribute to the likelihood.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Distribution</strong></th>
+<th><strong>Data</strong></th>
+<th><strong>Contribution</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>non-extended distribution</td>
+<td><code>unbinned</code>, <span class="arithmatex">\(N\)</span> entries without weights</td>
+<td><span class="arithmatex">\(\prod_{k=1}^{N} \text{PDF}(m(\theta), x_k)\)</span>, the product of the densities at the entries</td>
+</tr>
+<tr>
+<td>extended distribution with expected event count <span class="arithmatex">\(\nu(\theta)\)</span></td>
+<td><code>unbinned</code>, <span class="arithmatex">\(N\)</span> entries without weights</td>
+<td>the product above, times one Poisson term <span class="arithmatex">\(\text{PoissonPdf}(N, \nu(\theta))\)</span> per data set</td>
+</tr>
+<tr>
+<td>distribution over bin counts, e.g. <code>histfactory_dist</code></td>
+<td><code>binned</code></td>
+<td><span class="arithmatex">\(\text{PDF}(m(\theta), \mathbf{n})\)</span>, evaluated once with <code>contents</code> as the vector of counts <span class="arithmatex">\(\mathbf{n}\)</span></td>
+</tr>
+<tr>
+<td>distribution with a single variate</td>
+<td><code>point</code>, or a number given in-line</td>
+<td><span class="arithmatex">\(\text{PDF}(m(\theta), x)\)</span> at the given value <span class="arithmatex">\(x\)</span></td>
+</tr>
+<tr>
+<td><code>combined_dist</code></td>
+<td><code>combined</code></td>
+<td>the product over the keys of the contributions of the sub-distributions paired with their sub-data sets, each according to this table</td>
+</tr>
+</tbody>
+</table>
+<p>The variates of a distribution are matched to the axes of the paired data set by name. The variates of a distribution over bin counts are the bin counts themselves and have no names. Such a distribution declares the binning it predicts in its own <code>axes</code>, and these <span class="smallcaps">must</span> match the <code>axes</code> of the paired binned data set: the same names in the same order, the same bin edges and, for categorical axes, the same categories in the same order. The entries of <code>contents</code> are then the counts of the bins of the distribution in the order defined in <a href="#sec:axes-flattening" reference="sec:axes-flattening" reference-type="ref">Flattening of Binned Contents</a>.</p>
+<h3 id="sec:likelihood-sole-variate">Data without axes<a class="headerlink" href="#sec:likelihood-sole-variate" title="Permanent link">&para;</a></h3>
+<p>A number given in-line in <code>data</code>, or a point data set without <code>axes</code>, supplies the value of the single variate of the paired distribution. Whether a distribution has a single variate that can be determined is at the discretion of the implementation; this standard does not list the types of distributions for which this is the case. An implementation that cannot determine the variate <span class="smallcaps">must</span> reject the document. This form is a convenience for hand-written documents; software writing HS<span class="arithmatex">\({}^3\)</span> documents <span class="smallcaps">should</span> write data sets with <code>axes</code>. The range of the variate follows from <a href="#sec:normalization-range" reference="sec:normalization-range" reference-type="ref">Normalization range</a>. The value <code>null</code> for the <code>data</code> component as a whole is not a number given in-line, and this rule does not apply to it (see <a href="#sec:likelihood-pure-model" reference="sec:likelihood-pure-model" reference-type="ref">Pure models</a>).</p>
+<h3 id="sec:likelihood-unpaired">Distributions without paired data<a class="headerlink" href="#sec:likelihood-unpaired" title="Permanent link">&para;</a></h3>
+<p>A distribution listed in <code>aux_distributions</code> has no paired data. Every name it refers to, including the name in its variate component (e.g. <code>x</code> of a <code>gaussian_dist</code>), takes its value from a fixed axis of the domains in use or from the parameter point in use. A name in the variate component that is neither given by a fixed axis nor marked as <code>const</code> is a free parameter like any other, and subject to the rule in <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>.</p>
+<p>The variate component still determines what <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> integrates over, with the range given by <a href="#sec:normalization-range" reference="sec:normalization-range" reference-type="ref">Normalization range</a>: if the variate has a bounded axis in the domains of the analysis, the distribution is truncated to that range; a fixed axis has no range, so that the distribution is normalized over its natural support.</p>
+<p>This standard has no separate concept of a global observable. The observed value of an auxiliary measurement is either a constant parameter of a distribution listed in <code>aux_distributions</code>, as described here, or it is given by a data set: the constraint is then listed in <code>distributions</code> and paired with that data set in <code>data</code>, which supplies both the value and the range.</p>
+<h3 id="sec:likelihood-pure-model">Pure models<a class="headerlink" href="#sec:likelihood-pure-model" title="Permanent link">&para;</a></h3>
+<p>The component <code>data</code> of a likelihood <span class="smallcaps">may</span> be <code>null</code> instead of an array. Such an entry of <code>likelihoods</code> is a pure model and not a likelihood in the statistical sense: it groups distributions, so that an analysis (see <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>) can refer to them. The typical case is a document that contains a model, but no data set at all. A pure model can be used to generate data, for example toy data or an Asimov data set, but it cannot be evaluated as it is: for any operation on the likelihood, data sets have to be created and paired with the distributions first.</p>
+<p>In a pure model, <code>distributions</code> lists one or more distributions of the model. They are not paired with anything and contribute no term until data is supplied. <code>aux_distributions</code> keeps its meaning: it lists the constraint terms of the model, whose names take their values as described in <a href="#sec:likelihood-unpaired" reference="sec:likelihood-unpaired" reference-type="ref">Distributions without paired data</a>.</p>
+<p>It is the component <code>data</code> as a whole that is <code>null</code>. An entry of the array <code>data</code> <span class="smallcaps">must not</span> be <code>null</code>: a likelihood either is a pure model, or it has data for every entry of <code>distributions</code>.</p>
+<div class="highlight"><span class="filename">Example: Pure model</span><pre><span></span><code><span class="nt">&quot;likelihoods&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;model1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span><span class="s2">&quot;channel1_pdf&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;aux_distributions&quot;</span><span class="p">:[</span><span class="s2">&quot;gauss_constraint_alpha_1&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">],</span>
+<span class="nt">&quot;analyses&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;analysis1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;likelihood&quot;</span><span class="p">:</span><span class="s2">&quot;model1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;parameters_of_interest&quot;</span><span class="p">:[</span><span class="s2">&quot;param1&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;domains&quot;</span><span class="p">:[</span><span class="s2">&quot;domain1&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 were in practice written by ROOT, which wrote <code>"data": [0]</code>, an array with the number <code>0</code> as its only entry, for a model without data. Implementations <span class="smallcaps">may</span> read a <code>data</code> component of exactly this form in such documents as <code>null</code>. This applies to no other form: a <code>0</code> in an array <code>data</code> with more than one entry is a data value given in-line, also in these documents. In documents conforming to version 0.3 or later, a number in <code>data</code> is always a data value.</p>
 <p>Encoding of auxiliary measurements and global observables is discussed in <a href="#sec:aux-measurements" reference="sec:aux-measurements" reference-type="ref">Auxiliary measurements</a>.</p>
 
 

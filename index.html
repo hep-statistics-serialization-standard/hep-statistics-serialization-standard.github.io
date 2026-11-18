@@ -984,8 +984,8 @@ Mathematically and computationally, it is often convenient to treat parameters a
 Probability distributions in HS<span class="arithmatex">\({}^3\)</span> (see 
 <a href="#sec:distributions" reference="sec:distributions" reference-type="ref">Distributions</a>) are typically parameterized. Any instance of a distribution that has some of its parameters bound to names instead of concrete values, e.g. <span class="arithmatex">\(m = d_{\mu = a, \sigma = 0.7, \lambda = b, ...}\)</span>, constitutes a valid statistical model <span class="arithmatex">\(m(\theta)\)</span> with model parameters <span class="arithmatex">\(\theta = (a, b)\)</span>. 
 When probability distributions are combined via a Cartesian product (see 
-<a href="#sec:product-distribution" reference="sec:product-distribution" reference-type="ref">Product distribution</a>), then the records that contain their free parameter values are concatenated. So <span class="arithmatex">\(m = d_{\mu = a, \sigma = b} \times d_{\mu = c, \sigma = 0.7}\)</span> constitutes a model <span class="arithmatex">\(m(\theta)\)</span> with model parameters <span class="arithmatex">\(\theta = (a, b, c)\)</span>.
-Distribution parameters may also be bound to the output of functions, and if those functions have inputs that are bound to names instead of values (or again bound to such functions, recursively), then those names become part of the model parameters. A configuration <span class="arithmatex">\(m = d_{\mu = a, \sigma = 0.7, \lambda = f}, f = \texttt{sum}(4.2, g), g = \texttt{sum}(1.3, b)\)</span>, for example, also constitutes a (different) model <span class="arithmatex">\(m(\theta)\)</span> with parameters <span class="arithmatex">\(\theta = (a, b, c)\)</span>. 
+<a href="#sec:product-distribution" reference="sec:product-distribution" reference-type="ref">Product distribution</a>), then the records that contain their free parameter values are merged by name: a name that occurs in several of them denotes one and the same parameter. So <span class="arithmatex">\(m = d_{\mu = a, \sigma = b} \times d_{\mu = c, \sigma = 0.7}\)</span> constitutes a model <span class="arithmatex">\(m(\theta)\)</span> with model parameters <span class="arithmatex">\(\theta = (a, b, c)\)</span>, and <span class="arithmatex">\(m = d_{\mu = a, \sigma = b} \times d_{\mu = a, \sigma = 0.7}\)</span> a model with model parameters <span class="arithmatex">\(\theta = (a, b)\)</span>.
+Distribution parameters may also be bound to the output of functions, and if those functions have inputs that are bound to names instead of values (or again bound to such functions, recursively), then those names become part of the model parameters. A configuration <span class="arithmatex">\(m = d_{\mu = a, \sigma = 0.7, \lambda = f}, f = \texttt{sum}(4.2, g), g = \texttt{sum}(1.3, b)\)</span>, for example, also constitutes a (different) model <span class="arithmatex">\(m(\theta)\)</span> with parameters <span class="arithmatex">\(\theta = (a, b)\)</span>. 
 If all parameter values of a probability distribution are set to concrete values, so if there are not directly (or indirectly via functions) bound to names, we call this probability distribution a concrete distribution here. Such distributions can be used as Bayesian 
 priors (see <a href="#sec:bayesian-inference" reference="sec:bayesian-inference" reference-type="ref">Bayesian inference</a>). </p>
 <p>The variates of all distributions (so the possible results of random draws from them) are currently always records (this may be relaxed in future versions of this standard). So even instances of univariate distributions, like the normal distribution, have variates structured like <span class="arithmatex">\((a = \ldots,)\)</span>. Individual names are assigned to each entry of such record-valued variates.</p>
@@ -997,10 +997,11 @@ priors (see <a href="#sec:bayesian-inference" reference="sec:bayesian-inference"
 multiple HS<span class="arithmatex">\({}^3\)</span> documents together, e.g. for combined analyses.</p>
 <h4 id="sec:identifiers">Identifiers<a class="headerlink" href="#sec:identifiers" title="Permanent link">&para;</a></h4>
 <p>The names of HS<span class="arithmatex">\({}^3\)</span> objects that can be referenced from generic expressions, i.e. parameters, variables, functions and distributions, <span class="smallcaps">must</span> be identifiers matching the regular expression <code>[A-Za-z_][A-Za-z0-9_]*</code>: an ASCII letter or underscore, followed by any number of ASCII letters, digits or underscores. The generic expression language (see <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a>) relies on this, since symbols in an expression that are not defined by the expression language refer to these objects by name, and names containing other characters could not be written there without an escaping mechanism.</p>
+<p>The names that the generic expression language reserves for itself, i.e. <code>PI</code>, <code>EULER</code>, <code>TRUE</code>, <code>FALSE</code>, <code>ifelse</code> and the names of the functions listed in <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a>, <span class="smallcaps">must not</span> be used as the name of any of these objects.</p>
 <p>The names of data sets, likelihoods, analyses, domains and parameter points <span class="smallcaps">should</span> follow the same rule, but are not required to.</p>
 <h3 id="sec:what-is-a-pdf">Probability density functions (PDFs)<a class="headerlink" href="#sec:what-is-a-pdf" title="Permanent link">&para;</a></h3>
 <p>Statistics literature often discriminates between probability density functions (PDF) for continuous probability distributions and probability mass functions (PMF) for discrete probability distributions. This standard use the term PDF for both continuous and discrete distributions. The concept of density is to be understood in terms of densities in the realm of measure theory here, that is the density of a probability measure (distribution) is its Radon-Nikodym derivative in respect to an (implied) reference measure. 
-The choice of reference measure would be arbitrary in principle, which scales likelihood functions 
+In principle, any reference measure can be chosen that dominates all distributions of the model and does not depend on the model parameters. A different choice scales likelihood functions 
 (Sec. <a href="#sec:likelihood-definition" reference="sec:likelihood-definition" reference-type="ref">Likelihood</a>) by a constant factor that depends on choice of reference. In this standard, a specific reference measures is implied for each probability distribution, typically the Lebesgue measure for continuous distributions and the counting measure for discrete distributions. The standard aims to match the PDF (resp.&nbsp;PMF) most commonly used in literature for each specific probability distribution and the mathematical form of the PDF is documented explicitly for each distribution in the standard. So within HS<span class="arithmatex">\({}^3\)</span>, probability densities and likelihood functions are unambiguous. 
 Here we use <span class="arithmatex">\(\text{PDF}(m(\theta), x)\)</span> to denote the density value of the probability distribution/measure <span class="arithmatex">\(m\)</span>, parameterized by <span class="arithmatex">\(\theta\)</span>, at the point/variate <span class="arithmatex">\(x\)</span>, in respect to the implied reference for <span class="arithmatex">\(m\)</span>. </p>
 <h3 id="sec:data-generation">Observed and simulated data<a class="headerlink" href="#sec:data-generation" title="Permanent link">&para;</a></h3>
@@ -1027,10 +1028,11 @@ The keywords <span class="smallcaps">must</span>, <span class="smallcaps">must n
 <ul>
 <li><code>struct</code>: represented with { }, containing a <em>key:value</em> mapping,     keys are of type <code>string</code>. </li>
 <li><code>component</code>: key-value pair within a struct </li>
-<li><code>array</code> array of items (either <code>string</code>s or <code>number</code>s) without keys. Represented with <code>[...]</code>. </li>
+<li><code>array</code>: ordered sequence of values without keys, represented with <code>[...]</code>. The permitted types of the elements are stated for each component; they can be <code>number</code>s, <code>string</code>s, <code>boolean</code>s, <code>struct</code>s, <code>array</code>s or <code>null</code>. </li>
 <li><code>string</code>: references to objects, names and arbitrary information.     Represented with <code>"..."</code></li>
 <li><code>number</code>: either floating or integer type values </li>
 <li><code>boolean</code>: boolean values; they can be encoded as <code>true</code> and <code>false</code> </li>
+<li><code>null</code>: the JSON value <code>null</code>. It is permitted only where a component explicitly allows it. </li>
 </ul>
 <p>All <code>struct</code>s defining functions, distributions, parameters, variables, domains, likelihoods, data or parameter points will be referred to as <code>object</code>s. All <code>object</code>s <span class="smallcaps">must</span> always have a component <code>name</code>. These names are subject to the uniqueness rule given in <a href="#sec:global-namespace" reference="sec:global-namespace" reference-type="ref">Global namespace</a>. </p>
 <p>Within most top-level <code>component</code>s, any one <code>string</code> given as a value to any component <span class="smallcaps">should</span> refer to the <code>name</code> of another <code>object</code>, unless explicitly stated otherwise. Top-level <code>component</code>s in which this is not the case are explicitly marked as such. </p>
@@ -1059,7 +1061,7 @@ The keywords <span class="smallcaps">must</span>, <span class="smallcaps">must n
 </ul>
 <p>In the following each of these are described in more detail with respect to their own structure. </p>
 <h2 id="sec:distributions">Distributions<a class="headerlink" href="#sec:distributions" title="Permanent link">&para;</a></h2>
-<p>The top-level component <code>distributions</code> contains an array of distributions in struct format. Distributions <span class="smallcaps">must</span> be normalized, thus, the letter <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> in the following descriptions will always relate to the normalization of the distribution. The value of <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is conditional on the current domain. It <span class="smallcaps">must</span> be chosen such that the integral of the distribution over the current domain equals one. The implementations might chose to perform this integral using analytical or numerical means. 
+<p>The top-level component <code>distributions</code> contains an array of distributions in struct format. Distributions <span class="smallcaps">must</span> be normalized, thus, the letter <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> in the following descriptions will always relate to the normalization of the distribution. The value of <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is conditional on the current domain of the variates of the distribution, which is defined in <a href="#sec:normalization-range" reference="sec:normalization-range" reference-type="ref">Normalization range</a>. It <span class="smallcaps">must</span> be chosen such that the integral of the distribution over the current domain (for discrete variates, the sum) equals one. The implementations might chose to perform this integral using analytical or numerical means. 
 Each distribution <span class="smallcaps">must</span> have the components <code>type</code>, denoting the kind of distribution described, and a component <code>name</code>, which acts as a unique identifier of this distribution among all other named objects. Distributions in general have the following keys: </p>
 <ul>
 <li><code>name</code>: custom unique string (<span class="smallcaps">required</span>), e.     g.&nbsp;<code>my_distribution_of_x</code> </li>
@@ -1091,10 +1093,18 @@ Each distribution <span class="smallcaps">must</span> have the components <code>
 <span class="w">    </span><span class="err">...</span>
 <span class="p">]</span><span class="w"> </span>
 </code></pre></div>
-<p>Distributions can be treated either as <code>extended</code> or as non-<code>extended</code> <sup id="fnref:barlow-extended-ml"><a class="footnote-ref" href="#fn:barlow-extended-ml">9</a></sup>. Some distributions are always extended, others can never be extended, yet others can be used in extended and non-extended scenarios and have a switch selecting between the two. An non-extended distribution is always normalized to the unity. An extended distribution, on the other hand, can yield values larger than unity, where the yield is interpreted as the number of predicted events. That is to say, the distribution is augmented by a factor that is a Poisson constraint term for the total number of events. 
-In the following, all distributions supported in HS<span class="arithmatex">\({}^3\)</span> v0.2.9 are listed in detail. Future versions will expand upon this list. 
-Entries explicitly identified as current draft spellings document ongoing post-v0.2.9 work and have not yet been assigned to a new HS<span class="arithmatex">\({}^3\)</span> version.</p>
+<p>Distributions can be treated either as <code>extended</code> or as non-<code>extended</code> <sup id="fnref:barlow-extended-ml"><a class="footnote-ref" href="#fn:barlow-extended-ml">9</a></sup>. Some distributions are always extended, others can never be extended, yet others can be used in extended and non-extended scenarios and have a switch selecting between the two. A non-extended distribution is always normalized to unity. An extended distribution additionally predicts the total number of events <span class="arithmatex">\(\nu\)</span>: its contribution to a likelihood is that of the corresponding non-extended distribution, multiplied by a Poisson factor for the observed number of events given <span class="arithmatex">\(\nu\)</span>. 
+The following sections define the distributions of version 0.3 of HS<span class="arithmatex">\({}^3\)</span>. Future versions will expand upon this list. </p>
 <p>In Cartesian products of distributions, their variate records are concatenated.</p>
+<h3 id="sec:normalization-range">Normalization range<a class="headerlink" href="#sec:normalization-range" title="Permanent link">&para;</a></h3>
+<p>The current domain of a distribution is the product of the ranges of its variates. The range of a variate is determined as follows, in this order:</p>
+<ol>
+<li>If the distribution is paired with a data set in a likelihood (see <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>), the range is given by the axis of the data set that carries the name of the variate.</li>
+<li>Without such an axis, the range is given by the axis of that name in the domains of the analysis (see <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>).</li>
+<li>Without either axis, or where the axis in use gives no lower or no upper bound, the range extends to the corresponding end of the natural support of the distribution, i.e. the set of values of the variate for which the distribution is defined: for example the real line for <code>gaussian_dist</code> and the non-negative integers for <code>poisson_dist</code>. A fixed axis (see <a href="#sec:domains" reference="sec:domains" reference-type="ref">Domains</a>) gives a value but no range, so that a distribution whose variate has a fixed axis is normalized over its natural support.</li>
+</ol>
+<p>If the paired data set and the domains of the analysis both contain an axis for the same variate, the two axes <span class="smallcaps">must</span> give the same range: the same lower bound and the same upper bound, where an absent bound is equal only to an absent bound. A document in which they differ is invalid.</p>
+<p>The ranges of names that are not variates of the distribution do not enter its normalization.</p>
 <h3 id="univariate-fundamental-distributions">Univariate fundamental distributions<a class="headerlink" href="#univariate-fundamental-distributions" title="Permanent link">&para;</a></h3>
 <p>This section contains univariate fundamental distributions in the
 sense that they cannot refer to any other distribution -- only to
@@ -1109,7 +1119,7 @@ functions, parameters and exactly one variable.</p>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>argus_dist</code> </li>
 <li><code>mass</code>: name of the variable <span class="arithmatex">\(m\)</span> used as mass </li>
-<li><code>resonance</code>: value or name of the parameter used as resonance <span class="arithmatex">\(m_0\)</span> </li>
+<li><code>resonance</code>: value or name of the parameter used as kinematic endpoint <span class="arithmatex">\(m_0\)</span>. The density is defined for <span class="arithmatex">\(0 \le m \le m_0\)</span>. The component is called <code>resonance</code> for historical reasons; <span class="arithmatex">\(m_0\)</span> is not the mass of a resonance. </li>
 <li><code>slope</code>: value or name of the parameter used as slope <span class="arithmatex">\(c\)</span> </li>
 <li><code>power</code>: value or name of the parameter used as exponent <span class="arithmatex">\(p\)</span>. </li>
 </ul>
@@ -1175,7 +1185,7 @@ functions, parameters and exactly one variable.</p>
 composed of a Gaussian distribution at the core, connected with two
 power-law distributions describing the lower and upper tails, given by</p>
 <div class="arithmatex">\[
-\begin{aligned} \text{CrystalBallPdf}(m;m_0,\sigma,\alpha_L,n_L,\alpha_R,n_R) = \frac{1}{\ensuremath{\mathcal{M}}} \begin{cases} A_L \cdot (B_L - \frac{m - m_0}{\sigma_L})^{-n_L}, &amp; \mbox{for }\frac{m - m_0}{\sigma_L} &lt; -\alpha_L \\ \exp \left( - \frac{1}{2} \cdot \left[ \frac{m - m_0}{\sigma_L} \right]^2 \right), &amp; \mbox{for }\frac{m - m_0}{\sigma_L} \leq 0 \\ \exp \left( - \frac{1}{2} \cdot \left[ \frac{m - m_0}{\sigma_R} \right]^2 \right), &amp; \mbox{for }\frac{m - m_0}{\sigma_R} \leq \alpha_R \\ A_R \cdot (B_R + \frac{m - m_0}{\sigma_R})^{-n_R}, &amp; \mbox{otherwise}, \\ \end{cases} \end{aligned} 
+\begin{aligned} \text{CrystalBallPdf}(m;m_0,\sigma_L,\sigma_R,\alpha_L,n_L,\alpha_R,n_R) = \frac{1}{\ensuremath{\mathcal{M}}} \begin{cases} A_L \cdot (B_L - \frac{m - m_0}{\sigma_L})^{-n_L}, &amp; \mbox{for }\frac{m - m_0}{\sigma_L} &lt; -\alpha_L \\ \exp \left( - \frac{1}{2} \cdot \left[ \frac{m - m_0}{\sigma_L} \right]^2 \right), &amp; \mbox{for }\frac{m - m_0}{\sigma_L} \leq 0 \\ \exp \left( - \frac{1}{2} \cdot \left[ \frac{m - m_0}{\sigma_R} \right]^2 \right), &amp; \mbox{for }\frac{m - m_0}{\sigma_R} \leq \alpha_R \\ A_R \cdot (B_R + \frac{m - m_0}{\sigma_R})^{-n_R}, &amp; \mbox{otherwise}, \\ \end{cases} \end{aligned} 
 \]</div>
 <p>where </p>
 <div class="arithmatex">\[
@@ -1220,6 +1230,7 @@ power-law distributions describing the lower and upper tails, given by</p>
 </code></pre></div>
 <p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 may contain distributions of type <code>crystalball_dist</code> with the keys <code>alpha_L</code>, <code>n_L</code>, <code>alpha_R</code> and <code>n_R</code> (or <code>sigma_L</code> and <code>sigma_R</code>). Implementations <span class="smallcaps">should</span> read these as <code>crystalball_doublesided_dist</code>; this is unambiguous from the key names. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use <code>crystalball_doublesided_dist</code> for the double-sided form. Note that <code>crystalball_dist</code> with <code>alpha</code> and <code>n</code> is now defined as the single-sided Crystal Ball distribution, in line with how existing documents were written in practice; earlier versions of this text read it as the symmetric double-sided form.</p>
 <h4 id="decay-distribution">Decay distribution<a class="headerlink" href="#decay-distribution" title="Permanent link">&para;</a></h4>
+<p><strong>Provisional.</strong> This type is provisional. The representation of resolution models and analytical convolutions is under revision, and this type is expected to be replaced in a future version of this standard, possibly without a backward-compatibility provision. Documents intended for long-term preservation <span class="smallcaps">should not</span> rely on it.</p>
 <p>The decay distribution describes a single- or double-sided exponential decay convolved with a resolution model <span class="arithmatex">\(R\)</span>:</p>
 <div class="arithmatex">\[
 \begin{aligned}
@@ -1232,12 +1243,13 @@ power-law distributions describing the lower and upper tails, given by</p>
 \begin{aligned}
 B_{\text{type}}(t) =
 \begin{cases}
-\exp(-t/\tau), &amp; \text{for SingleSided}, \\
-\exp(t/\tau), &amp; \text{for Flipped}, \\
+\exp(-t/\tau)\ \text{for}\ t \ge 0,\ 0\ \text{otherwise}, &amp; \text{for SingleSided}, \\
+\exp(t/\tau)\ \text{for}\ t \le 0,\ 0\ \text{otherwise}, &amp; \text{for Flipped}, \\
 \exp(-|t|/\tau), &amp; \text{for DoubleSided}.
 \end{cases}
 \end{aligned}
 \]</div>
+<p>The convolution is taken over the real line, <span class="arithmatex">\((B * R)(t) = \int_{-\infty}^{\infty} B(t')\,R(t-t')\,\mathrm{d}t'\)</span>, with <span class="arithmatex">\(\tau &gt; 0\)</span>.</p>
 <ul>
 <li><code>name</code>: custom unique string</li>
 <li><code>type</code>: <code>decay_dist</code></li>
@@ -1279,7 +1291,7 @@ B_{\text{type}}(t) =
 <p>cf. the <a href="https://en.wikipedia.org/wiki/Generalized_normal_distribution">Wikipedia definition</a>.</p>
 <p>This form is of particular use with values of <span class="arithmatex">\(\beta \sim 8\)</span> to generate a flat-topped distribution useful
 for "2 point" parameter-constraints between models where there is no clear preference but their average
-should not be particularly favoured. (In such usage, the template points should ideally be located at <span class="arithmatex">\(|x| &lt; \pm 1\)</span>,
+should not be particularly favoured. (In such usage, the template points should ideally be located within the flat top, <span class="arithmatex">\(|x-\mu| &lt; \alpha\)</span>,
 to avoid disfavouring a pure solution.)</p>
 <ul>
 <li><code>name</code>: custom unique string</li>
@@ -1287,7 +1299,7 @@ to avoid disfavouring a pure solution.)</p>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
 <li><code>mean</code>: value or name of the parameter used as mean value <span class="arithmatex">\(\mu\)</span></li>
 <li><code>alpha</code>: value or name of the <span class="arithmatex">\(\alpha\)</span> parameter encoding the width; this corresponds to <span class="arithmatex">\(\sigma = \alpha/\sqrt{2}\)</span> when <span class="arithmatex">\(\beta = 2\)</span>.</li>
-<li><code>beta</code>: power <span class="arithmatex">\(\beta\)</span> to which the exponent is raised, <span class="arithmatex">\(\beta = 2\)</span> corresponding to the <span class="arithmatex">\(\text{GaussianPdf}\)</span> shape.</li>
+<li><code>beta</code>: value or name of the shape parameter <span class="arithmatex">\(\beta &gt; 0\)</span>, the power to which <span class="arithmatex">\(|x-\mu|/\alpha\)</span> is raised. <span class="arithmatex">\(\beta = 2\)</span> gives the shape of <span class="arithmatex">\(\text{GaussianPdf}\)</span> and <span class="arithmatex">\(\beta = 1\)</span> that of a Laplace distribution; for large <span class="arithmatex">\(\beta\)</span> the shape approaches a uniform distribution on <span class="arithmatex">\([\mu-\alpha, \mu+\alpha]\)</span>.</li>
 </ul>
 <h4 id="log-normal-distribution">Log-Normal distribution<a class="headerlink" href="#log-normal-distribution" title="Permanent link">&para;</a></h4>
 <p>The log-normal distribution is defined as </p>
@@ -1302,26 +1314,30 @@ to avoid disfavouring a pure solution.)</p>
 <li><code>sigma</code>: value or name of the parameter <span class="arithmatex">\(\sigma\)</span> describing the     shape </li>
 </ul>
 <h4 id="landau-distribution">Landau distribution<a class="headerlink" href="#landau-distribution" title="Permanent link">&para;</a></h4>
-<p>The Landau distribution describes fluctuations in the energy loss of a charged particle traversing a thin layer of material. In terms of the conventional Landau density <span class="arithmatex">\(L\)</span>, it is</p>
+<p>The Landau distribution describes fluctuations in the energy loss of a charged particle traversing a thin layer of material. It is defined as</p>
 <div class="arithmatex">\[
 \begin{aligned}
 \text{LandauPdf}(x,\mu,\sigma) =
-\frac{1}{\ensuremath{\mathcal{M}}}\,L(x;\mu,\sigma).
+\frac{1}{\ensuremath{\mathcal{M}}}\,\phi\!\left(\frac{x-\mu}{\sigma}\right),
+\qquad
+\phi(\lambda) = \frac{1}{\pi}\int_0^\infty \exp\left(-t\ln t - \lambda t\right)\sin(\pi t)\,\mathrm{d}t ,
 \end{aligned}
 \]</div>
+<p>where <span class="arithmatex">\(\phi\)</span> is the Landau density in its standard form, which has its maximum at <span class="arithmatex">\(\lambda \approx -0.2228\)</span>. The parameter <span class="arithmatex">\(\mu\)</span> is a location parameter and <span class="arithmatex">\(\sigma &gt; 0\)</span> a scale parameter. They are neither the mean and the standard deviation of the distribution, which do not exist, nor is <span class="arithmatex">\(\mu\)</span> its most probable value: the maximum of the density is at <span class="arithmatex">\(x \approx \mu - 0.2228\,\sigma\)</span>.</p>
 <ul>
 <li><code>name</code>: custom unique string</li>
 <li><code>type</code>: <code>landau_dist</code></li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
-<li><code>mean</code>: value or name of the location parameter <span class="arithmatex">\(\mu\)</span></li>
+<li><code>mu</code>: value or name of the location parameter <span class="arithmatex">\(\mu\)</span></li>
 <li><code>sigma</code>: value or name of the scale parameter <span class="arithmatex">\(\sigma\)</span></li>
 </ul>
+<p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 use the key <code>mean</code> for the location parameter <span class="arithmatex">\(\mu\)</span>. Implementations <span class="smallcaps">should</span> read <code>mean</code> in such documents as <code>mu</code>. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use <code>mu</code>.</p>
 <h4 id="dist:poisson" label="dist:poisson">Poisson distribution<a class="headerlink" href="#dist:poisson" title="Permanent link">&para;</a></h4>
 <p>The Poisson distribution of the integer variable <span class="arithmatex">\(x\)</span> is defined as </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{PoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \frac{\lambda^x}{x!}  \text{e}^{-\lambda}. \end{aligned} 
 \]</div>
-<p>This is a discrete distribution: <span class="arithmatex">\(x\)</span> <span class="smallcaps">must</span> be a non-negative integer, and <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the sum of the expression over the integers in the current domain of <span class="arithmatex">\(x\)</span>. The behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. A variable that can take non-integer values, such as the event count of an Asimov data set or the global observable of a constraint term, <span class="smallcaps">must</span> instead be described by the continuous Poisson distribution (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>).</p>
+<p>This is a discrete distribution: <span class="arithmatex">\(x\)</span> <span class="smallcaps">must</span> be a non-negative integer, and <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the sum of the expression over the integers in the current domain of <span class="arithmatex">\(x\)</span>. The behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. A variable that can take non-integer values, such as the event count of an Asimov data set or the auxiliary observation of a constraint term, <span class="smallcaps">must</span> instead be described by the continuous Poisson distribution (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>).</p>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>poisson_dist</code> </li>
@@ -1329,12 +1345,14 @@ to avoid disfavouring a pure solution.)</p>
 <li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
 </ul>
 <h4 id="dist:poisson-continuous" label="dist:poisson-continuous">Continuous Poisson distribution<a class="headerlink" href="#dist:poisson-continuous" title="Permanent link">&para;</a></h4>
-<p>The continuous Poisson distribution of the real variable <span class="arithmatex">\(x\)</span> is defined as </p>
+<p>The continuous Poisson distribution of the real variable <span class="arithmatex">\(x \ge 0\)</span> is defined as </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{ContinuousPoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \frac{\lambda^x}{\Gamma(x+1)} \text{e}^{-\lambda} = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left(x \cdot \ln \lambda - \lambda - \ln \Gamma(x+1)\right), \end{aligned} 
 \]</div>
 <p>where <span class="arithmatex">\(\Gamma\)</span> denotes the Euler Gamma function. </p>
-<p>This is the continuation of the Poisson distribution (see <a href="#dist:poisson" reference="dist:poisson" reference-type="ref">Poisson distribution</a>) to non-negative real values of <span class="arithmatex">\(x\)</span>. At integer values of <span class="arithmatex">\(x\)</span> the two expressions coincide, but the two distributions differ in the admissible values of <span class="arithmatex">\(x\)</span> and in their normalization: here <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the integral of the expression over the current domain of <span class="arithmatex">\(x\)</span>, which is in general not equal to the sum over the integers. Notably, the differences between the two might be significant for small values of <span class="arithmatex">\(x\)</span> (below <span class="arithmatex">\(1\)</span>). The continuous Poisson distribution is useful to deal with data sets with non-integer event counts, such as Asimov data sets <sup id="fnref:asymptotics"><a class="footnote-ref" href="#fn:asymptotics">10</a></sup>, and for constraint terms whose global observable is not an integer, such as the Barlow-Beeston-lite constraints of HistFactory (see <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>).</p>
+<p>This is the continuation of the Poisson probability mass function (see <a href="#dist:poisson" reference="dist:poisson" reference-type="ref">Poisson distribution</a>) to non-negative real values of <span class="arithmatex">\(x\)</span>. It is normalized like the discrete distribution: <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the sum of the expression over the integers in the current domain of <span class="arithmatex">\(x\)</span>, not its integral. If the current domain contains all non-negative integers, <span class="arithmatex">\(\ensuremath{\mathcal{M}}=1\)</span> and the value is the usual Poisson likelihood, evaluated at a fractional count. At integer values of <span class="arithmatex">\(x\)</span>, the distribution coincides with the <code>poisson_dist</code> on the same domain. As a function of real <span class="arithmatex">\(x\)</span>, the expression is not a probability density with respect to the Lebesgue measure: its integral over the domain is in general not one and depends on <span class="arithmatex">\(\lambda\)</span>. The parameter <span class="arithmatex">\(\lambda\)</span> <span class="smallcaps">must</span> be non-negative; for <span class="arithmatex">\(\lambda = 0\)</span> the expression is <span class="arithmatex">\(1\)</span> at <span class="arithmatex">\(x = 0\)</span> and <span class="arithmatex">\(0\)</span> for <span class="arithmatex">\(x &gt; 0\)</span>.</p>
+<p><em>Remark (non-normative): Normalizing by the integral over real <span class="arithmatex">\(x\)</span> instead would make <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> depend on <span class="arithmatex">\(\lambda\)</span>, notably for small <span class="arithmatex">\(\lambda\)</span>, and would move the maximum of the likelihood: for an observation of <span class="arithmatex">\(x = 1\)</span> it would sit at <span class="arithmatex">\(\lambda \approx 0.72\)</span> instead of <span class="arithmatex">\(1\)</span>. This would bias constraint terms with few effective events.</em></p>
+<p>The continuous Poisson distribution is useful to deal with data sets with non-integer event counts, such as Asimov data sets <sup id="fnref:asymptotics"><a class="footnote-ref" href="#fn:asymptotics">10</a></sup>, and for constraint terms whose auxiliary observation is not an integer, such as the Barlow-Beeston-lite constraints of HistFactory (see <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>).</p>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>poisson_continuous_dist</code> </li>
@@ -1345,13 +1363,13 @@ to avoid disfavouring a pure solution.)</p>
 <h4 id="polynomial-distribution">Polynomial distribution<a class="headerlink" href="#polynomial-distribution" title="Permanent link">&para;</a></h4>
 <p>The polynomial distribution is defined as </p>
 <div class="arithmatex">\[
-\begin{aligned} \text{PolynomialPdf}(x, a_0, a_1, a_2, ...) = \frac{1}{\ensuremath{\mathcal{M}}} \sum_{i=0}^n a_i x^i = a_0 + a_1 x + a_2 x^2 + ... \end{aligned} 
+\begin{aligned} \text{PolynomialPdf}(x, a_0, a_1, a_2, ...) = \frac{1}{\ensuremath{\mathcal{M}}} \sum_{i=0}^n a_i x^i = \frac{1}{\ensuremath{\mathcal{M}}} \left( a_0 + a_1 x + a_2 x^2 + \ldots \right) \end{aligned} 
 \]</div>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>polynomial_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
-<li><code>coefficients</code>: array of coefficients <span class="arithmatex">\(a_i\)</span>. The length of this     array implies the degree of the polynomial. </li>
+<li><code>coefficients</code>: array of coefficients <span class="arithmatex">\(a_i\)</span>, starting with <span class="arithmatex">\(a_0\)</span>. An array of length <span class="arithmatex">\(n+1\)</span> describes a polynomial of degree at most <span class="arithmatex">\(n\)</span>. </li>
 </ul>
 <h3 id="multivariate-fundamental-distributions">Multivariate fundamental distributions<a class="headerlink" href="#multivariate-fundamental-distributions" title="Permanent link">&para;</a></h3>
 <p>This section contains multivariate fundamental distributions. They may
@@ -1384,7 +1402,7 @@ The distribution is normalized by the implementation, so a normalization term <s
 <div class="arithmatex">\[
 \begin{aligned} \text{HistFactoryPdf}(\mathbf{n}\mid\theta) &amp;= \prod_i \text{PoissonPdf}(n_i, \lambda_i(\theta)) \end{aligned}
 \]</div>
-<p>This probability mass function is normalized over nonnegative integer count vectors <span class="arithmatex">\(\mathbf{n}\)</span>. The parameters <span class="arithmatex">\(\theta\)</span> may include both parameters of interest and nuisance parameters.</p>
+<p>This probability mass function is normalized over nonnegative integer count vectors <span class="arithmatex">\(\mathbf{n}\)</span>. For non-integer bin counts, such as those of an Asimov data set, each factor is evaluated as the continuous Poisson distribution (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>) instead. The parameters <span class="arithmatex">\(\theta\)</span> may include both parameters of interest and nuisance parameters.</p>
 <p>The prediction <span class="arithmatex">\(\lambda_i(\theta)\)</span>, the modifiers and their constraints, and an example are defined in Section <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>.</p>
 <ul>
 <li><code>name</code>: custom unique string </li>
@@ -1477,7 +1495,7 @@ q_i(m)=\lim_{\epsilon\to0^+}
 <h4 id="sec:mixture-distribution" label="sec:mixture-distribution">Mixture distribution<a class="headerlink" href="#sec:mixture-distribution" title="Permanent link">&para;</a></h4>
 <p>The mixture distribution, sometimes called addition of distributions, is a (weighted) sum of distributions <span class="arithmatex">\(f_i(\vec{x})\)</span>, depending on the same variable(s) <span class="arithmatex">\(\vec{x}\)</span>: </p>
 <div class="arithmatex">\[
-\begin{aligned} \text{MixturePdf}(x) = \frac{1}{\ensuremath{\mathcal{M}}}\sum_{i=1}^{n} c_i \cdot f_i(\vec{x}) , \end{aligned} 
+\begin{aligned} \text{MixturePdf}(\vec{x}) = \frac{1}{\ensuremath{\mathcal{M}}}\sum_{i=1}^{n} c_i \cdot f_i(\vec{x}) , \end{aligned} 
 \]</div>
 <p>where the <span class="arithmatex">\(c_i\)</span> are coefficients and <span class="arithmatex">\(\vec{x}\)</span> is the vector of variables. </p>
 <ul>
@@ -1486,7 +1504,7 @@ q_i(m)=\lim_{\epsilon\to0^+}
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> (<span class="smallcaps">optional</span>, since the     variable is fully defined by the summands) </li>
 <li><code>summands</code>: array of names referencing distributions </li>
 <li><code>coefficients</code>: array of names of coefficients <span class="arithmatex">\(c_i\)</span> or numbers to     be added </li>
-<li><code>extended</code>: boolean denoting whether this is an extended     distribution (<span class="smallcaps">optional</span>, as it can be inferred from the     lengths of the lists for <code>summands</code> and <code>coefficients</code>) 
+<li><code>extended</code>: boolean denoting whether this is an extended distribution (<span class="smallcaps">required</span>, see below) 
 This distribution can be treated as extended or as non-extended. </li>
 <li>If the number of coefficients equals the number of distributions and <code>extended</code> is <code>false</code>, then the sum of the coefficient must be     (approximately) one. </li>
 <li>If the number of coefficients equals the number of distributions and <code>extended</code> is <code>true</code>, then the sum of the coefficients will be used     as the Poisson rate parameter and the mixture distribution itself     will use the coefficients normalized by their sum. </li>
@@ -1495,7 +1513,9 @@ This distribution can be treated as extended or as non-extended. </li>
 <div class="arithmatex">\[
 \begin{aligned}     c_n &amp;= 1 - \sum_{i=1}^{n-1}c_i .     \end{aligned} 
 \]</div>
+<p>The component <code>extended</code> is <span class="smallcaps">required</span>. If the number of coefficients equals the number of distributions, it alone decides whether the distribution carries a Poisson term for the total number of events, and a document that omits it is invalid. If the number of coefficients is one less than the number of distributions, <code>extended</code> <span class="smallcaps">must</span> be <code>false</code>; implementations <span class="smallcaps">may</span>, at their discretion, accept documents that omit it in this case. A mixture distribution without coefficients, whose summands are all extended, is not defined in this version of the standard.</p>
 <h4 id="mixture-model">Mixture model<a class="headerlink" href="#mixture-model" title="Permanent link">&para;</a></h4>
+<p><strong>Provisional.</strong> This type is provisional. The representation of resolution models and analytical convolutions is under revision, and this type is expected to be replaced in a future version of this standard, possibly without a backward-compatibility provision. Documents intended for long-term preservation <span class="smallcaps">should not</span> rely on it.</p>
 <p>The mixture model is a weighted sum of resolution models or model PDFs:</p>
 <div class="arithmatex">\[
 \begin{aligned}
@@ -1536,7 +1556,7 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 </ul>
 </li>
 </ul>
-<p>The distributions referenced by <code>components</code> <span class="smallcaps">must</span> describe mutually independent probability spaces, and no variate <span class="smallcaps">may</span> be used by more than one of them. The sub-distribution with a given <code>key</code> is evaluated on the sub-data set with the same <code>key</code> in the paired combined data set; its variates are matched to the axes of that sub-data set by name, as for any other pairing of a distribution with a data set. Since the variates are pairwise distinct across components, the pairing by <code>key</code> is a cross-check of the pairing by variate names and <span class="smallcaps">must</span> agree with it. <code>components</code> <span class="smallcaps">need not</span> list every possible <code>key</code>. The paired combined data set <span class="smallcaps">must not</span> list a <code>key</code> that has no entry in <code>components</code>. A <code>key</code> of <code>components</code> without a sub-data set in the paired combined data set contributes no factor. A <code>key</code> whose sub-data set is present always contributes, also with zero events: for an extended sub-distribution with expected event count <span class="arithmatex">\(\nu_c\)</span>, a present unbinned sub-data set with zero entries still contributes the factor <span class="arithmatex">\(\exp(-\nu_c)\)</span>. A sub-data set that is present but has no entries contributes no factor for a non-extended component.</p>
+<p>The distributions referenced by <code>components</code> <span class="smallcaps">must</span> be statistically independent of each other, and no variate <span class="smallcaps">may</span> be used by more than one of them. The sub-distribution with a given <code>key</code> is evaluated on the sub-data set with the same <code>key</code> in the paired combined data set; its variates are matched to the axes of that sub-data set by name, as for any other pairing of a distribution with a data set. Since the variates are pairwise distinct across components, the pairing by <code>key</code> is a cross-check of the pairing by variate names and <span class="smallcaps">must</span> agree with it. <code>components</code> <span class="smallcaps">need not</span> list every possible <code>key</code>. The paired combined data set <span class="smallcaps">must not</span> list a <code>key</code> that has no entry in <code>components</code>. A <code>key</code> of <code>components</code> without a sub-data set in the paired combined data set contributes no factor. A <code>key</code> whose sub-data set is present always contributes, also with zero events: for an extended sub-distribution with expected event count <span class="arithmatex">\(\nu_c\)</span>, a present unbinned sub-data set with zero entries still contributes the factor <span class="arithmatex">\(\exp(-\nu_c)\)</span>. A sub-data set that is present but has no entries contributes no factor for a non-extended component.</p>
 <div class="highlight"><span class="filename">Example: Combined distribution for a multi-channel model with global observables</span><pre><span></span><code><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;channels&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;combined_dist&quot;</span><span class="p">,</span>
@@ -1553,8 +1573,9 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 <h4 id="sec:product-distribution" label="sec:product-distribution">Product distribution<a class="headerlink" href="#sec:product-distribution" title="Permanent link">&para;</a></h4>
 <p>The product of independent distributions <span class="arithmatex">\(f_i\)</span> is defined as </p>
 <div class="arithmatex">\[
-\begin{aligned} \text{ProductPdf}(x) &amp;= \frac{1}{\ensuremath{\mathcal{M}}}\prod_i^n f(x). \end{aligned} 
+\begin{aligned} \text{ProductPdf}(\vec{x}) &amp;= \frac{1}{\ensuremath{\mathcal{M}}}\prod_{i=1}^n f_i(\vec{x}_i), \end{aligned} 
 \]</div>
+<p>where <span class="arithmatex">\(\vec{x}_i\)</span> denotes the variates of the factor <span class="arithmatex">\(f_i\)</span> and <span class="arithmatex">\(\vec{x}\)</span> the record of all of them.</p>
 <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>product_dist</code> </li>
@@ -1577,14 +1598,14 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 <li><code>eff</code>: name of the efficiency function <span class="arithmatex">\(\epsilon\)</span></li>
 </ul>
 <h4 id="density-function-distribution">Density Function distribution<a class="headerlink" href="#density-function-distribution" title="Permanent link">&para;</a></h4>
-<p>A distribution that is specified via a non-normalized density function <span class="arithmatex">\(f(x)\)</span>. Formally, it corresponds to the probability measure that has the density <span class="arithmatex">\(f(x)\)</span> in respect to the Lebesgue measure. </p>
+<p>A distribution that is specified via a non-normalized density function <span class="arithmatex">\(f(x)\)</span>. Formally, it corresponds to the probability measure whose density in respect to the Lebesgue measure is proportional to <span class="arithmatex">\(f(x)\)</span>. </p>
 <p>The density function is normalized automatically by <span class="arithmatex">\(\ensuremath{\mathcal{M}}= \int f(x) dx\)</span>, so the PDF of the distribution is </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{DensityFunctionPdf}(f, x) &amp;= \frac{f(x)}{\ensuremath{\mathcal{M}}} \end{aligned} 
 \]</div>
 <p>The distribution can be specified either via the non-normalized density function <span class="arithmatex">\(f(x)\)</span> or via the non-normalized log-density function <span class="arithmatex">\(\log(f(x))\)</span>: </p>
 <ul>
-<li><code>density_function_dist</code>: Specified via the PDF <span class="arithmatex">\(f(x)\)</span> <ul>
+<li><code>density_function_dist</code>: Specified via the non-normalized density function <span class="arithmatex">\(f(x)\)</span> <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>density_function_dist</code> </li>
 <li><code>function</code>: The density function <span class="arithmatex">\(f\)</span> </li>
@@ -1609,14 +1630,14 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 <ul>
 <li><code>name</code>: custom unique string</li>
 <li><code>type</code>: <code>array_dist</code></li>
-<li><code>component_type</code>: <code>type</code> of the distribution <span class="arithmatex">\(m\)</span> shared by all components. This determines the parameters that <span class="smallcaps">must</span> be specified for each component, either in its entry of <code>components</code> or in <code>default_parameters</code></li>
+<li><code>component_type</code>: <code>type</code> of the distribution <span class="arithmatex">\(m\)</span> shared by all components. It <span class="smallcaps">must</span> be a univariate fundamental distribution whose variate component is called <code>x</code>; in this version of the standard these are <code>chebychev_dist</code>, <code>uniform_dist</code>, <code>exponential_dist</code>, <code>gaussian_dist</code> (or <code>normal_dist</code>), <code>generalized_normal_dist</code>, <code>lognormal_dist</code>, <code>landau_dist</code>, <code>poisson_dist</code>, <code>poisson_continuous_dist</code> and <code>polynomial_dist</code>. The type determines the parameters that <span class="smallcaps">must</span> be specified for each component, either in its entry of <code>components</code> or in <code>default_parameters</code></li>
 <li><code>components</code>: array of structs, one per component of the product, each with:</li>
 <li><code>x</code>: name of the observable <span class="arithmatex">\(x_i\)</span>. No two entries of <code>components</code> <span class="smallcaps">may</span> name the same observable.</li>
 <li>the parameters <span class="arithmatex">\(p_{i,j}\)</span> of the distribution <span class="arithmatex">\(m\)</span>, each assigned to a number or name. If at least one parameter of at least one component is omitted here, the top-level component <code>default_parameters</code> becomes <span class="smallcaps">required</span> and a default <span class="smallcaps">must</span> be declared for that parameter.</li>
 <li><code>default_parameters</code>: (<span class="smallcaps">optional</span>) struct assigning parameters <span class="arithmatex">\(p_{i,j}\)</span> of the distribution <span class="arithmatex">\(m\)</span> to a number or name, applied to every component that does not specify them on its own</li>
 </ul>
 <p>Names given in <code>components</code> or <code>default_parameters</code> <span class="smallcaps">must</span> resolve to either a data set axis, parameter or function.</p>
-<p>The parameters <span class="arithmatex">\(p_{i,j}\)</span> <span class="smallcaps">must not</span> depend, directly or through functions, on any observable <span class="arithmatex">\(x_k\)</span> of the same Array distribution; they <span class="smallcaps">may</span> share model parameters between components. Distinct observable names alone do not make the factors independent, and a dependence between them would leave the product unnormalized.</p>
+<p>The parameters <span class="arithmatex">\(p_{i,j}\)</span> <span class="smallcaps">must not</span> depend, directly or through functions, on any observable <span class="arithmatex">\(x_k\)</span> of the same Array distribution; they <span class="smallcaps">may</span> share model parameters between components. Distinct observable names alone do not make the factors independent, and with a dependence between them the product would no longer be guaranteed to be normalized.</p>
 <p>The typical usage, shown below, pairs the observables named by <code>x</code> with the axes of one unbinned data set holding auxiliary-measurement data for the constraint, with one axis per component and a single entry.</p>
 <div class="highlight"><span class="filename">Example: Array distribution of type gaussian_dist</span><pre><span></span><code><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>
@@ -1698,7 +1719,7 @@ In HS<sup>3</sup>, a Poisson point process distribution is specified using a glo
 Random values are drawn from the Poisson point process distribution by drawing a random number <span class="arithmatex">\(n\)</span> from a Poisson distribution of the global-rate <span class="arithmatex">\(\lambda\)</span>, and then drawing <span class="arithmatex">\(n\)</span> random values from the underlying distribution <span class="arithmatex">\(m\)</span>. The resulting random values are vectors <span class="arithmatex">\(x\)</span> of length <span class="arithmatex">\(n\)</span>, so their length varies. 
 The PDF the Poisson point process distribution at an outcome <span class="arithmatex">\(x\)</span> (a vector of length <span class="arithmatex">\(n\)</span>) is </p>
 <div class="arithmatex">\[
-\begin{aligned} \text{PoissonPointProcessPdf}(\lambda, m, x) &amp;= \text{PoissonPdf}(n, \lambda) \cdot \prod_i^n \text{PDF}(m, x_i). \end{aligned} 
+\begin{aligned} \text{PoissonPointProcessPdf}(\lambda, m, x) &amp;= \text{PoissonPdf}(n, \lambda) \cdot \prod_{i=1}^n \text{PDF}(m, x_i). \end{aligned} 
 \]</div>
 <p>In particle physics, the function <span class="arithmatex">\(\text{PoissonPointProcessPdf}(\lambda, m(\theta), x)\)</span>, for a fixed observation <span class="arithmatex">\(x\)</span> and varying parameters <span class="arithmatex">\(\lambda\)</span> and <span class="arithmatex">\(\theta\)</span>, is often called an extended likelihood. 
 A Poisson point process distribution can be specified in HS<sup>3</sup> in two ways: </p>
@@ -1728,11 +1749,11 @@ A Poisson point process distribution can be specified in HS<sup>3</sup> in two w
 Like the Poisson point process distribution, a Bin-counts distribution can either be specified via a global-rate parameter <span class="arithmatex">\(\lambda\)</span> and an underlying distribution <span class="arithmatex">\(m\)</span>, or via a rate-density function <span class="arithmatex">\(f\)</span> (in which case <span class="arithmatex">\(\lambda\)</span> and <span class="arithmatex">\(m\)</span> are implicit). In addition, the binning scheme also has to be specified in either case, unless it can be inferred (see below). 
 For <span class="arithmatex">\(k\)</span> bins, this type of distribution corresponds to a product of <span class="arithmatex">\(k\)</span> Poisson distributions with rates </p>
 <div class="arithmatex">\[
-\begin{aligned} \nu_i &amp;= \lambda \cdot \int_{\text{bin}_i} \text{PDF}(y, m) dy \quad \text{equivalent to}\\ \nu_i &amp;= \int_{\text{bin}_i} f(y) dy \end{aligned} 
+\begin{aligned} \nu_i &amp;= \lambda \cdot \int_{\text{bin}_i} \text{PDF}(m, y) dy \quad \text{equivalent to}\\ \nu_i &amp;= \int_{\text{bin}_i} f(y) dy \end{aligned} 
 \]</div>
 <p>The PDF of the bin-counts distribution at an outcome <span class="arithmatex">\(x\)</span> (a vector of length <span class="arithmatex">\(k\)</span>, same as the number of bins, ordered as defined in <a href="#sec:axes-flattening" reference="sec:axes-flattening" reference-type="ref">Flattening of Binned Contents</a>) is </p>
 <div class="arithmatex">\[
-\begin{aligned} \text{BinCountsPdf}(x) &amp;= \prod_i^k \text{PoissonPdf}(x_i, \nu_i) \end{aligned} 
+\begin{aligned} \text{BinCountsPdf}(x) &amp;= \prod_{i=1}^k \text{PoissonPdf}(x_i, \nu_i) \end{aligned} 
 \]</div>
 <ul>
 <li><code>bincounts_extended_dist</code>: The global-rate parameter <span class="arithmatex">\(\lambda\)</span> and underlying distribution <span class="arithmatex">\(m\)</span> are specified explicitly: <ul>
@@ -1744,10 +1765,7 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 </ul>
 </li>
 </ul>
-<p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying distribution. The underlying distribution <span class="smallcaps">must</span> not be referred to from other components of the statistical model. 
-<code>bincounts_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. </p>
-<div class="highlight"><pre><span></span><code>The name of the variable $x$ is taken from the underlying distribution. The underlying distribution &lt;span class=&quot;smallcaps&quot;&gt;must&lt;/span&gt; not be referred to from other components of the statistical model.
-</code></pre></div>
+<p>The name of the variable <span class="arithmatex">\(x\)</span> is taken from the underlying distribution. The underlying distribution <span class="smallcaps">must</span> not be referred to from other components of the statistical model. </p>
 <ul>
 <li><code>bincounts_density_dist</code>: Specified via a non-normalized rate-density function <span class="arithmatex">\(f\)</span>. Both the global-rate parameter and the underlying distribution are implicit: <span class="arithmatex">\(\lambda = \int f(y) dy\)</span> and <span class="arithmatex">\(m = \text{DensityFunctionPdf}(f)\)</span>. <ul>
 <li><code>name</code>: custom string </li>
@@ -1778,7 +1796,7 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <h3 id="product">Product<a class="headerlink" href="#product" title="Permanent link">&para;</a></h3>
 <p>A product of values or functions <span class="arithmatex">\(a_i\)</span>. </p>
 <div class="arithmatex">\[
-\begin{aligned} \text{Prod} &amp;= \prod_i^n a_i \end{aligned} 
+\begin{aligned} \text{Prod} &amp;= \prod_{i=1}^n a_i \end{aligned} 
 \]</div>
 <ul>
 <li><code>name</code>: custom unique string </li>
@@ -1788,7 +1806,7 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <h3 id="sum">Sum<a class="headerlink" href="#sum" title="Permanent link">&para;</a></h3>
 <p>A sum of values or functions <span class="arithmatex">\(a_i\)</span>. </p>
 <div class="arithmatex">\[
-\begin{aligned} \text{Sum} &amp;= \sum_i^n a_i \end{aligned} 
+\begin{aligned} \text{Sum} &amp;= \sum_{i=1}^n a_i \end{aligned} 
 \]</div>
 <ul>
 <li><code>name</code>: custom unique string </li>
@@ -1807,7 +1825,7 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <li><code>name</code>: custom unique string</li>
 <li><code>type</code>: <code>polynomial</code></li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
-<li><code>coefficients</code>: array of coefficients <span class="arithmatex">\(a_i\)</span>. The length of this array implies the degree of the polynomial.</li>
+<li><code>coefficients</code>: array of coefficients <span class="arithmatex">\(a_i\)</span>, starting with <span class="arithmatex">\(a_0\)</span>. An array of length <span class="arithmatex">\(n+1\)</span> describes a polynomial of degree at most <span class="arithmatex">\(n\)</span>.</li>
 </ul>
 <h3 id="derivative-function">Derivative Function<a class="headerlink" href="#derivative-function" title="Permanent link">&para;</a></h3>
 <p>The derivative function represents a numerical derivative of another function with respect to a variable:</p>
@@ -1827,7 +1845,8 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <li><code>normalization</code>: array of names defining the normalization set (<span class="smallcaps">optional</span>)</li>
 </ul>
 <h3 id="gaussian-resolution-model">Gaussian Resolution Model<a class="headerlink" href="#gaussian-resolution-model" title="Permanent link">&para;</a></h3>
-<p>The Gaussian resolution model represents a Gaussian smearing model in the convolution variable <span class="arithmatex">\(x\)</span>:</p>
+<p><strong>Provisional.</strong> This type is provisional. The representation of resolution models and analytical convolutions is under revision, and this type is expected to be replaced in a future version of this standard, possibly without a backward-compatibility provision. Documents intended for long-term preservation <span class="smallcaps">should not</span> rely on it.
+The Gaussian resolution model represents a Gaussian smearing model in the convolution variable <span class="arithmatex">\(x\)</span>:</p>
 <div class="arithmatex">\[
 \begin{aligned}
 \text{GaussModel}(x,\mu,\sigma) =
@@ -1843,7 +1862,8 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <li><code>sigma</code>: value or name of the width parameter <span class="arithmatex">\(\sigma\)</span></li>
 </ul>
 <h3 id="truth-resolution-model">Truth Resolution Model<a class="headerlink" href="#truth-resolution-model" title="Permanent link">&para;</a></h3>
-<p>The truth resolution model corresponds to perfect resolution, represented by a delta function in the convolution variable:</p>
+<p><strong>Provisional.</strong> This type is provisional. The representation of resolution models and analytical convolutions is under revision, and this type is expected to be replaced in a future version of this standard, possibly without a backward-compatibility provision. Documents intended for long-term preservation <span class="smallcaps">should not</span> rely on it.
+The truth resolution model corresponds to perfect resolution, represented by a delta function in the convolution variable:</p>
 <div class="arithmatex">\[
 \begin{aligned}
 \text{TruthModel}(x) = \delta(x).
@@ -1883,14 +1903,15 @@ For <span class="arithmatex">\(k\)</span> bins, this type of distribution corres
 <li>all further components as defined in Section <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a> </li>
 </ul>
 <h3 id="generic-function">Generic Function<a class="headerlink" href="#generic-function" title="Permanent link">&para;</a></h3>
-<p><em>Note: Users should prefer the specific functions defined in this standard over generic functions where possible, as implementations of these will typically be more optimized. Generic functions should only be used if no equivalent specific distribution is defined.</em> 
+<p><em>Note: Users should prefer the specific functions defined in this standard over generic functions where possible, as implementations of these will typically be more optimized. Generic functions should only be used if no equivalent specific function is defined.</em> 
 A generic function is defined by an expression. The expression must be a valid HS<sup>3</sup>-expression string (see Section 
 <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a>). </p>
 <ul>
 <li><code>name</code>: custom unique string </li>
-<li><code>type</code>: <code>generic</code> (current draft spelling; <code>generic_function</code> is the legacy HS<span class="arithmatex">\({}^3\)</span> v0.2.9 key)</li>
-<li><code>expression</code>: a string with a generic mathematical expression.     Simple mathematical syntax common to programming languages should be     used here, such as <code>x-2*y+z</code>. For any non-elementary operations, the     behavior is undefined. </li>
+<li><code>type</code>: <code>generic</code></li>
+<li><code>expression</code>: a string with a generic mathematical expression. Simple mathematical syntax common to programming languages should be used here, such as <code>x-2*y+z</code>. The behavior of operations and functions that are not defined in <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a> is undefined. </li>
 </ul>
+<p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 use the type <code>generic_function</code> for this function. Implementations <span class="smallcaps">should</span> read <code>generic_function</code> in such documents as <code>generic</code>. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use <code>generic</code>.</p>
 <h2 id="sec:data">Data<a class="headerlink" href="#sec:data" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>data</code> contains an array of data sets in struct format. Each data set needs to contain the components <code>type</code> and <code>name</code>. Other components are dependent on the type of data set as demonstrated below:</p>
 <ul>
@@ -1905,7 +1926,8 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 <li>unfolded data, resulting from arbitrarily complex transformation functions involving statistical models folding some degree of uncertainty into the data points themselves</li>
 </ul>
 <p>While it should always be preferred to publish "raw" data, allowing to include pre-processed data with corresponding uncertainties expands the possible applications considerably.</p>
-<p>Data sets associate their contents with variables via <code>axes</code>. Depending on the type of data set, these are continuous, binned or categorical axes, as specified in <a href="#sec:axes">Axis Specifications</a>.</p>
+<p><strong>Provisional.</strong> The components that attach uncertainties to data, namely <code>uncertainty</code> on point and binned data and <code>entries_uncertainties</code> on unbinned data, are provisional. This version of the standard does not define how they enter a likelihood, and the representation of data carrying uncertainties is under revision. These components are expected to be replaced in a future version of this standard, possibly without a backward-compatibility provision.</p>
+<p>Data sets associate their contents with variables via <code>axes</code>. Depending on the type of data set, these are continuous, binned or categorical axes, as specified in <a href="#sec:axes">Axis Specifications</a>. Fixed axes, i.e. axes with the component <code>value</code> (see <a href="#sec:domains" reference="sec:domains" reference-type="ref">Domains</a>), are permitted only in domains and <span class="smallcaps">must not</span> appear in data sets.</p>
 <p><strong>Forbidden attributes</strong>: The <code>const</code> attribute <span class="smallcaps">must not</span> appear in the <code>axes</code> of data sets. All axes of data sets define observable domains, never fit parameters.</p>
 <h3 id="point-data">Point Data<a class="headerlink" href="#point-data" title="Permanent link">&para;</a></h3>
 <p>Point data describes a measurement of a single number, with a possible uncertainty (error).</p>
@@ -1913,9 +1935,10 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 <li><code>name</code>: custom string</li>
 <li><code>type</code>: <code>point</code></li>
 <li><code>value</code>: value of this data point</li>
-<li><code>axes</code>: (<span class="smallcaps">optional</span>) array of continuous axes as defined in <a href="#sec:axes-continuous">Continuous Axes</a>. When present, associates the point measurement with a specific observable domain.</li>
+<li><code>axes</code>: (<span class="smallcaps">optional</span>) array containing exactly one continuous axis as defined in <a href="#sec:axes-continuous">Continuous Axes</a>. Its <code>name</code> is the name of the variate of the paired distribution, and its bounds give the range over which that distribution is normalized (see <a href="#sec:normalization-range" reference="sec:normalization-range" reference-type="ref">Normalization range</a>).</li>
 <li><code>uncertainty</code>: (<span class="smallcaps">optional</span>) uncertainty of this data point</li>
 </ul>
+<p>A point data set supplies the value of a single variate. With <code>axes</code>, the variate is identified by the name of the axis, as for any other data set, and the data set describes the same observation as an unbinned data set with the same axis and a single entry. Without <code>axes</code>, the value is assigned to the single variate of the distribution the data set is paired with, as described in <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>; this form is a convenience for hand-written documents, and software writing HS<span class="arithmatex">\({}^3\)</span> documents <span class="smallcaps">should</span> write <code>axes</code>.</p>
 <div class="highlight"><span class="filename">Example: Point Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data1&quot;</span><span class="p">,</span>
@@ -2067,16 +2090,18 @@ A combined data set is defined with the components:  </p>
 <p>Note that region <code>VR</code> has no <code>global</code> entry in <code>components</code>: the combination <code>(VR, global)</code> is simply absent, which is valid.</p>
 <h2 id="sec:likelihoods">Likelihoods<a class="headerlink" href="#sec:likelihoods" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>likelihoods</code> contains an array of likelihoods in struct format specifying mappings of distributions and observations. The corresponding distributions and observations are inserted as keys in string format referencing to distributions and observations defined in the respective top-level components, or as numbers for fixed data values. 
-The combination of parameterized distributions <span class="arithmatex">\(m_i(\theta_i)\)</span> with observations <span class="arithmatex">\(x_i\)</span> generates a likelihood function </p>
+The combination of parameterized distributions <span class="arithmatex">\(m_i(\theta)\)</span> with observations <span class="arithmatex">\(x_i\)</span> generates a likelihood function </p>
 <div class="arithmatex">\[
-\begin{aligned} \ensuremath{\mathscr{L}}(\theta_1, \theta_2, \ldots) &amp;=  \prod_i \text{PDF}(m_i(\theta_i), x_i) \end{aligned} 
+\begin{aligned} \ensuremath{\mathscr{L}}(\theta) &amp;=  \prod_i \text{PDF}(m_i(\theta), x_i), \end{aligned} 
 \]</div>
+<p>where <span class="arithmatex">\(\theta\)</span> is the record of the parameters of all distributions of the likelihood, merged by name: a parameter that occurs in several distributions is one and the same parameter.</p>
+<p>A likelihood consists of exactly the terms it lists: one term for each entry of <code>distributions</code>, evaluated on the entry of <code>data</code> at the same position, and one term for each entry of <code>aux_distributions</code>. Nothing else contributes. A likelihood whose <code>data</code> is <code>null</code> is a pure model (see <a href="#sec:likelihood-pure-model" reference="sec:likelihood-pure-model" reference-type="ref">Pure models</a>): its <code>distributions</code> are not paired with anything, so that it has no terms to evaluate until data is supplied. Also then, it comprises nothing but the distributions it lists. In particular, a distribution that is merely referred to elsewhere in the document, for example in the <code>constraints</code> of a HistFactory modifier (see <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>), contributes no term unless the likelihood lists it.</p>
 <p>The components of a likelihood struct are: </p>
 <ul>
 <li><code>name</code>: custom string </li>
-<li><code>distributions</code>: array of strings referencing the considered     distributions </li>
-<li><code>data</code>: array of strings referencing the used data, must be of the     same length as the array of <code>distributions</code>. Alternatively, the     data-values for single-dimensional distributions can be given     in-line. For example, this can be used for constraint terms     representing auxiliary measurements. </li>
-<li><code>aux_distributions</code>: (<span class="smallcaps">optional</span>) array of strings     referencing the considered auxiliary distributions defined in the     top-level component <code>distributions</code>. They can be used to encode     regularizers or penalty terms to aid the minimization. These     observed data for these distributions is implicit and not part of     <code>data</code>. </li>
+<li><code>distributions</code>: array of strings referencing the considered distributions </li>
+<li><code>data</code>: array of the same length as the array of <code>distributions</code>, or <code>null</code> for a pure model (see <a href="#sec:likelihood-pure-model" reference="sec:likelihood-pure-model" reference-type="ref">Pure models</a>). Each entry of the array is either a string referencing a data set, or a number giving a data value in-line (see <a href="#sec:likelihood-sole-variate" reference="sec:likelihood-sole-variate" reference-type="ref">Data without axes</a>). </li>
+<li><code>aux_distributions</code>: (<span class="smallcaps">optional</span>) array of strings referencing distributions defined in the top-level component <code>distributions</code> that enter the likelihood without paired data. They can be used to encode constraint terms, regularizers or penalty terms. Their evaluation is described in <a href="#sec:likelihood-unpaired" reference="sec:likelihood-unpaired" reference-type="ref">Distributions without paired data</a>. </li>
 </ul>
 <div class="highlight"><span class="filename">Example: Likelihoods</span><pre><span></span><code><span class="nt">&quot;likelihoods&quot;</span><span class="p">:[</span><span class="w"> </span>
 <span class="w">  </span><span class="p">{</span><span class="w"> </span>
@@ -2098,13 +2123,80 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <span class="w">  </span><span class="err">...</span><span class="w"> </span>
 <span class="p">]</span><span class="w"> </span>
 </code></pre></div>
+<h3 id="sec:likelihood-pairings">Contribution of a pairing<a class="headerlink" href="#sec:likelihood-pairings" title="Permanent link">&para;</a></h3>
+<p>The following table states what the basic pairings of a distribution <span class="arithmatex">\(m\)</span> with a data set contribute to the likelihood.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Distribution</strong></th>
+<th><strong>Data</strong></th>
+<th><strong>Contribution</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>non-extended distribution</td>
+<td><code>unbinned</code>, <span class="arithmatex">\(N\)</span> entries without weights</td>
+<td><span class="arithmatex">\(\prod_{k=1}^{N} \text{PDF}(m(\theta), x_k)\)</span>, the product of the densities at the entries</td>
+</tr>
+<tr>
+<td>extended distribution with expected event count <span class="arithmatex">\(\nu(\theta)\)</span></td>
+<td><code>unbinned</code>, <span class="arithmatex">\(N\)</span> entries without weights</td>
+<td>the product above, times one Poisson term <span class="arithmatex">\(\text{PoissonPdf}(N, \nu(\theta))\)</span> per data set</td>
+</tr>
+<tr>
+<td>distribution over bin counts, e.g. <code>histfactory_dist</code></td>
+<td><code>binned</code></td>
+<td><span class="arithmatex">\(\text{PDF}(m(\theta), \mathbf{n})\)</span>, evaluated once with <code>contents</code> as the vector of counts <span class="arithmatex">\(\mathbf{n}\)</span></td>
+</tr>
+<tr>
+<td>distribution with a single variate</td>
+<td><code>point</code>, or a number given in-line</td>
+<td><span class="arithmatex">\(\text{PDF}(m(\theta), x)\)</span> at the given value <span class="arithmatex">\(x\)</span></td>
+</tr>
+<tr>
+<td><code>combined_dist</code></td>
+<td><code>combined</code></td>
+<td>the product over the keys of the contributions of the sub-distributions paired with their sub-data sets, each according to this table</td>
+</tr>
+</tbody>
+</table>
+<p>The variates of a distribution are matched to the axes of the paired data set by name. The variates of a distribution over bin counts are the bin counts themselves and have no names. Such a distribution declares the binning it predicts in its own <code>axes</code>, and these <span class="smallcaps">must</span> match the <code>axes</code> of the paired binned data set: the same names in the same order, the same bin edges and, for categorical axes, the same categories in the same order. The entries of <code>contents</code> are then the counts of the bins of the distribution in the order defined in <a href="#sec:axes-flattening" reference="sec:axes-flattening" reference-type="ref">Flattening of Binned Contents</a>.</p>
+<h3 id="sec:likelihood-sole-variate">Data without axes<a class="headerlink" href="#sec:likelihood-sole-variate" title="Permanent link">&para;</a></h3>
+<p>A number given in-line in <code>data</code>, or a point data set without <code>axes</code>, supplies the value of the single variate of the paired distribution. Whether a distribution has a single variate that can be determined is at the discretion of the implementation; this standard does not list the types of distributions for which this is the case. An implementation that cannot determine the variate <span class="smallcaps">must</span> reject the document. This form is a convenience for hand-written documents; software writing HS<span class="arithmatex">\({}^3\)</span> documents <span class="smallcaps">should</span> write data sets with <code>axes</code>. The range of the variate follows from <a href="#sec:normalization-range" reference="sec:normalization-range" reference-type="ref">Normalization range</a>. The value <code>null</code> for the <code>data</code> component as a whole is not a number given in-line, and this rule does not apply to it (see <a href="#sec:likelihood-pure-model" reference="sec:likelihood-pure-model" reference-type="ref">Pure models</a>).</p>
+<h3 id="sec:likelihood-unpaired">Distributions without paired data<a class="headerlink" href="#sec:likelihood-unpaired" title="Permanent link">&para;</a></h3>
+<p>A distribution listed in <code>aux_distributions</code> has no paired data. Every name it refers to, including the name in its variate component (e.g. <code>x</code> of a <code>gaussian_dist</code>), takes its value from a fixed axis of the domains in use or from the parameter point in use. A name in the variate component that is neither given by a fixed axis nor marked as <code>const</code> is a free parameter like any other, and subject to the rule in <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>.</p>
+<p>The variate component still determines what <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> integrates over, with the range given by <a href="#sec:normalization-range" reference="sec:normalization-range" reference-type="ref">Normalization range</a>: if the variate has a bounded axis in the domains of the analysis, the distribution is truncated to that range; a fixed axis has no range, so that the distribution is normalized over its natural support.</p>
+<p>This standard has no separate concept of a global observable. The observed value of an auxiliary measurement is either a constant parameter of a distribution listed in <code>aux_distributions</code>, as described here, or it is given by a data set: the constraint is then listed in <code>distributions</code> and paired with that data set in <code>data</code>, which supplies both the value and the range.</p>
+<h3 id="sec:likelihood-pure-model">Pure models<a class="headerlink" href="#sec:likelihood-pure-model" title="Permanent link">&para;</a></h3>
+<p>The component <code>data</code> of a likelihood <span class="smallcaps">may</span> be <code>null</code> instead of an array. Such an entry of <code>likelihoods</code> is a pure model and not a likelihood in the statistical sense: it groups distributions, so that an analysis (see <a href="#sec:analyses" reference="sec:analyses" reference-type="ref">Analyses</a>) can refer to them. The typical case is a document that contains a model, but no data set at all. A pure model can be used to generate data, for example toy data or an Asimov data set, but it cannot be evaluated as it is: for any operation on the likelihood, data sets have to be created and paired with the distributions first.</p>
+<p>In a pure model, <code>distributions</code> lists one or more distributions of the model. They are not paired with anything and contribute no term until data is supplied. <code>aux_distributions</code> keeps its meaning: it lists the constraint terms of the model, whose names take their values as described in <a href="#sec:likelihood-unpaired" reference="sec:likelihood-unpaired" reference-type="ref">Distributions without paired data</a>.</p>
+<p>It is the component <code>data</code> as a whole that is <code>null</code>. An entry of the array <code>data</code> <span class="smallcaps">must not</span> be <code>null</code>: a likelihood either is a pure model, or it has data for every entry of <code>distributions</code>.</p>
+<div class="highlight"><span class="filename">Example: Pure model</span><pre><span></span><code><span class="nt">&quot;likelihoods&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;model1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span><span class="s2">&quot;channel1_pdf&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;aux_distributions&quot;</span><span class="p">:[</span><span class="s2">&quot;gauss_constraint_alpha_1&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">],</span>
+<span class="nt">&quot;analyses&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;analysis1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;likelihood&quot;</span><span class="p">:</span><span class="s2">&quot;model1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;parameters_of_interest&quot;</span><span class="p">:[</span><span class="s2">&quot;param1&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;domains&quot;</span><span class="p">:[</span><span class="s2">&quot;domain1&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 were in practice written by ROOT, which wrote <code>"data": [0]</code>, an array with the number <code>0</code> as its only entry, for a model without data. Implementations <span class="smallcaps">may</span> read a <code>data</code> component of exactly this form in such documents as <code>null</code>. This applies to no other form: a <code>0</code> in an array <code>data</code> with more than one entry is a data value given in-line, also in these documents. In documents conforming to version 0.3 or later, a number in <code>data</code> is always a data value.</p>
 <p>Encoding of auxiliary measurements and global observables is discussed in <a href="#sec:aux-measurements" reference="sec:aux-measurements" reference-type="ref">Auxiliary measurements</a>.</p>
 <h2 id="sec:domains">Domains<a class="headerlink" href="#sec:domains" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>domains</code> contains an array of domains giving information on the ranges of parameters and variables in struct format. Within a specified domain, the corresponding model is expected to yield valid values. Each domain must contain a <code>name</code> and a <code>type</code> although right now only the <code>product_domain</code> type is supported, even though others like e. g.&nbsp;a simplex domain might be added later. A domain consists of the following components: </p>
 <ul>
 <li><code>name</code>: custom string </li>
 <li><code>type</code>: <code>product_domain</code> </li>
-<li><code>axes</code>: array of parameters and variables in this domain in terms of individual axes. These can be continuous or categorical, mirroring the axis types defined in <a href="#sec:axes" reference="sec:axes" reference-type="ref">Axis Specifications</a>.<ul>
+<li><code>axes</code>: array of parameters and variables in this domain in terms of individual axes. These can be continuous, categorical or fixed. They use the components of the axes defined in <a href="#sec:axes" reference="sec:axes" reference-type="ref">Axis Specifications</a>, but differ from the axes of data sets in the ways described here: there is a fixed type, and a continuous axis may carry a default binning.<ul>
 <li>A continuous axis has the components:  <ul>
 <li><code>name</code>: custom string</li>
 <li><code>max</code>: (<span class="smallcaps">optional</span>) upper bound of range. If absent, the range is unbounded from above (<span class="arithmatex">\(+\infty\)</span>), unless <code>edges</code> is present.</li>
@@ -2148,7 +2240,7 @@ The combination of parameterized distributions <span class="arithmatex">\(m_i(\t
 <span class="p">]</span>
 </code></pre></div>
 <h3 id="sec:joint-selection">Selection keys<a class="headerlink" href="#sec:joint-selection" title="Permanent link">&para;</a></h3>
-<p>A <code>key</code> is an array of labels selecting one component of a structure. The structure names, in a parallel array (<code>columns</code>, <code>categorical_parameter</code> or <code>categorical_variable</code>), one categorical axis per position of the <code>key</code>. Each of these axes <span class="smallcaps">must</span> be declared in a domain of the document; if several domains declare an axis of the same name, their <code>categories</code> <span class="smallcaps">must</span> agree. The axis declares the allowed labels: <code>key[i]</code> <span class="smallcaps">must</span> be one of the <code>categories</code> of the axis named in position <span class="arithmatex">\(i\)</span>. The possible keys are all combinations of labels. Two keys are equal only if they agree in every position. A structure listing keys <span class="smallcaps">need not</span> list every possible key and defines nothing for those it omits. For <code>columns</code> the axis only declares the labels of a selection column and introduces no variable, variate or observable. For <code>categorical_parameter</code> and <code>categorical_variable</code> the axis is the domain of that parameter or variable, as for any other axis. Each axis is declared once, independent of the combinations it is used in.</p>
+<p>A <code>key</code> is an array of labels selecting one component of a structure. The structure names, in a parallel array (<code>columns</code>), one categorical axis per position of the <code>key</code>. Each of these axes <span class="smallcaps">must</span> be declared in a domain of the document; if several domains declare an axis of the same name, their <code>categories</code> <span class="smallcaps">must</span> agree. The axis declares the allowed labels: <code>key[i]</code> <span class="smallcaps">must</span> be one of the <code>categories</code> of the axis named in position <span class="arithmatex">\(i\)</span>. The possible keys are all combinations of labels. Two keys are equal only if they agree in every position. A structure listing keys <span class="smallcaps">need not</span> list every possible key and defines nothing for those it omits. For <code>columns</code> the axis only declares the labels of a selection column and introduces no variable, variate or observable. The labels of an axis do not depend on the combinations it is used in.</p>
 <h2 id="sec:parameterpoints">Parameter points<a class="headerlink" href="#sec:parameterpoints" title="Permanent link">&para;</a></h2>
 <p>The top-level component <code>parameter_points</code> contains an array of parameter configurations. These can be starting values for minimizations, parameter settings used to generate toy data, best-fit-values obtained, or points in parameter space used for different purposes. </p>
 <ul>
@@ -2178,13 +2270,13 @@ The component <code>parameters</code> is an array of structs, each of which assi
 <p>The top-level component <code>analyses</code> contains an array of possible (automated) analyses. To that extent, likelihoods, parameters of interest and the affiliated domains are listed. Description of the components: </p>
 <ul>
 <li><code>name</code>: long custom string </li>
-<li><code>likelihood</code>: name as reference to a likelihood defined in the top-level component <code>likelihoods</code> </li>
+<li><code>likelihood</code>: name as reference to a likelihood defined in the top-level component <code>likelihoods</code>. This <span class="smallcaps">may</span> be a pure model (see <a href="#sec:likelihood-pure-model" reference="sec:likelihood-pure-model" reference-type="ref">Pure models</a>). What can be done with such an analysis, for example the generation of toy data, is at the discretion of the implementation; anything that evaluates the likelihood requires data to be supplied first. </li>
 <li><code>parameters_of_interest</code>: (<span class="smallcaps">optional</span>) array of names as reference to parameters that are interesting for the analysis at hand </li>
 <li><code>domains</code>: array of names of domains to be used for the parameters, defined in the top-level component <code>domains</code>. The effective domain of the analysis is the Cartesian product of the listed domains. If two of the listed domains contain an axis with the same name, the document is invalid. </li>
 <li><code>init</code>: (<span class="smallcaps">optional</span>) name of an initial value to be used, defined in the top-level component <code>parameter_points</code> </li>
-<li><code>prior</code>: (<span class="smallcaps">optional</span>) name of a prior distribution, defined in the top-level component <code>distributions</code>. This is only used for Bayesian interpretations and should not be confused with auxiliary distributions listed in the likelihood section. The prior could, for example, be a product distribution of all the individual priors. If for any parameter, both a prior and a parameter domain are given, the prior should be truncated to the given parameter domain. Otherwise, implicit flat priors over the given parameter domain are assumed. </li>
+<li><code>prior</code>: (<span class="smallcaps">optional</span>) name of a prior distribution, defined in the top-level component <code>distributions</code>. This is only used for Bayesian interpretations and should not be confused with auxiliary distributions listed in the likelihood section. The prior could, for example, be a product distribution of all the individual priors. If for any parameter, both a prior and a parameter domain are given, the prior should be truncated to the given parameter domain. There are no implicit priors: for a Bayesian interpretation, the prior <span class="smallcaps">must</span> cover every free parameter of the likelihood. </li>
 </ul>
-<p>All parameters of all distributions in the likelihood must either be listed in one of the domains referenced, or set to <code>const</code> in the parameter point referenced. </p>
+<p>All parameters of all distributions in the likelihood must either be listed in one of the domains referenced, or set to <code>const</code> in the parameter point referenced. This includes the names in the variate components of distributions without paired data (see <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>), and it applies to pure models as well. </p>
 <div class="highlight"><span class="filename">Example: Analyses</span><pre><span></span><code><span class="nt">&quot;analyses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
 <span class="w">  </span><span class="p">{</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;analysis1&quot;</span><span class="p">,</span><span class="w"> </span>
@@ -2206,6 +2298,7 @@ The component <code>parameters</code> is an array of structs, each of which assi
 <li><code>publications</code>: (<span class="smallcaps">optional</span>) array of document     identifiers of publications associated with this file </li>
 <li><code>description</code>: (<span class="smallcaps">optional</span>) short abstract/description     for this file </li>
 </ul>
+<p><strong>Backward compatibility.</strong> Versions of this standard before 0.3 were identified by three components, such as 0.2.9. Documents conforming to these versions <span class="smallcaps">may</span> therefore carry a value of the form <code>"MAJOR.MINOR.PATCH"</code> in <code>hs3_version</code>, and implementations <span class="smallcaps">should</span> read such a value as denoting a version before 0.3. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use the two-component form.</p>
 <div class="highlight"><span class="filename">Example: Metadata</span><pre><span></span><code><span class="nt">&quot;metadata&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
 <span class="w">  </span><span class="nt">&quot;hs3_version&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.3&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">  </span><span class="nt">&quot;packages&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ROOT&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6.28.02&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">],</span><span class="w"> </span>
@@ -2264,12 +2357,13 @@ The implementations that support generic expression <span class="smallcaps">must
 </ul>
 </li>
 </ul>
-<p>Symbols not defined here refer to variables in the HS<span class="arithmatex">\({}^3\)</span> model. 
+<p>Symbols not defined here refer to objects of the HS<span class="arithmatex">\({}^3\)</span> document by name. A reference to a parameter or variable evaluates to its value, and a reference to a function defined in the top-level component <code>functions</code> evaluates to the value of that function. A reference to a distribution is invalid in this version of the standard. The symbols defined here, i.e. <code>PI</code>, <code>EULER</code>, <code>TRUE</code>, <code>FALSE</code>, <code>ifelse</code> and the names of the functions listed above, are reserved and <span class="smallcaps">must not</span> be used as the name of an object (see <a href="#sec:identifiers" reference="sec:identifiers" reference-type="ref">Identifiers</a>). 
 The operator precedence and associativity is according to the common conventions. 
 Spaces between operators and operands are optional. There must be no space between a function name and the function arguments, spaces between function arguments are optional (<code>f(a, b)</code> and <code>f(a,b)</code> are correct but <code>f (a, b)</code> is not allowed). </p>
 <p>Division <span class="smallcaps">must</span> be treated as floating-point division (i.e. <code>2/3</code> should be equivalent to <code>2.0/3.0</code>). </p>
 <p>The approximately-equal (<code>a == b</code>) and the not-approximately-equal operator (<code>a != b</code>), <span class="smallcaps">should</span> compare floating-point numbers to within a small multiple of the unit of least precision. </p>
 <p>Conditional expression may be evaluated in a lazy fashion (evaluating either  <code>result_if_true</code> or <code>result_if_false</code> depending on the result of <code>condition</code>) or in an eager fashion (evaluating all of  <code>condition</code>, <code>result_if_true</code>  and <code>result_if_false</code> in arbitrary order). Evaluation strategy is left to the engine. This implies that on some engines, large trees of conditional expressions may have a high evaluation cost.</p>
+<p>The same holds for the logical operators <code>a &amp;&amp; b</code> and <code>a || b</code>. In all these cases, every argument <span class="smallcaps">must</span> be valid and evaluable: all three arguments of a conditional expression, also the branch that is not selected, and both operands of a logical operator, neither of which takes precedence over the other. Since expressions have no side effects, the order of evaluation, and whether an argument whose value does not affect the result is evaluated at all, is left to the engine.</p>
 <p>The behavior of any functions and operators not listed above is not defined, they are reserved for future versions of this standard. Implementations <span class="smallcaps">may</span> support additional functions and operators as experimental features, but their use is considered non-standard and results in non-portable and potentially non-forward-compatible HS<span class="arithmatex">\({}^3\)</span> documents. </p>
 <h2 id="sec:primitive_authoring_requirements">Authoring Requirements for HS<span class="arithmatex">\(^3\)</span> Primitive Specifications<a class="headerlink" href="#sec:primitive_authoring_requirements" title="Permanent link">&para;</a></h2>
 <p>Primitive specifications define the mathematical semantics of new HS<span class="arithmatex">\(^3\)</span> primitives. Their purpose is to enable independent implementations to interpret serialized models consistently and without ambiguity.</p>
@@ -2338,34 +2432,33 @@ Spaces between operators and operands are optional. There must be no space betwe
 P(\mathbf{n}\mid\theta)=\prod_i\operatorname{Pois}(n_i\mid\lambda_i(\theta)),
 \qquad n_i\in\{0,1,2,\ldots\},
 \]</div>
-<p>normalized over count vectors. Independence and Poisson fluctuations are modeling assumptions beyond the expected-yield prediction. Both representations use the samples, modifiers and constraint terms described below; their <code>type</code> entries differ. Figure <a href="#fig:hf-example" reference="fig:hf-example" reference-type="ref">1</a> illustrates the sample contributions (originally from <sup id="fnref:atlashzz"><a class="footnote-ref" href="#fn:atlashzz">13</a></sup>).</p>
+<p>normalized over count vectors. For non-integer counts, such as those of an Asimov data set, each factor is evaluated as the continuous Poisson distribution <code>poisson_continuous_dist</code> (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>) instead. Independence and Poisson fluctuations are modeling assumptions beyond the expected-yield prediction. Both representations use the samples, modifiers and constraint terms described below; their <code>type</code> entries differ. Figure <a href="#fig:hf-example" reference="fig:hf-example" reference-type="ref">1</a> illustrates the sample contributions. The figure is reproduced from <sup id="fnref:atlashzz"><a class="footnote-ref" href="#fn:atlashzz">13</a></sup>, © CERN for the benefit of the ATLAS Collaboration, licensed under CC BY 4.0; it is not covered by the CC0 dedication of this document.</p>
 <p><img alt="A binned statistical model describing a High Energy Physics measurement, in this case of the \(H\rightarrow 4l\) process by the ATLAS collaboration. Three different sample (blue, red, violet) are considered." id="fig:hf-example" src="/images/hf-example.png" width="60%" /> </p>
 <p>In the modifier formula below, <span class="arithmatex">\(\lambda(x)\)</span> is a step function whose value in <span class="arithmatex">\(B_i\)</span> is the bin yield <span class="arithmatex">\(\lambda_i(\theta)\)</span>. For continuous bins of width or volume <span class="arithmatex">\(|B_i|\)</span>, the corresponding piecewise-constant intensity is <span class="arithmatex">\(\rho(x;\theta)=\lambda_i(\theta)/|B_i|\)</span>; integrating <span class="arithmatex">\(\lambda(x)\)</span> itself would incorrectly introduce a bin-volume factor.</p>
 <div class="arithmatex">\[
-\begin{aligned} \lambda(x)=\sum_{s\in\text{samples}} \left[ \left( d_s(x) + \sum_{\delta\in M_{\delta}} \delta(x,\theta_\delta) \right) \prod_{\kappa\in M_\kappa} \kappa(x,\theta_\kappa)   \right] \end{aligned} 
+\begin{aligned} \lambda(x)=\sum_{s\in\text{samples}} \left[ \left( d_s(x) + \sum_{\delta\in M_{\delta,s}} \delta(x,\theta_\delta) \right) \prod_{\kappa\in M_{\kappa,s}} \kappa(x,\theta_\kappa)   \right] \end{aligned} 
 \]</div>
 <p>Here <span class="arithmatex">\(d_s(x)\)</span> is the prediction associated with the sample <span class="arithmatex">\(s\)</span>, a step function </p>
 <div class="arithmatex">\[
 \begin{aligned} d_s(x) = \chi^{y_s}_{b}(x) \end{aligned} 
 \]</div>
-<p>In this section, <span class="arithmatex">\(\chi^{y_s}_{b}(x)\)</span> denotes a generic step function in the binning <span class="arithmatex">\(b\)</span> such that <span class="arithmatex">\(\chi_{b}(x) = y_{s,i}\)</span>, some constant, if <span class="arithmatex">\(x\in[b_i,b_{i+1})\)</span>. The <span class="arithmatex">\(y_{s,i}\)</span> in this case are the bin contents (yields) of the histograms. 
-The <span class="arithmatex">\(M_\kappa\)</span> are the multiplicative modifiers, the <span class="arithmatex">\(M_\delta\)</span> are the additive modifiers. Each of the modifiers is either multiplicative (<span class="arithmatex">\(\kappa\)</span>) or additive (<span class="arithmatex">\(\delta\)</span>). All samples and modifiers share the same binning <span class="arithmatex">\(b\)</span>. 
-The modifiers depend on the model parameters <span class="arithmatex">\(\theta\)</span>. Each modifier can only depend on one <span class="arithmatex">\(\theta_i\)</span>, but the <span class="arithmatex">\(\theta_i\)</span> can take the form of vectors and the same <span class="arithmatex">\(\theta_i\)</span> can be shared by several modifiers. By convention, these are denoted <span class="arithmatex">\(\alpha\)</span> if they affect all bins in a correlated way, and <span class="arithmatex">\(\gamma\)</span> if they affect only one bin at a time. The types of modifiers are</p>
+<p>In this section, <span class="arithmatex">\(\chi^{y_s}_{b}(x)\)</span> denotes a generic step function in the binning <span class="arithmatex">\(b\)</span> such that <span class="arithmatex">\(\chi^{y_s}_{b}(x) = y_{s,i}\)</span>, some constant, if <span class="arithmatex">\(x\in B_i\)</span>. The <span class="arithmatex">\(y_{s,i}\)</span> in this case are the bin contents (yields) of the histograms. 
+The <span class="arithmatex">\(M_{\kappa,s}\)</span> are the multiplicative modifiers of the sample <span class="arithmatex">\(s\)</span>, the <span class="arithmatex">\(M_{\delta,s}\)</span> its additive modifiers. Each of the modifiers is either multiplicative (<span class="arithmatex">\(\kappa\)</span>) or additive (<span class="arithmatex">\(\delta\)</span>). All samples and modifiers share the same binning <span class="arithmatex">\(b\)</span>. 
+The modifiers depend on the model parameters <span class="arithmatex">\(\theta\)</span>. Each modifier depends on a single parameter or, for the bin-wise types, on one parameter per bin; a <code>custom</code> modifier depends on the parameters of its function. The same parameter can be shared by several modifiers. By convention, parameters are denoted <span class="arithmatex">\(\alpha\)</span> if they affect all bins in a correlated way, and <span class="arithmatex">\(\gamma\)</span> if they affect only one bin at a time. The types of modifiers are</p>
 <ul>
-<li>A <em>shape factor</em> or <code>shapefactor</code> modifier is a multiplicative modifier that scales each single bin by the value of an independent parameter <span class="arithmatex">\(\gamma\)</span>. Here, <span class="arithmatex">\(\theta_i=\vec{\gamma}\)</span>, where the length of <span class="arithmatex">\(\vec{\gamma}\)</span> is equal to the number of bins in this region, and <code>parameters</code> holds one entry per bin. The parameters are constrained by the distributions named in <code>constraints</code>, if given, and free otherwise; individual entries of <code>constraints</code> <span class="smallcaps">may</span> be <code>null</code>.</li>
+<li>A <em>shape factor</em> or <code>shapefactor</code> modifier is a multiplicative modifier that scales each single bin by the value of an independent parameter <span class="arithmatex">\(\gamma\)</span>. The parameters are <span class="arithmatex">\(\gamma_1,\ldots,\gamma_n\)</span>, one for each of the <span class="arithmatex">\(n\)</span> bins in this region, and <code>parameters</code> holds one entry per bin. The parameters are constrained by the distributions named in <code>constraints</code>, if given, and free otherwise; individual entries of <code>constraints</code> <span class="smallcaps">may</span> be <code>null</code>.</li>
 <li><code>shapesys</code> is a deprecated alias of <code>shapefactor</code>. Documents conforming to version 0.3 or later of this standard <span class="smallcaps">should not</span> use it. Documents conforming to earlier versions may contain <code>shapesys</code> modifiers with bin-wise values in <code>data.vals</code> and a constraint type in <code>constraint</code>; implementations <span class="smallcaps">should</span> read these according to the version of the standard the document conforms to, as given by <code>hs3_version</code> in its metadata.</li>
-<li>A <em>correlated shape systematic</em> or <code>histosys</code> modifier is an     additive modifier that adds or subtracts a constant step function     <span class="arithmatex">\(\chi^f\)</span>, scaled with a single factor <span class="arithmatex">\(\alpha\)</span>. The modifier     contains a <code>data</code> section, which contains the subsections     <span class="arithmatex">\(\texttt{hi}\)</span> and <span class="arithmatex">\(\texttt{lo}\)</span> that help to define the step     function <span class="arithmatex">\(\chi^f\)</span>. They contain <code>contents</code>, which define the     bin-wise additions or subtractions for <span class="arithmatex">\(\alpha=1\)</span>. The functional form of <span class="arithmatex">\(\chi^f\)</span> for intermediate and outlying <span class="arithmatex">\(\alpha\)</span> is set by the <code>interpolation</code> component, described below. Here,     <span class="arithmatex">\(\theta_i=\alpha\)</span>. </li>
-<li>A <em>normalization systematic</em> or <code>normsys</code> modifier is a     multiplicative modifier that scales the entire sample with the same     constant factor <span class="arithmatex">\(f\)</span> that is a function of <span class="arithmatex">\(\alpha\)</span>. The modifier     contains a <code>data</code> section, which contains the values <span class="arithmatex">\(\texttt{hi}\)</span>     and <span class="arithmatex">\(\texttt{lo}\)</span> that help to define <span class="arithmatex">\(f\)</span>. There are different     functional forms that can be chosen for <span class="arithmatex">\(f\)</span>. However, by convention     <span class="arithmatex">\(f(\alpha=0)=1\)</span>, <span class="arithmatex">\(f(\alpha=+1)=\)</span>"<code>hi</code>" and     <span class="arithmatex">\(f(\alpha=-1)=\)</span>"<code>lo</code>". The functional form of <span class="arithmatex">\(f\)</span> for intermediate and outlying <span class="arithmatex">\(\alpha\)</span> is set by the <code>interpolation</code> component, described below. In this case, <span class="arithmatex">\(\theta_i=\alpha\)</span>. </li>
-<li>A <em>normalization factor</em> or <code>normfactor</code> modifier is a     multiplicative modifier that scales the entire sample in this region     with the value of the parameter <span class="arithmatex">\(\mu\)</span> itself. In this case,     <span class="arithmatex">\(\theta_i=\mu\)</span>. </li>
+<li>A <em>correlated shape systematic</em> or <code>histosys</code> modifier changes the bin contents of the sample as a function of a single parameter <span class="arithmatex">\(\alpha\)</span>. The modifier contains a <code>data</code> section with the subsections <code>hi</code> and <code>lo</code>, each of which contains <code>contents</code>: the full varied bin contents of the sample at <span class="arithmatex">\(\alpha=+1\)</span> and at <span class="arithmatex">\(\alpha=-1\)</span>, respectively. These are not differences to the nominal bin contents. The response for intermediate and outlying <span class="arithmatex">\(\alpha\)</span> is set by the <code>interpolation</code> component, described below: in each bin <span class="arithmatex">\(i\)</span> it is the response function <span class="arithmatex">\(I\)</span> for the triplet <span class="arithmatex">\((y_-, y_0, y_+) = (\texttt{lo}_i, y_{s,i}, \texttt{hi}_i)\)</span>. With the interpolation type <code>add</code>, which is the usual choice, the modifier is additive, <span class="arithmatex">\(\delta = I\)</span>; with the type <code>mult</code> it is multiplicative, <span class="arithmatex">\(\kappa = I\)</span>. </li>
+<li>A <em>normalization systematic</em> or <code>normsys</code> modifier is a multiplicative modifier that scales the entire sample with the same factor <span class="arithmatex">\(f\)</span> that is a function of a single parameter <span class="arithmatex">\(\alpha\)</span>. The modifier contains a <code>data</code> section with the values <code>hi</code> and <code>lo</code>, the factors at <span class="arithmatex">\(\alpha=+1\)</span> and <span class="arithmatex">\(\alpha=-1\)</span>: <span class="arithmatex">\(f(\alpha=0)=1\)</span>, <span class="arithmatex">\(f(\alpha=+1)=\)</span><code>hi</code> and <span class="arithmatex">\(f(\alpha=-1)=\)</span><code>lo</code>. The form of <span class="arithmatex">\(f\)</span> for intermediate and outlying <span class="arithmatex">\(\alpha\)</span> is set by the <code>interpolation</code> component, described below, with the triplet <span class="arithmatex">\((y_-, y_0, y_+) = (\texttt{lo}, 1, \texttt{hi})\)</span>: <span class="arithmatex">\(f = I\)</span> for the interpolation type <code>mult</code> and <span class="arithmatex">\(f = 1 + I\)</span> for the type <code>add</code>. </li>
+<li>A <em>normalization factor</em> or <code>normfactor</code> modifier is a multiplicative modifier that scales the entire sample in this region with the value of a single parameter <span class="arithmatex">\(\mu\)</span> itself. </li>
 <li>
-<p>The <code>staterror</code> modifier is a shorthand for encoding uncorrelated statistical uncertainties on the values of the step-functions, using a variant<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> of the Barlow-Beeston Method <sup id="fnref:barlowbeeston"><a class="footnote-ref" href="#fn:barlowbeeston">14</a></sup>. It acts as a <code>shapefactor</code> whose per-bin relative uncertainty is derived from the samples: <span class="arithmatex">\(\delta_i=\sqrt{\sum_s \sigma_{s,i}^2}\,/\sum_s y_{s,i}\)</span>, with <span class="arithmatex">\(y_{s,i}\)</span> and <span class="arithmatex">\(\sigma_{s,i}\)</span> the <code>contents</code> and <code>errors</code> of all samples in this region carrying a <code>staterror</code> modifier. The distributions named in <code>constraints</code> <span class="smallcaps">should</span> all be one and the same <a href="#sec:array-distribution" reference="sec:array-distribution" reference-type="ref">Array distribution</a> with one component per bin <span class="arithmatex">\(i\)</span>, so that the same name is repeated for every <span class="arithmatex">\(\gamma_i\)</span>. By the rule on repeated constraints below, it enters the likelihood once. Its <code>component_type</code> <span class="smallcaps">should</span> be <code>gaussian_dist</code>; the alternative form is described below. Its parameters <span class="arithmatex">\(\vec{\gamma}\)</span> are shared by all samples of the region that carry a <code>staterror</code> modifier. The component <span class="arithmatex">\(i\)</span> takes the form</p>
-<ul>
-<li>for <code>component_type</code> <code>gaussian_dist</code>: <code>mean</code> is <span class="arithmatex">\(\gamma_i\)</span>, <code>sigma</code> is <span class="arithmatex">\(\delta_i\)</span>, and <code>x</code> is a global observable with nominal value 1. This is the default of ROOT's HistFactory and the treatment of pyhf;</li>
-<li>for <code>component_type</code> <code>poisson_continuous_dist</code>: <code>mean</code> is <span class="arithmatex">\(\gamma_i\tau_i\)</span>, for instance a <code>product</code> function of <span class="arithmatex">\(\gamma_i\)</span> and the constant <span class="arithmatex">\(\tau_i=\delta_i^{-2}\)</span>, and <code>x</code> is a global observable with nominal value <span class="arithmatex">\(\tau_i\)</span>. This is the Barlow-Beeston-lite form, which versions of this standard before 0.3 encoded as a <code>barlow_beeston_lite_poisson_constraint_dist</code>; that type has been removed. Since <span class="arithmatex">\(\tau_i\)</span> is in general not an integer, the component type is the continuous Poisson distribution <code>poisson_continuous_dist</code> (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>), not the discrete <code>poisson_dist</code>.</li>
-</ul>
+<p>The <code>staterror</code> modifier encodes uncorrelated statistical uncertainties on the values of the step-functions, using a variant<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> of the Barlow-Beeston Method <sup id="fnref:barlowbeeston"><a class="footnote-ref" href="#fn:barlowbeeston">14</a></sup>. It is evaluated exactly like a <code>shapefactor</code>: <span class="arithmatex">\(\gamma_i\)</span> scales the bin <span class="arithmatex">\(i\)</span>, and the parameters are constrained by the distributions named in <code>constraints</code>. These are authoritative. An implementation reading a document <span class="smallcaps">must not</span> derive the constraint of a <span class="arithmatex">\(\gamma_i\)</span>, or whether a <span class="arithmatex">\(\gamma_i\)</span> is fixed, from the <code>errors</code> of the samples; it <span class="smallcaps">may</span> warn if the <code>errors</code> and the named constraints disagree significantly. The parameters <span class="arithmatex">\(\vec{\gamma}\)</span> are shared by all samples of the region that carry a <code>staterror</code> modifier.</p>
+<p>The following is guidance for writing such a modifier; the <code>errors</code> of the samples document where the numbers come from. The relative uncertainty of the bin <span class="arithmatex">\(i\)</span> <span class="smallcaps">should</span> be <span class="arithmatex">\(\delta_i=\sqrt{\sum_s \sigma_{s,i}^2}\,/\sum_s y_{s,i}\)</span>, with <span class="arithmatex">\(y_{s,i}\)</span> and <span class="arithmatex">\(\sigma_{s,i}\)</span> the <code>contents</code> and <code>errors</code> of all samples in this region carrying a <code>staterror</code> modifier. A sample without <code>errors</code> contributes its yield to the denominator and nothing to the numerator. In a bin without uncertainty (<span class="arithmatex">\(\delta_i=0\)</span>) and in a bin without yield (<span class="arithmatex">\(\sum_s y_{s,i}=0\)</span>, where <span class="arithmatex">\(\delta_i\)</span> is not defined), <span class="arithmatex">\(\gamma_i\)</span> <span class="smallcaps">should</span> be fixed to 1, by a fixed axis in the domain or as <code>const</code> in the parameter points, and its entry in <code>constraints</code> <span class="smallcaps">should</span> be <code>null</code>. The distributions named in <code>constraints</code> for the remaining bins <span class="smallcaps">should</span> all be one and the same <a href="#sec:array-distribution" reference="sec:array-distribution" reference-type="ref">Array distribution</a> with one component per constrained bin, so that the same name is repeated for every constrained <span class="arithmatex">\(\gamma_i\)</span>. Its <code>component_type</code> <span class="smallcaps">should</span> be <code>gaussian_dist</code>; the alternative form is described below. The component for the bin <span class="arithmatex">\(i\)</span> takes the form
+-   for <code>component_type</code> <code>gaussian_dist</code>: <code>mean</code> is <span class="arithmatex">\(\gamma_i\)</span>, <code>sigma</code> is <span class="arithmatex">\(\delta_i\)</span>, and <code>x</code> is a name whose value is 1. This is the treatment of pyhf;
+-   for <code>component_type</code> <code>poisson_continuous_dist</code>: <code>mean</code> is <span class="arithmatex">\(\gamma_i\tau_i\)</span>, for instance a <code>product</code> function of <span class="arithmatex">\(\gamma_i\)</span> and the constant <span class="arithmatex">\(\tau_i=\delta_i^{-2}\)</span>, and <code>x</code> is a name whose value is <span class="arithmatex">\(\tau_i\)</span>. This is the Barlow-Beeston-lite form and the default of ROOT's HistFactory, which versions of this standard before 0.3 encoded as a <code>barlow_beeston_lite_poisson_constraint_dist</code>; that type has been removed. Since <span class="arithmatex">\(\tau_i\)</span> is in general not an integer, the component type is the continuous Poisson distribution <code>poisson_continuous_dist</code> (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>), not the discrete <code>poisson_dist</code>.</p>
 </li>
 <li>
-<p>A <code>custom</code> modifier is a multiplicative modifier that scales the sample with the value of an arbitrary function <span class="arithmatex">\(f\)</span> defined in the top-level component <code>functions</code> (see <a href="#sec:functions">Functions</a>). The <code>name</code> of the modifier is the name of <span class="arithmatex">\(f\)</span>. If <span class="arithmatex">\(f\)</span> depends on the observables, it acts as a shape factor, otherwise as a normalization factor. Here, <span class="arithmatex">\(\theta_i\)</span> are the parameters of <span class="arithmatex">\(f\)</span>; the components <code>parameters</code>, <code>data</code> and <code>constraints</code> are not used for this type. </p>
+<p>A <code>custom</code> modifier is a multiplicative modifier that scales the sample with the value of an arbitrary function <span class="arithmatex">\(f\)</span> defined in the top-level component <code>functions</code> (see <a href="#sec:functions">Functions</a>). The <code>name</code> of the modifier is the name of <span class="arithmatex">\(f\)</span>. If <span class="arithmatex">\(f\)</span> depends on the observables, it acts as a shape factor, otherwise as a normalization factor. Its parameters are the parameters of <span class="arithmatex">\(f\)</span>; the components <code>parameters</code>, <code>data</code> and <code>constraints</code> are not used for this type. </p>
 </li>
 </ul>
 <p>The different modifiers and their descriptions are also summarized in the following table: </p>
@@ -2383,7 +2476,7 @@ The modifiers depend on the model parameters <span class="arithmatex">\(\theta\)
 <tr>
 <td><code>histosys</code></td>
 <td>Correlated Shape systematic</td>
-<td><span class="arithmatex">\(\delta(x,\alpha) = \alpha * \chi_b^f\)</span></td>
+<td><span class="arithmatex">\(\delta(x,\alpha) = I(\alpha; \chi_b^{\text{lo}}, \chi_b^{y_s}, \chi_b^{\text{hi}})\)</span></td>
 <td><span class="arithmatex">\(\alpha\)</span></td>
 <td>1</td>
 </tr>
@@ -2405,7 +2498,7 @@ The modifiers depend on the model parameters <span class="arithmatex">\(\theta\)
 <td><code>shapefactor</code>, <code>staterror</code></td>
 <td>Shape factor</td>
 <td><span class="arithmatex">\(\kappa(x,\vec{\gamma}) = \chi_b^{\gamma}\)</span></td>
-<td><span class="arithmatex">\(\gamma_0\)</span>, ..., <span class="arithmatex">\(\gamma_n\)</span></td>
+<td><span class="arithmatex">\(\gamma_1\)</span>, ..., <span class="arithmatex">\(\gamma_n\)</span></td>
 <td>#bins</td>
 </tr>
 <tr>
@@ -2423,7 +2516,7 @@ The modifiers depend on the model parameters <span class="arithmatex">\(\theta\)
 <li><code>in</code>: the interpolating function used inside the bounds, <span class="arithmatex">\(|\theta|&lt;1\)</span>, </li>
 <li><code>out</code>: the extrapolating function used outside the bounds, <span class="arithmatex">\(|\theta|\geq1\)</span>, if <code>null</code> the same function as for interpolation is used.</li>
 </ul>
-<p>The final modified prediction <span class="arithmatex">\(y(\theta_1,\dots,\theta_n)\)</span> is obtained by combining the sample's nominal prediction <span class="arithmatex">\(y_0\)</span> with a normalized response function <span class="arithmatex">\(I(\theta; y_-, y_0, y_+)\)</span> for each parameter <span class="arithmatex">\(\theta_i\)</span>. Unlike <span class="arithmatex">\(y\)</span>, <span class="arithmatex">\(I\)</span> is anchored relative to <span class="arithmatex">\(y_0\)</span> rather than to it directly, with the anchor values depending on the combination <code>type</code>:</p>
+<p>The response of a modifier to its parameter <span class="arithmatex">\(\theta\)</span> is described by a response function <span class="arithmatex">\(I(\theta; y_-, y_0, y_+)\)</span>, where <span class="arithmatex">\(y_0\)</span> is the nominal value and <span class="arithmatex">\(y_-\)</span> and <span class="arithmatex">\(y_+\)</span> are the values at <span class="arithmatex">\(\theta=-1\)</span> and <span class="arithmatex">\(\theta=+1\)</span>. For a <code>histosys</code> modifier these are, bin by bin, the nominal contents of the sample and the <code>lo</code> and <code>hi</code> contents; for a <code>normsys</code> modifier, <span class="arithmatex">\(y_0=1\)</span> and <span class="arithmatex">\(y_\mp\)</span> are the factors <code>lo</code> and <code>hi</code>. The final modified prediction <span class="arithmatex">\(y(\theta_1,\dots,\theta_n)\)</span> is obtained by combining the nominal value <span class="arithmatex">\(y_0\)</span> with the response functions of all parameters <span class="arithmatex">\(\theta_i\)</span>. Unlike <span class="arithmatex">\(y\)</span>, <span class="arithmatex">\(I\)</span> is anchored relative to <span class="arithmatex">\(y_0\)</span>, with the anchor values depending on the combination <code>type</code>:</p>
 <ul>
 <li>For <code>type="add"</code>: <span class="arithmatex">\(I(0) = 0\)</span>, <span class="arithmatex">\(I(+1) = y_+ - y_0\)</span>, <span class="arithmatex">\(I(-1) = y_- - y_0\)</span></li>
 <li>For <code>type="mult"</code>: <span class="arithmatex">\(I(0) = 1\)</span>, <span class="arithmatex">\(I(+1) = y_+ / y_0\)</span>, <span class="arithmatex">\(I(-1) = y_- / y_0\)</span></li>
@@ -2436,16 +2529,25 @@ y(\theta_1,\dots,\theta_n) = y_0 \cdot \prod_i I(\theta_i; y_{i,-}, y_0, y_{i,+}
 <div class="arithmatex">\[
 y(\theta_1,\dots,\theta_n) = y_0 + \sum_i I(\theta_i; y_{i,-}, y_0, y_{i,+}).
 \]</div>
-<p>Here <span class="arithmatex">\(y_{i,-}\)</span> and <span class="arithmatex">\(y_{i,+}\)</span> denote the <code>lo</code>/<code>hi</code> variations associated with parameter <span class="arithmatex">\(\theta_i\)</span>; <span class="arithmatex">\(y_0\)</span>, the sample's nominal prediction, is shared across all parameters and enters only through the combination above, never through <span class="arithmatex">\(I\)</span> itself.</p>
+<p>Here <span class="arithmatex">\(y_{i,-}\)</span> and <span class="arithmatex">\(y_{i,+}\)</span> denote the <code>lo</code>/<code>hi</code> variations associated with parameter <span class="arithmatex">\(\theta_i\)</span>, and <span class="arithmatex">\(y_0\)</span> the nominal value, which is shared across all parameters. <span class="arithmatex">\(I\)</span> depends on <span class="arithmatex">\(y_0\)</span> only through the differences <span class="arithmatex">\(y_\pm - y_0\)</span> for <code>type="add"</code>, and only through the ratios <span class="arithmatex">\(y_\pm/y_0\)</span> for <code>type="mult"</code>.</p>
+<p>The <code>type</code> describes how the response is anchored and combined, not the kind of modifier: every combination of <code>type</code>, <code>in</code> and <code>out</code> that is defined by the rule below is valid for <code>histosys</code> and for <code>normsys</code> modifiers alike. In the modifier formula above, a response with <code>type="add"</code> on a <code>histosys</code> modifier is an additive modifier <span class="arithmatex">\(\delta = I\)</span> and a response with <code>type="mult"</code> a multiplicative modifier <span class="arithmatex">\(\kappa = I\)</span>. For a <code>normsys</code> modifier, where <span class="arithmatex">\(y_0=1\)</span>, the factor is <span class="arithmatex">\(\kappa = I\)</span> for <code>type="mult"</code> and <span class="arithmatex">\(\kappa = 1 + I\)</span> for <code>type="add"</code>. One <code>default_interpolation</code> can therefore serve a channel with modifiers of both kinds.</p>
 <p>The following functions are allowed for <code>in</code> and <code>out</code>:</p>
 <ul>
-<li><code>poly1</code>: linear function</li>
-<li><code>poly2</code>: parabolic function</li>
-<li><code>poly6</code>: degree-6 polynomial</li>
-<li><code>exp</code>: exponential function</li>
+<li><code>poly1</code>: linear function <span class="arithmatex">\(c_0 + c_1\theta\)</span>, with two parameters</li>
+<li><code>poly2</code>: parabolic function <span class="arithmatex">\(c_0 + c_1\theta + c_2\theta^2\)</span>, with three parameters</li>
+<li><code>poly6</code>: degree-6 polynomial <span class="arithmatex">\(\sum_{k=0}^{6} c_k\theta^k\)</span>, with seven parameters</li>
+<li><code>exp</code>: exponential function <span class="arithmatex">\(a\,e^{b\theta}\)</span>, with two parameters</li>
 </ul>
-<p>The choice of functions for <code>in</code> and <code>out</code>, together with the anchor conditions above and, where required, matching of first and second derivatives at the boundary (<span class="arithmatex">\(\left.\frac{\mathrm{d}I}{\mathrm{d}\theta}\right|_{\theta=\pm 1}\)</span> and <span class="arithmatex">\(\left.\frac{\mathrm{d}^2I}{\mathrm{d}\theta}\right|_{\theta=\pm 1}\)</span>), fixes all free parameters of the chosen functions except for <span class="arithmatex">\(\theta\)</span> itself. </p>
-<p>The following choices of <span class="arithmatex">\(I\)</span> are often used and showcase the resulting functional forms for common combinations of <code>type</code>, <code>in</code> and <code>out</code>. Note that for <code>type="mult"</code>, all interior and extrapolation terms are expressed as ratios <span class="arithmatex">\(y_\pm/y_0\)</span> rather than raw <span class="arithmatex">\(y_\pm\)</span>, so that the anchor condition <span class="arithmatex">\(I(0)=1\)</span> holds independent of <span class="arithmatex">\(y_0\)</span>; for <code>type="add"</code>, terms are expressed as differences <span class="arithmatex">\(y_\pm - y_0\)</span>, consistent with the anchor <span class="arithmatex">\(I(0)=0\)</span>.</p>
+<p>Every combination of <code>type</code>, <code>in</code> and <code>out</code> defines the response function by the following rule, which fixes all parameters of the chosen functions:</p>
+<ol>
+<li>The anchors <span class="arithmatex">\(I(0)\)</span> and <span class="arithmatex">\(I(\pm 1)\)</span> are given by <code>type</code>, as stated above.</li>
+<li>For <code>poly1</code> and <code>exp</code>, the <code>in</code> function consists of two pieces, one for <span class="arithmatex">\(-1\leq\theta&lt;0\)</span> and one for <span class="arithmatex">\(0\leq\theta\leq 1\)</span>. Each piece passes through <span class="arithmatex">\(I(0)\)</span> and through the anchor at its own end. For <code>poly2</code> and <code>poly6</code>, the <code>in</code> function is a single function on <span class="arithmatex">\(|\theta|\leq 1\)</span> that passes through all three anchors.</li>
+<li>The <code>out</code> function is one function of the given kind for <span class="arithmatex">\(\theta&gt;1\)</span> and another one for <span class="arithmatex">\(\theta&lt;-1\)</span>. If <code>out</code> is <code>null</code>, the <code>in</code> function, or its piece on the respective side, is continued beyond <span class="arithmatex">\(|\theta|=1\)</span>.</li>
+<li><code>poly6</code> as <code>in</code> function carries a defining property: it is the degree-6 polynomial for which the <code>out</code> function of either side, continued to <span class="arithmatex">\(\theta=0\)</span>, takes the value <span class="arithmatex">\(I(0)\)</span>. For <code>out: poly1</code> this means that the tangents at <span class="arithmatex">\(\theta=\pm 1\)</span> pass through the point <span class="arithmatex">\((0, I(0))\)</span>.</li>
+<li>The parameters that are still free are fixed by requiring continuity at <span class="arithmatex">\(\theta=\pm 1\)</span> of the value, of the first derivative <span class="arithmatex">\(\frac{\mathrm{d}I}{\mathrm{d}\theta}\)</span> and of the second derivative <span class="arithmatex">\(\frac{\mathrm{d}^2I}{\mathrm{d}\theta^2}\)</span>, applied in this order until no free parameter is left.</li>
+</ol>
+<p>If parameters are left free after the last step, or if the conditions have no solution, the combination is not defined and a document using it is invalid. This is the case, for example, for <code>poly6</code> as <code>out</code> function, and for <code>exp</code> as <code>in</code> function with <code>type="add"</code>, since an exponential cannot pass through <span class="arithmatex">\(I(0)=0\)</span>. An implementation <span class="smallcaps">must</span> reject a combination that it cannot evaluate and <span class="smallcaps">must not</span> substitute another one.</p>
+<p>The following six combinations are in common use. They are worked examples of the rule above, not an exhaustive list of the valid combinations. Note that for <code>type="mult"</code>, all interior and extrapolation terms are expressed as ratios <span class="arithmatex">\(y_\pm/y_0\)</span> rather than raw <span class="arithmatex">\(y_\pm\)</span>, so that the anchor condition <span class="arithmatex">\(I(0)=1\)</span> holds independent of <span class="arithmatex">\(y_0\)</span>; for <code>type="add"</code>, terms are expressed as differences <span class="arithmatex">\(y_\pm - y_0\)</span>, consistent with the anchor <span class="arithmatex">\(I(0)=0\)</span>.</p>
 <ul>
 <li>additive, piecewise linear: <ul>
 <li><code>{"type":"add", "in":"poly1", "out":null}</code></li>
@@ -2495,15 +2597,15 @@ S_2=\tfrac12(u\log^2 u+v\log^2 v) \quad A_2=\tfrac12(u\log^2 u-v\log^2 v)
 </ul>
 </li>
 </ul>
-<p>Modifiers can be constrained. This is indicated by the component <code>constraints</code>, which names one or more distributions defined in the top-level component <code>distributions</code>. These are typically of type <code>gaussian_dist</code> or <code>poisson_continuous_dist</code>, but any distribution type is allowed. The global observable of a Poisson constraint term is in general not an integer, so such terms use the continuous Poisson distribution <code>poisson_continuous_dist</code> (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>), not the discrete <code>poisson_dist</code>. In essence, the likelihood picks up a penalty term for changing a constrained parameter too far away from its nominal value. By convention, the nominal value is 0 for the parameters of <code>histosys</code> and <code>normsys</code> modifiers and 1 for those of all other types. Constraints on <code>histosys</code> and <code>normsys</code> parameters <span class="smallcaps">should</span> be a <code>gaussian_dist</code> with <code>mean</code> 0 and <code>sigma</code> 1, such that <span class="arithmatex">\(\alpha=\pm1\)</span> corresponds to the <code>hi</code> and <code>lo</code> variations. </p>
-<p>A distribution may be named in <code>constraints</code> for several parameters, for example for all parameters of a modifier, or in several modifiers, samples or channels. This is how a single distribution covering several parameters, such as an <a href="#sec:array-distribution" reference="sec:array-distribution" reference-type="ref">Array distribution</a>, is attached to all of them. Such a distribution is identified by its name and enters the likelihood exactly once, however many times it is named. Implementations <span class="smallcaps">must not</span> include a constraint term once per parameter or once per modifier that names it.</p>
-<p>The constraint terms belong to the prediction and not to its representation: a likelihood that contains a <code>histfactory_dist</code>, or a distribution that depends on a <code>histfactory</code> function, considers the constraint terms of all modifiers of that prediction in addition to the <code>aux_likelihood</code> section of the likelihood, in the same way for both representations. </p>
+<p>Modifiers can be constrained. This is indicated by the component <code>constraints</code>, which names one or more distributions defined in the top-level component <code>distributions</code>. These are typically of type <code>gaussian_dist</code> or <code>poisson_continuous_dist</code>, but any distribution type is allowed. The auxiliary observation of a Poisson constraint term is in general not an integer, so such terms use the continuous Poisson distribution <code>poisson_continuous_dist</code> (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>), not the discrete <code>poisson_dist</code>. In essence, the likelihood picks up a penalty term for changing a constrained parameter too far away from its nominal value. By convention, the nominal value is 0 for the parameters of <code>histosys</code> and <code>normsys</code> modifiers and 1 for those of all other types. Constraints on <code>histosys</code> and <code>normsys</code> parameters <span class="smallcaps">should</span> be a <code>gaussian_dist</code> with the parameter <span class="arithmatex">\(\alpha\)</span> as <code>mean</code>, a <code>sigma</code> of 1 and an <code>x</code> whose value is 0, such that <span class="arithmatex">\(\alpha=\pm1\)</span> corresponds to the <code>hi</code> and <code>lo</code> variations. As for the <code>staterror</code> constraints above, <code>x</code> holds the auxiliary observation and <code>mean</code> the parameter. </p>
+<p>The component <code>constraints</code> of a modifier states a requirement and adds no term to the likelihood. Every likelihood that contains the prediction, i.e. that contains a <code>histfactory_dist</code> or a distribution that depends on a <code>histfactory</code> function, <span class="smallcaps">must</span> have each distribution named in <code>constraints</code> contribute a factor exactly once: the distribution is listed in <code>aux_distributions</code>, or it is listed in <code>distributions</code>, or it is reached from one of these as a factor of a <code>product_dist</code> or as a component of a <code>combined_dist</code> that is paired with a sub-data set. For a pure model (see <a href="#sec:likelihood-pure-model" reference="sec:likelihood-pure-model" reference-type="ref">Pure models</a>), which has no data and no terms to evaluate, the requirement is that each such distribution is listed exactly once in one of these ways, where every component of a <code>combined_dist</code> counts. A document that contains a likelihood for which this is not the case is invalid. Implementations <span class="smallcaps">must not</span> add constraint terms that the likelihood does not list. Where the names in a constraint take their values from is described in <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>. </p>
+<p>A distribution may be named in <code>constraints</code> for several parameters, for example for all parameters of a modifier, or in several modifiers, samples or channels. This is how a single distribution covering several parameters, such as an <a href="#sec:array-distribution" reference="sec:array-distribution" reference-type="ref">Array distribution</a>, is attached to all of them. This does not change the requirement: however many times it is named, such a distribution contributes to the likelihood exactly once. </p>
 <p>The components of a HistFactory prediction are: </p>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>histfactory</code> (function) or <code>histfactory_dist</code> (distribution) </li>
 <li><code>axes</code>: array of binned axis structs as defined for binned data in <a href="#sec:axes">Axis Specifications</a>. Bin-wise quantities such as bin weights are stored as one-dimensional arrays with one entry per bin of the (possibly multi-dimensional) binning, ordered as defined in <a href="#sec:axes-flattening" reference="sec:axes-flattening" reference-type="ref">Flattening of Binned Contents</a>. This applies to the <code>contents</code> and <code>errors</code> of the samples as well as to all bin-wise data of the modifiers. </li>
-<li><code>default_interpolation</code>: <span class="smallcaps">optional</span> struct defining the default interpolation behaviour, for modifiers that do not specify it on their own. It has the components <code>type</code>, <code>in</code> and <code>out</code>, as described above.</li>
+<li><code>default_interpolation</code>: <span class="smallcaps">optional</span> struct defining the default interpolation behaviour, for <code>histosys</code> and <code>normsys</code> modifiers that do not specify it on their own. It has the components <code>type</code>, <code>in</code> and <code>out</code>, as described above.</li>
 <li><code>samples</code>: array of structs containing the samples of this channel.     For details see below. 
 Struct of one sample:  <ul>
 <li><code>name</code>: (<span class="smallcaps">optional</span>) custom string, unique within this     function </li>
@@ -2512,17 +2614,17 @@ Struct of one sample:  <ul>
 Struct of one modifier:<ul>
 <li><code>name</code>: (<span class="smallcaps">optional</span>) custom string, unique within this sample. <span class="smallcaps">required</span> for <code>custom</code> modifiers, where it names a function defined in the top-level component <code>functions</code>.</li>
 <li><code>type</code>: type of the modifier</li>
-<li><code>parameters</code>: array of strings naming the parameters controlling this modifier.</li>
+<li><code>parameters</code>: array of strings naming the parameters controlling this modifier. Not given for <code>custom</code> modifiers, whose parameters are those of the function.</li>
 <li><code>data</code>: <span class="smallcaps">optional</span> relevant data for modifier. Its format depends on <code>type</code>, which is described above.</li>
 <li><code>constraints</code>: <span class="smallcaps">optional</span> array of distribution names, with one entry for each parameter in <code>parameters</code>. Individual entries <span class="smallcaps">may</span> be <code>null</code>, leaving the corresponding parameter unconstrained. </li>
-<li><code>interpolation</code>: <span class="smallcaps">optional</span> struct defining how the effect of the modifier is calculated within and outside of the boundaries <span class="arithmatex">\(\theta=\pm 1\)</span>. It has the components <code>type</code>, <code>in</code> and <code>out</code> as described above. If this is omitted here for at least one modifier the top-level component <code>default_interpolation</code> becomes <span class="smallcaps">required</span>. Implementations <span class="smallcaps">must not</span> assume a default interpolation of their own; a document in which a modifier omits <code>interpolation</code> and no <code>default_interpolation</code> is given is invalid and <span class="smallcaps">must</span> be rejected.</li>
+<li><code>interpolation</code>: <span class="smallcaps">optional</span> struct, for <code>histosys</code> and <code>normsys</code> modifiers only, defining how the effect of the modifier is calculated within and outside of the boundaries <span class="arithmatex">\(\theta=\pm 1\)</span>. It has the components <code>type</code>, <code>in</code> and <code>out</code> as described above. If it is omitted for at least one <code>histosys</code> or <code>normsys</code> modifier, the component <code>default_interpolation</code> of this distribution or function becomes <span class="smallcaps">required</span>. Implementations <span class="smallcaps">must not</span> assume a default interpolation of their own; a document in which a <code>histosys</code> or <code>normsys</code> modifier omits <code>interpolation</code> and no <code>default_interpolation</code> is given is invalid and <span class="smallcaps">must</span> be rejected. Modifiers of other types have no interpolation.</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<p>For modifiers controlling a single parameter (<code>histosys</code>, <code>normsys</code>, <code>normfactor</code>), the arrays <code>parameters</code> and <code>constraints</code> hold a single entry each. </p>
-<p>Two modifiers are correlated if and only if they share the same parameters as indicated by <code>parameters</code>. In such a case, they <span class="smallcaps">must</span> share the same constraint term in <code>constraints</code>. By the rule above, that term is counted once. </p>
+<p>For modifiers controlling a single parameter (<code>histosys</code>, <code>normsys</code>, <code>normfactor</code>), the array <code>parameters</code> holds a single entry, and so does <code>constraints</code> when present. </p>
+<p>Modifiers that share a parameter, as indicated by <code>parameters</code>, are fully correlated through it. They <span class="smallcaps">must</span> name the same constraint term in <code>constraints</code>. Like any constraint, that term contributes to the likelihood once. </p>
 <div class="highlight"><span class="filename">HistFactory</span><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myAnalysisChannel&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;histfactory_dist&quot;</span><span class="p">,</span>
@@ -2545,8 +2647,8 @@ Struct of one modifier:<ul>
 <span class="w">          </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;gamma_stat_1&quot;</span><span class="p">,</span><span class="s2">&quot;gamma_stat_2&quot;</span><span class="p">]},</span>
 <span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;constraints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;my_correlated_shape_systematic_1_constraint&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;histosys&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">          </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">            </span><span class="nt">&quot;hi&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">-2.5</span><span class="p">,</span><span class="w"> </span><span class="mf">-3.1</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
-<span class="w">            </span><span class="nt">&quot;lo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">2.2</span><span class="p">,</span><span class="w"> </span><span class="mf">3.7</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
+<span class="w">            </span><span class="nt">&quot;hi&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.55</span><span class="p">,</span><span class="w"> </span><span class="mf">0.78</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span>
+<span class="w">            </span><span class="nt">&quot;lo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;contents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.45</span><span class="p">,</span><span class="w"> </span><span class="mf">0.63</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
 <span class="w">           </span><span class="p">},</span><span class="w"> </span>
 <span class="w">           </span><span class="nt">&quot;interpolation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;add&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;in&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;poly6&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;out&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;poly1&quot;</span><span class="w"> </span><span class="p">},</span>
 <span class="w">           </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;my_correlated_shape_systematic_1&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
@@ -2562,7 +2664,21 @@ Struct of one modifier:<ul>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span><span class="w"> </span>
 </code></pre></div>
-<p>The <code>staterror</code> constraint named above is a single array, defined as one entry of the top-level <code>distributions</code>. For illustration, assuming that <code>mySignal</code> is the only sample, so that <span class="arithmatex">\(\delta_i=\sigma_{s,i}/y_{s,i}\)</span>:</p>
+<p>A likelihood that uses this channel has to list the constraints named by its modifiers, for example in <code>aux_distributions</code>:</p>
+<div class="highlight"><span class="filename">Likelihood for the HistFactory channel</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myLikelihood&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;distributions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;myAnalysisChannel&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;myObservedData&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;aux_distributions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;my_normalization_systematic_1_constraint&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;my_correlated_shape_systematic_1_constraint&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;gamma_stat_constraints&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;my_shapesys_2_bin0_constraint&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;my_shapesys_2_bin1_constraint&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The <code>staterror</code> constraint named above is a single array, defined as one entry of the top-level <code>distributions</code>. For illustration, assuming that <code>mySignal</code> is the only sample, so that <span class="arithmatex">\(\delta_i=\sigma_{s,i}/y_{s,i}\)</span>, and with <code>nom_gamma_stat_1</code> and <code>nom_gamma_stat_2</code> being constant parameters of value 1:</p>
 <div class="highlight"><span class="filename">Constraint of the staterror modifier</span><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;distributions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -2580,8 +2696,34 @@ Struct of one modifier:<ul>
 <h2 id="sec:aux-measurements">Auxiliary measurements and global observables<a class="headerlink" href="#sec:aux-measurements" title="Permanent link">&para;</a></h2>
 <p><em>This section is non-normative.</em></p>
 <p>Auxiliary measurements commonly constrain nuisance parameters through additional likelihood terms. Their observed values, sometimes known as <em>global observables</em>, can be fixed and are generally not part of the primary data.
-The mechanisms described in <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a> can already accommodate such terms in several ways. Both forms presented here are mathematically equivalent and differ only in presentation and verbosity.</p>
-<p>Each constraint distribution can enter the likelihood directly, paired with a point data set:</p>
+The mechanisms described in <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a> can already accommodate such terms in several ways. The forms presented here describe the same likelihood, provided that the constraints are normalized over the same range, and differ only in presentation and verbosity.</p>
+<p>In a compact form, the constraint distributions are listed in <code>aux_distributions</code> and the observed values are constants, given by fixed axes of a domain or by <code>const</code> entries of a parameter point:</p>
+<div class="highlight"><span class="filename">Example: Auxiliary measurements as auxiliary distributions with constant observed values</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="err">...</span>
+<span class="w">  </span><span class="nt">&quot;domains&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;global_observables&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;product_domain&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_1&quot;</span><span class="p">,</span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_2&quot;</span><span class="p">,</span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_3&quot;</span><span class="p">,</span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;likelihoods&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;likelihood1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span><span class="s2">&quot;channel1_pdf&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;data&quot;</span><span class="p">:[</span><span class="s2">&quot;channel1_data&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;aux_distributions&quot;</span><span class="p">:[</span><span class="s2">&quot;gauss_constraint_alpha_1&quot;</span><span class="p">,</span><span class="s2">&quot;gauss_constraint_alpha_2&quot;</span><span class="p">,</span><span class="s2">&quot;gauss_constraint_alpha_3&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The distributions are those of the next example. This is also the form to use in a pure model (see <a href="#sec:likelihood-pure-model" reference="sec:likelihood-pure-model" reference-type="ref">Pure models</a>), which has no data sets to pair the constraints with. Alternatively, the observed values can be given as data.</p>
+<p>Each constraint distribution can then enter the likelihood directly, paired with a point data set:</p>
 <div class="highlight"><span class="filename">Example: Auxiliary measurements as constraint distributions paired with point datasets</span><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="err">...</span>
 <span class="w">  </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>
@@ -2680,18 +2822,19 @@ When the constraint terms are independent and of the same kind (e.g. unit Gaussi
 </code></pre></div>
 <p>The single entry of the unbinned data set contributes exactly one factor per component to the likelihood, so each constraint term enters exactly once. Encoding constraint terms as an array distribution paired with an unbinned data set is recommended over listing individual pairs as described above.</p>
 <h2 id="sec:axes">Axis Specifications<a class="headerlink" href="#sec:axes" title="Permanent link">&para;</a></h2>
-<p>Axes define the domains of variables. Every axis is of one of three types: continuous, binned or categorical. The type of an axis is determined structurally: an axis struct that contains the field <code>categories</code> is a categorical axis. Any other axis is a binned axis if it contains <code>nbins</code> or <code>edges</code>, and a continuous axis otherwise. Wherever <code>axes</code> appear in this standard, the permitted types of axes are stated there.</p>
+<p>Axes define the domains of variables. This section defines the axes of data sets and of predictions that declare a binning, such as <code>histfactory_dist</code>. Every such axis is of one of three types: continuous, binned or categorical. The type of an axis is determined structurally: an axis struct that contains the field <code>categories</code> is a categorical axis. Any other axis is a binned axis if it contains <code>nbins</code> or <code>edges</code>, and a continuous axis otherwise. Wherever <code>axes</code> appear in this standard, the permitted types of axes are stated there.</p>
+<p>The axes of domains (see <a href="#sec:domains" reference="sec:domains" reference-type="ref">Domains</a>) use the same fields, but differ in two ways. They have an additional type, the fixed axis with the field <code>value</code>, which is not permitted anywhere else; in particular, a data set <span class="smallcaps">must not</span> contain an axis with the field <code>value</code>. And a domain axis that contains <code>nbins</code> or <code>edges</code> remains a continuous axis, which carries a default binning.</p>
 <h3 id="sec:axes-continuous">Continuous Axes<a class="headerlink" href="#sec:axes-continuous" title="Permanent link">&para;</a></h3>
-<p>A continuous axis describes a real-valued variable. All continuous axes <span class="smallcaps">must</span> include:</p>
+<p>A continuous axis describes a real-valued variable. It has the fields:</p>
 <ul>
 <li><code>name</code>: name of the axis; identifies the variable it describes</li>
-<li><code>min</code>: lower bound of the domain</li>
-<li><code>max</code>: upper bound of the domain</li>
+<li><code>min</code>: (<span class="smallcaps">optional</span>) lower bound of the domain. If absent, the domain is unbounded from below.</li>
+<li><code>max</code>: (<span class="smallcaps">optional</span>) upper bound of the domain. If absent, the domain is unbounded from above.</li>
 </ul>
-<p>These fields define the domain over which PDFs are normalized. Where continuous axes are permitted, the binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present.</p>
-<p><strong>Note on normalization</strong>: Any PDF depending on a continuous observable <span class="arithmatex">\(x\)</span> must be normalized over the domain <span class="arithmatex">\([\text{min}, \text{max}]\)</span> defined by that observable's axis, not over <span class="arithmatex">\((-\infty, \infty)\)</span>.</p>
+<p>These fields define the domain over which PDFs are normalized (see <a href="#sec:normalization-range" reference="sec:normalization-range" reference-type="ref">Normalization range</a>). An unbounded domain is expressed by omitting the field; the JSON value <code>null</code> is not defined for <code>min</code> and <code>max</code>. Where continuous axes are permitted in data sets, the binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present.</p>
+<p><strong>Note on normalization</strong>: Any PDF depending on a continuous observable <span class="arithmatex">\(x\)</span> must be normalized over the domain <span class="arithmatex">\([\text{min}, \text{max}]\)</span> defined by that observable's axis, not over <span class="arithmatex">\((-\infty, \infty)\)</span>, unless the axis omits the respective bound.</p>
 <h3 id="sec:axes-binned">Binned Axes<a class="headerlink" href="#sec:axes-binned" title="Permanent link">&para;</a></h3>
-<p>A binned axis describes a real-valued variable whose domain is divided into a finite number of bins. The axis struct <span class="smallcaps">must</span> contain <code>name</code>, the name of the axis identifying the variable it describes, alongside either the fields for regular binning or the fields for irregular binning, but not both.</p>
+<p>A binned axis describes a real-valued variable whose domain is divided into a finite number of bins. The axis struct <span class="smallcaps">must</span> contain <code>name</code>, the name of the axis identifying the variable it describes, alongside either the fields for regular binning or the fields for irregular binning, but not both. The bounds of a binned axis are always finite.</p>
 <p>Regular binning:</p>
 <ul>
 <li><code>min</code>: lower bound of the domain</li>

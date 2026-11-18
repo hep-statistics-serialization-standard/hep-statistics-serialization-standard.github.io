@@ -1030,8 +1030,34 @@
 <h2 id="sec:aux-measurements">Auxiliary measurements and global observables<a class="headerlink" href="#sec:aux-measurements" title="Permanent link">&para;</a></h2>
 <p><em>This section is non-normative.</em></p>
 <p>Auxiliary measurements commonly constrain nuisance parameters through additional likelihood terms. Their observed values, sometimes known as <em>global observables</em>, can be fixed and are generally not part of the primary data.
-The mechanisms described in <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a> can already accommodate such terms in several ways. Both forms presented here are mathematically equivalent and differ only in presentation and verbosity.</p>
-<p>Each constraint distribution can enter the likelihood directly, paired with a point data set:</p>
+The mechanisms described in <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a> can already accommodate such terms in several ways. The forms presented here describe the same likelihood, provided that the constraints are normalized over the same range, and differ only in presentation and verbosity.</p>
+<p>In a compact form, the constraint distributions are listed in <code>aux_distributions</code> and the observed values are constants, given by fixed axes of a domain or by <code>const</code> entries of a parameter point:</p>
+<div class="highlight"><span class="filename">Example: Auxiliary measurements as auxiliary distributions with constant observed values</span><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="err">...</span>
+<span class="w">  </span><span class="nt">&quot;domains&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;global_observables&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;product_domain&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;axes&quot;</span><span class="p">:[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_1&quot;</span><span class="p">,</span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_2&quot;</span><span class="p">,</span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;nom_alpha_3&quot;</span><span class="p">,</span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;likelihoods&quot;</span><span class="p">:[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;likelihood1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span><span class="s2">&quot;channel1_pdf&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;data&quot;</span><span class="p">:[</span><span class="s2">&quot;channel1_data&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;aux_distributions&quot;</span><span class="p">:[</span><span class="s2">&quot;gauss_constraint_alpha_1&quot;</span><span class="p">,</span><span class="s2">&quot;gauss_constraint_alpha_2&quot;</span><span class="p">,</span><span class="s2">&quot;gauss_constraint_alpha_3&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The distributions are those of the next example. This is also the form to use in a pure model (see <a href="#sec:likelihood-pure-model" reference="sec:likelihood-pure-model" reference-type="ref">Pure models</a>), which has no data sets to pair the constraints with. Alternatively, the observed values can be given as data.</p>
+<p>Each constraint distribution can then enter the likelihood directly, paired with a point data set:</p>
 <div class="highlight"><span class="filename">Example: Auxiliary measurements as constraint distributions paired with point datasets</span><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="err">...</span>
 <span class="w">  </span><span class="nt">&quot;distributions&quot;</span><span class="p">:[</span>

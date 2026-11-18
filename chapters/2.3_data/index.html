@@ -1141,7 +1141,8 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 <li>unfolded data, resulting from arbitrarily complex transformation functions involving statistical models folding some degree of uncertainty into the data points themselves</li>
 </ul>
 <p>While it should always be preferred to publish "raw" data, allowing to include pre-processed data with corresponding uncertainties expands the possible applications considerably.</p>
-<p>Data sets associate their contents with variables via <code>axes</code>. Depending on the type of data set, these are continuous, binned or categorical axes, as specified in <a href="#sec:axes">Axis Specifications</a>.</p>
+<p><strong>Provisional.</strong> The components that attach uncertainties to data, namely <code>uncertainty</code> on point and binned data and <code>entries_uncertainties</code> on unbinned data, are provisional. This version of the standard does not define how they enter a likelihood, and the representation of data carrying uncertainties is under revision. These components are expected to be replaced in a future version of this standard, possibly without a backward-compatibility provision.</p>
+<p>Data sets associate their contents with variables via <code>axes</code>. Depending on the type of data set, these are continuous, binned or categorical axes, as specified in <a href="#sec:axes">Axis Specifications</a>. Fixed axes, i.e. axes with the component <code>value</code> (see <a href="#sec:domains" reference="sec:domains" reference-type="ref">Domains</a>), are permitted only in domains and <span class="smallcaps">must not</span> appear in data sets.</p>
 <p><strong>Forbidden attributes</strong>: The <code>const</code> attribute <span class="smallcaps">must not</span> appear in the <code>axes</code> of data sets. All axes of data sets define observable domains, never fit parameters.</p>
 <h3 id="point-data">Point Data<a class="headerlink" href="#point-data" title="Permanent link">&para;</a></h3>
 <p>Point data describes a measurement of a single number, with a possible uncertainty (error).</p>
@@ -1149,9 +1150,10 @@ While data, in most settings, has no uncertainty attached to it, this standard <
 <li><code>name</code>: custom string</li>
 <li><code>type</code>: <code>point</code></li>
 <li><code>value</code>: value of this data point</li>
-<li><code>axes</code>: (<span class="smallcaps">optional</span>) array of continuous axes as defined in <a href="#sec:axes-continuous">Continuous Axes</a>. When present, associates the point measurement with a specific observable domain.</li>
+<li><code>axes</code>: (<span class="smallcaps">optional</span>) array containing exactly one continuous axis as defined in <a href="#sec:axes-continuous">Continuous Axes</a>. Its <code>name</code> is the name of the variate of the paired distribution, and its bounds give the range over which that distribution is normalized (see <a href="#sec:normalization-range" reference="sec:normalization-range" reference-type="ref">Normalization range</a>).</li>
 <li><code>uncertainty</code>: (<span class="smallcaps">optional</span>) uncertainty of this data point</li>
 </ul>
+<p>A point data set supplies the value of a single variate. With <code>axes</code>, the variate is identified by the name of the axis, as for any other data set, and the data set describes the same observation as an unbinned data set with the same axis and a single entry. Without <code>axes</code>, the value is assigned to the single variate of the distribution the data set is paired with, as described in <a href="#sec:likelihoods" reference="sec:likelihoods" reference-type="ref">Likelihoods</a>; this form is a convenience for hand-written documents, and software writing HS<span class="arithmatex">\({}^3\)</span> documents <span class="smallcaps">should</span> write <code>axes</code>.</p>
 <div class="highlight"><span class="filename">Example: Point Data</span><pre><span></span><code><span class="nt">&quot;data&quot;</span><span class="p">:[</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;data1&quot;</span><span class="p">,</span>

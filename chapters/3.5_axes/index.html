@@ -1128,18 +1128,19 @@
   <h1>Axes</h1>
 
 <h2 id="sec:axes">Axis Specifications<a class="headerlink" href="#sec:axes" title="Permanent link">&para;</a></h2>
-<p>Axes define the domains of variables. Every axis is of one of three types: continuous, binned or categorical. The type of an axis is determined structurally: an axis struct that contains the field <code>categories</code> is a categorical axis. Any other axis is a binned axis if it contains <code>nbins</code> or <code>edges</code>, and a continuous axis otherwise. Wherever <code>axes</code> appear in this standard, the permitted types of axes are stated there.</p>
+<p>Axes define the domains of variables. This section defines the axes of data sets and of predictions that declare a binning, such as <code>histfactory_dist</code>. Every such axis is of one of three types: continuous, binned or categorical. The type of an axis is determined structurally: an axis struct that contains the field <code>categories</code> is a categorical axis. Any other axis is a binned axis if it contains <code>nbins</code> or <code>edges</code>, and a continuous axis otherwise. Wherever <code>axes</code> appear in this standard, the permitted types of axes are stated there.</p>
+<p>The axes of domains (see <a href="#sec:domains" reference="sec:domains" reference-type="ref">Domains</a>) use the same fields, but differ in two ways. They have an additional type, the fixed axis with the field <code>value</code>, which is not permitted anywhere else; in particular, a data set <span class="smallcaps">must not</span> contain an axis with the field <code>value</code>. And a domain axis that contains <code>nbins</code> or <code>edges</code> remains a continuous axis, which carries a default binning.</p>
 <h3 id="sec:axes-continuous">Continuous Axes<a class="headerlink" href="#sec:axes-continuous" title="Permanent link">&para;</a></h3>
-<p>A continuous axis describes a real-valued variable. All continuous axes <span class="smallcaps">must</span> include:</p>
+<p>A continuous axis describes a real-valued variable. It has the fields:</p>
 <ul>
 <li><code>name</code>: name of the axis; identifies the variable it describes</li>
-<li><code>min</code>: lower bound of the domain</li>
-<li><code>max</code>: upper bound of the domain</li>
+<li><code>min</code>: (<span class="smallcaps">optional</span>) lower bound of the domain. If absent, the domain is unbounded from below.</li>
+<li><code>max</code>: (<span class="smallcaps">optional</span>) upper bound of the domain. If absent, the domain is unbounded from above.</li>
 </ul>
-<p>These fields define the domain over which PDFs are normalized. Where continuous axes are permitted, the binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present.</p>
-<p><strong>Note on normalization</strong>: Any PDF depending on a continuous observable <span class="arithmatex">\(x\)</span> must be normalized over the domain <span class="arithmatex">\([\text{min}, \text{max}]\)</span> defined by that observable's axis, not over <span class="arithmatex">\((-\infty, \infty)\)</span>.</p>
+<p>These fields define the domain over which PDFs are normalized (see <a href="#sec:normalization-range" reference="sec:normalization-range" reference-type="ref">Normalization range</a>). An unbounded domain is expressed by omitting the field; the JSON value <code>null</code> is not defined for <code>min</code> and <code>max</code>. Where continuous axes are permitted in data sets, the binning fields (<code>nbins</code>, <code>edges</code>) <span class="smallcaps">must not</span> be present.</p>
+<p><strong>Note on normalization</strong>: Any PDF depending on a continuous observable <span class="arithmatex">\(x\)</span> must be normalized over the domain <span class="arithmatex">\([\text{min}, \text{max}]\)</span> defined by that observable's axis, not over <span class="arithmatex">\((-\infty, \infty)\)</span>, unless the axis omits the respective bound.</p>
 <h3 id="sec:axes-binned">Binned Axes<a class="headerlink" href="#sec:axes-binned" title="Permanent link">&para;</a></h3>
-<p>A binned axis describes a real-valued variable whose domain is divided into a finite number of bins. The axis struct <span class="smallcaps">must</span> contain <code>name</code>, the name of the axis identifying the variable it describes, alongside either the fields for regular binning or the fields for irregular binning, but not both.</p>
+<p>A binned axis describes a real-valued variable whose domain is divided into a finite number of bins. The axis struct <span class="smallcaps">must</span> contain <code>name</code>, the name of the axis identifying the variable it describes, alongside either the fields for regular binning or the fields for irregular binning, but not both. The bounds of a binned axis are always finite.</p>
 <p>Regular binning:</p>
 <ul>
 <li><code>min</code>: lower bound of the domain</li>

@@ -1483,7 +1483,7 @@ functions, parameters and exactly one variable.</p>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>argus_dist</code> </li>
 <li><code>mass</code>: name of the variable <span class="arithmatex">\(m\)</span> used as mass </li>
-<li><code>resonance</code>: value or name of the parameter used as resonance <span class="arithmatex">\(m_0\)</span> </li>
+<li><code>resonance</code>: value or name of the parameter used as kinematic endpoint <span class="arithmatex">\(m_0\)</span>. The density is defined for <span class="arithmatex">\(0 \le m \le m_0\)</span>. The component is called <code>resonance</code> for historical reasons; <span class="arithmatex">\(m_0\)</span> is not the mass of a resonance. </li>
 <li><code>slope</code>: value or name of the parameter used as slope <span class="arithmatex">\(c\)</span> </li>
 <li><code>power</code>: value or name of the parameter used as exponent <span class="arithmatex">\(p\)</span>. </li>
 </ul>
@@ -1549,7 +1549,7 @@ functions, parameters and exactly one variable.</p>
 composed of a Gaussian distribution at the core, connected with two
 power-law distributions describing the lower and upper tails, given by</p>
 <div class="arithmatex">\[
-\begin{aligned} \text{CrystalBallPdf}(m;m_0,\sigma,\alpha_L,n_L,\alpha_R,n_R) = \frac{1}{\ensuremath{\mathcal{M}}} \begin{cases} A_L \cdot (B_L - \frac{m - m_0}{\sigma_L})^{-n_L}, &amp; \mbox{for }\frac{m - m_0}{\sigma_L} &lt; -\alpha_L \\ \exp \left( - \frac{1}{2} \cdot \left[ \frac{m - m_0}{\sigma_L} \right]^2 \right), &amp; \mbox{for }\frac{m - m_0}{\sigma_L} \leq 0 \\ \exp \left( - \frac{1}{2} \cdot \left[ \frac{m - m_0}{\sigma_R} \right]^2 \right), &amp; \mbox{for }\frac{m - m_0}{\sigma_R} \leq \alpha_R \\ A_R \cdot (B_R + \frac{m - m_0}{\sigma_R})^{-n_R}, &amp; \mbox{otherwise}, \\ \end{cases} \end{aligned} 
+\begin{aligned} \text{CrystalBallPdf}(m;m_0,\sigma_L,\sigma_R,\alpha_L,n_L,\alpha_R,n_R) = \frac{1}{\ensuremath{\mathcal{M}}} \begin{cases} A_L \cdot (B_L - \frac{m - m_0}{\sigma_L})^{-n_L}, &amp; \mbox{for }\frac{m - m_0}{\sigma_L} &lt; -\alpha_L \\ \exp \left( - \frac{1}{2} \cdot \left[ \frac{m - m_0}{\sigma_L} \right]^2 \right), &amp; \mbox{for }\frac{m - m_0}{\sigma_L} \leq 0 \\ \exp \left( - \frac{1}{2} \cdot \left[ \frac{m - m_0}{\sigma_R} \right]^2 \right), &amp; \mbox{for }\frac{m - m_0}{\sigma_R} \leq \alpha_R \\ A_R \cdot (B_R + \frac{m - m_0}{\sigma_R})^{-n_R}, &amp; \mbox{otherwise}, \\ \end{cases} \end{aligned} 
 \]</div>
 <p>where </p>
 <div class="arithmatex">\[
@@ -1594,6 +1594,7 @@ power-law distributions describing the lower and upper tails, given by</p>
 </code></pre></div>
 <p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 may contain distributions of type <code>crystalball_dist</code> with the keys <code>alpha_L</code>, <code>n_L</code>, <code>alpha_R</code> and <code>n_R</code> (or <code>sigma_L</code> and <code>sigma_R</code>). Implementations <span class="smallcaps">should</span> read these as <code>crystalball_doublesided_dist</code>; this is unambiguous from the key names. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use <code>crystalball_doublesided_dist</code> for the double-sided form. Note that <code>crystalball_dist</code> with <code>alpha</code> and <code>n</code> is now defined as the single-sided Crystal Ball distribution, in line with how existing documents were written in practice; earlier versions of this text read it as the symmetric double-sided form.</p>
 <h4 id="decay-distribution">Decay distribution<a class="headerlink" href="#decay-distribution" title="Permanent link">&para;</a></h4>
+<p><strong>Provisional.</strong> This type is provisional. The representation of resolution models and analytical convolutions is under revision, and this type is expected to be replaced in a future version of this standard, possibly without a backward-compatibility provision. Documents intended for long-term preservation <span class="smallcaps">should not</span> rely on it.</p>
 <p>The decay distribution describes a single- or double-sided exponential decay convolved with a resolution model <span class="arithmatex">\(R\)</span>:</p>
 <div class="arithmatex">\[
 \begin{aligned}
@@ -1606,12 +1607,13 @@ power-law distributions describing the lower and upper tails, given by</p>
 \begin{aligned}
 B_{\text{type}}(t) =
 \begin{cases}
-\exp(-t/\tau), &amp; \text{for SingleSided}, \\
-\exp(t/\tau), &amp; \text{for Flipped}, \\
+\exp(-t/\tau)\ \text{for}\ t \ge 0,\ 0\ \text{otherwise}, &amp; \text{for SingleSided}, \\
+\exp(t/\tau)\ \text{for}\ t \le 0,\ 0\ \text{otherwise}, &amp; \text{for Flipped}, \\
 \exp(-|t|/\tau), &amp; \text{for DoubleSided}.
 \end{cases}
 \end{aligned}
 \]</div>
+<p>The convolution is taken over the real line, <span class="arithmatex">\((B * R)(t) = \int_{-\infty}^{\infty} B(t')\,R(t-t')\,\mathrm{d}t'\)</span>, with <span class="arithmatex">\(\tau &gt; 0\)</span>.</p>
 <ul>
 <li><code>name</code>: custom unique string</li>
 <li><code>type</code>: <code>decay_dist</code></li>
@@ -1653,7 +1655,7 @@ B_{\text{type}}(t) =
 <p>cf. the <a href="https://en.wikipedia.org/wiki/Generalized_normal_distribution">Wikipedia definition</a>.</p>
 <p>This form is of particular use with values of <span class="arithmatex">\(\beta \sim 8\)</span> to generate a flat-topped distribution useful
 for "2 point" parameter-constraints between models where there is no clear preference but their average
-should not be particularly favoured. (In such usage, the template points should ideally be located at <span class="arithmatex">\(|x| &lt; \pm 1\)</span>,
+should not be particularly favoured. (In such usage, the template points should ideally be located within the flat top, <span class="arithmatex">\(|x-\mu| &lt; \alpha\)</span>,
 to avoid disfavouring a pure solution.)</p>
 <ul>
 <li><code>name</code>: custom unique string</li>
@@ -1661,7 +1663,7 @@ to avoid disfavouring a pure solution.)</p>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
 <li><code>mean</code>: value or name of the parameter used as mean value <span class="arithmatex">\(\mu\)</span></li>
 <li><code>alpha</code>: value or name of the <span class="arithmatex">\(\alpha\)</span> parameter encoding the width; this corresponds to <span class="arithmatex">\(\sigma = \alpha/\sqrt{2}\)</span> when <span class="arithmatex">\(\beta = 2\)</span>.</li>
-<li><code>beta</code>: power <span class="arithmatex">\(\beta\)</span> to which the exponent is raised, <span class="arithmatex">\(\beta = 2\)</span> corresponding to the <span class="arithmatex">\(\text{GaussianPdf}\)</span> shape.</li>
+<li><code>beta</code>: value or name of the shape parameter <span class="arithmatex">\(\beta &gt; 0\)</span>, the power to which <span class="arithmatex">\(|x-\mu|/\alpha\)</span> is raised. <span class="arithmatex">\(\beta = 2\)</span> gives the shape of <span class="arithmatex">\(\text{GaussianPdf}\)</span> and <span class="arithmatex">\(\beta = 1\)</span> that of a Laplace distribution; for large <span class="arithmatex">\(\beta\)</span> the shape approaches a uniform distribution on <span class="arithmatex">\([\mu-\alpha, \mu+\alpha]\)</span>.</li>
 </ul>
 <h4 id="log-normal-distribution">Log-Normal distribution<a class="headerlink" href="#log-normal-distribution" title="Permanent link">&para;</a></h4>
 <p>The log-normal distribution is defined as </p>
@@ -1676,26 +1678,30 @@ to avoid disfavouring a pure solution.)</p>
 <li><code>sigma</code>: value or name of the parameter <span class="arithmatex">\(\sigma\)</span> describing the     shape </li>
 </ul>
 <h4 id="landau-distribution">Landau distribution<a class="headerlink" href="#landau-distribution" title="Permanent link">&para;</a></h4>
-<p>The Landau distribution describes fluctuations in the energy loss of a charged particle traversing a thin layer of material. In terms of the conventional Landau density <span class="arithmatex">\(L\)</span>, it is</p>
+<p>The Landau distribution describes fluctuations in the energy loss of a charged particle traversing a thin layer of material. It is defined as</p>
 <div class="arithmatex">\[
 \begin{aligned}
 \text{LandauPdf}(x,\mu,\sigma) =
-\frac{1}{\ensuremath{\mathcal{M}}}\,L(x;\mu,\sigma).
+\frac{1}{\ensuremath{\mathcal{M}}}\,\phi\!\left(\frac{x-\mu}{\sigma}\right),
+\qquad
+\phi(\lambda) = \frac{1}{\pi}\int_0^\infty \exp\left(-t\ln t - \lambda t\right)\sin(\pi t)\,\mathrm{d}t ,
 \end{aligned}
 \]</div>
+<p>where <span class="arithmatex">\(\phi\)</span> is the Landau density in its standard form, which has its maximum at <span class="arithmatex">\(\lambda \approx -0.2228\)</span>. The parameter <span class="arithmatex">\(\mu\)</span> is a location parameter and <span class="arithmatex">\(\sigma &gt; 0\)</span> a scale parameter. They are neither the mean and the standard deviation of the distribution, which do not exist, nor is <span class="arithmatex">\(\mu\)</span> its most probable value: the maximum of the density is at <span class="arithmatex">\(x \approx \mu - 0.2228\,\sigma\)</span>.</p>
 <ul>
 <li><code>name</code>: custom unique string</li>
 <li><code>type</code>: <code>landau_dist</code></li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span></li>
-<li><code>mean</code>: value or name of the location parameter <span class="arithmatex">\(\mu\)</span></li>
+<li><code>mu</code>: value or name of the location parameter <span class="arithmatex">\(\mu\)</span></li>
 <li><code>sigma</code>: value or name of the scale parameter <span class="arithmatex">\(\sigma\)</span></li>
 </ul>
+<p><strong>Backward compatibility.</strong> Documents conforming to versions of this standard before 0.3 use the key <code>mean</code> for the location parameter <span class="arithmatex">\(\mu\)</span>. Implementations <span class="smallcaps">should</span> read <code>mean</code> in such documents as <code>mu</code>. Documents conforming to version 0.3 or later <span class="smallcaps">must</span> use <code>mu</code>.</p>
 <h4 id="dist:poisson" label="dist:poisson">Poisson distribution<a class="headerlink" href="#dist:poisson" title="Permanent link">&para;</a></h4>
 <p>The Poisson distribution of the integer variable <span class="arithmatex">\(x\)</span> is defined as </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{PoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \frac{\lambda^x}{x!}  \text{e}^{-\lambda}. \end{aligned} 
 \]</div>
-<p>This is a discrete distribution: <span class="arithmatex">\(x\)</span> <span class="smallcaps">must</span> be a non-negative integer, and <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the sum of the expression over the integers in the current domain of <span class="arithmatex">\(x\)</span>. The behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. A variable that can take non-integer values, such as the event count of an Asimov data set or the global observable of a constraint term, <span class="smallcaps">must</span> instead be described by the continuous Poisson distribution (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>).</p>
+<p>This is a discrete distribution: <span class="arithmatex">\(x\)</span> <span class="smallcaps">must</span> be a non-negative integer, and <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the sum of the expression over the integers in the current domain of <span class="arithmatex">\(x\)</span>. The behavior for non-integer values of <span class="arithmatex">\(x\)</span> is undefined. A variable that can take non-integer values, such as the event count of an Asimov data set or the auxiliary observation of a constraint term, <span class="smallcaps">must</span> instead be described by the continuous Poisson distribution (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>).</p>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>poisson_dist</code> </li>
@@ -1703,12 +1709,14 @@ to avoid disfavouring a pure solution.)</p>
 <li><code>mean</code>: value or name of the parameter used as mean <span class="arithmatex">\(\lambda\)</span>. </li>
 </ul>
 <h4 id="dist:poisson-continuous" label="dist:poisson-continuous">Continuous Poisson distribution<a class="headerlink" href="#dist:poisson-continuous" title="Permanent link">&para;</a></h4>
-<p>The continuous Poisson distribution of the real variable <span class="arithmatex">\(x\)</span> is defined as </p>
+<p>The continuous Poisson distribution of the real variable <span class="arithmatex">\(x \ge 0\)</span> is defined as </p>
 <div class="arithmatex">\[
 \begin{aligned} \text{ContinuousPoissonPdf}(x, \lambda) = \frac{1}{\ensuremath{\mathcal{M}}} \frac{\lambda^x}{\Gamma(x+1)} \text{e}^{-\lambda} = \frac{1}{\ensuremath{\mathcal{M}}} \exp\left(x \cdot \ln \lambda - \lambda - \ln \Gamma(x+1)\right), \end{aligned} 
 \]</div>
 <p>where <span class="arithmatex">\(\Gamma\)</span> denotes the Euler Gamma function. </p>
-<p>This is the continuation of the Poisson distribution (see <a href="#dist:poisson" reference="dist:poisson" reference-type="ref">Poisson distribution</a>) to non-negative real values of <span class="arithmatex">\(x\)</span>. At integer values of <span class="arithmatex">\(x\)</span> the two expressions coincide, but the two distributions differ in the admissible values of <span class="arithmatex">\(x\)</span> and in their normalization: here <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the integral of the expression over the current domain of <span class="arithmatex">\(x\)</span>, which is in general not equal to the sum over the integers. Notably, the differences between the two might be significant for small values of <span class="arithmatex">\(x\)</span> (below <span class="arithmatex">\(1\)</span>). The continuous Poisson distribution is useful to deal with data sets with non-integer event counts, such as Asimov data sets [^asymptotics], and for constraint terms whose global observable is not an integer, such as the Barlow-Beeston-lite constraints of HistFactory (see <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>).</p>
+<p>This is the continuation of the Poisson probability mass function (see <a href="#dist:poisson" reference="dist:poisson" reference-type="ref">Poisson distribution</a>) to non-negative real values of <span class="arithmatex">\(x\)</span>. It is normalized like the discrete distribution: <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> is the sum of the expression over the integers in the current domain of <span class="arithmatex">\(x\)</span>, not its integral. If the current domain contains all non-negative integers, <span class="arithmatex">\(\ensuremath{\mathcal{M}}=1\)</span> and the value is the usual Poisson likelihood, evaluated at a fractional count. At integer values of <span class="arithmatex">\(x\)</span>, the distribution coincides with the <code>poisson_dist</code> on the same domain. As a function of real <span class="arithmatex">\(x\)</span>, the expression is not a probability density with respect to the Lebesgue measure: its integral over the domain is in general not one and depends on <span class="arithmatex">\(\lambda\)</span>. The parameter <span class="arithmatex">\(\lambda\)</span> <span class="smallcaps">must</span> be non-negative; for <span class="arithmatex">\(\lambda = 0\)</span> the expression is <span class="arithmatex">\(1\)</span> at <span class="arithmatex">\(x = 0\)</span> and <span class="arithmatex">\(0\)</span> for <span class="arithmatex">\(x &gt; 0\)</span>.</p>
+<p><em>Remark (non-normative): Normalizing by the integral over real <span class="arithmatex">\(x\)</span> instead would make <span class="arithmatex">\(\ensuremath{\mathcal{M}}\)</span> depend on <span class="arithmatex">\(\lambda\)</span>, notably for small <span class="arithmatex">\(\lambda\)</span>, and would move the maximum of the likelihood: for an observation of <span class="arithmatex">\(x = 1\)</span> it would sit at <span class="arithmatex">\(\lambda \approx 0.72\)</span> instead of <span class="arithmatex">\(1\)</span>. This would bias constraint terms with few effective events.</em></p>
+<p>The continuous Poisson distribution is useful to deal with data sets with non-integer event counts, such as Asimov data sets [^asymptotics], and for constraint terms whose auxiliary observation is not an integer, such as the Barlow-Beeston-lite constraints of HistFactory (see <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>).</p>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>poisson_continuous_dist</code> </li>
@@ -1719,13 +1727,13 @@ to avoid disfavouring a pure solution.)</p>
 <h4 id="polynomial-distribution">Polynomial distribution<a class="headerlink" href="#polynomial-distribution" title="Permanent link">&para;</a></h4>
 <p>The polynomial distribution is defined as </p>
 <div class="arithmatex">\[
-\begin{aligned} \text{PolynomialPdf}(x, a_0, a_1, a_2, ...) = \frac{1}{\ensuremath{\mathcal{M}}} \sum_{i=0}^n a_i x^i = a_0 + a_1 x + a_2 x^2 + ... \end{aligned} 
+\begin{aligned} \text{PolynomialPdf}(x, a_0, a_1, a_2, ...) = \frac{1}{\ensuremath{\mathcal{M}}} \sum_{i=0}^n a_i x^i = \frac{1}{\ensuremath{\mathcal{M}}} \left( a_0 + a_1 x + a_2 x^2 + \ldots \right) \end{aligned} 
 \]</div>
 <ul>
 <li><code>name</code>: custom unique string </li>
 <li><code>type</code>: <code>polynomial_dist</code> </li>
 <li><code>x</code>: name of the variable <span class="arithmatex">\(x\)</span> </li>
-<li><code>coefficients</code>: array of coefficients <span class="arithmatex">\(a_i\)</span>. The length of this     array implies the degree of the polynomial. </li>
+<li><code>coefficients</code>: array of coefficients <span class="arithmatex">\(a_i\)</span>, starting with <span class="arithmatex">\(a_0\)</span>. An array of length <span class="arithmatex">\(n+1\)</span> describes a polynomial of degree at most <span class="arithmatex">\(n\)</span>. </li>
 </ul>
 <h3 id="multivariate-fundamental-distributions">Multivariate fundamental distributions<a class="headerlink" href="#multivariate-fundamental-distributions" title="Permanent link">&para;</a></h3>
 <p>This section contains multivariate fundamental distributions. They may
@@ -1758,7 +1766,7 @@ The distribution is normalized by the implementation, so a normalization term <s
 <div class="arithmatex">\[
 \begin{aligned} \text{HistFactoryPdf}(\mathbf{n}\mid\theta) &amp;= \prod_i \text{PoissonPdf}(n_i, \lambda_i(\theta)) \end{aligned}
 \]</div>
-<p>This probability mass function is normalized over nonnegative integer count vectors <span class="arithmatex">\(\mathbf{n}\)</span>. The parameters <span class="arithmatex">\(\theta\)</span> may include both parameters of interest and nuisance parameters.</p>
+<p>This probability mass function is normalized over nonnegative integer count vectors <span class="arithmatex">\(\mathbf{n}\)</span>. For non-integer bin counts, such as those of an Asimov data set, each factor is evaluated as the continuous Poisson distribution (see <a href="#dist:poisson-continuous" reference="dist:poisson-continuous" reference-type="ref">Continuous Poisson distribution</a>) instead. The parameters <span class="arithmatex">\(\theta\)</span> may include both parameters of interest and nuisance parameters.</p>
 <p>The prediction <span class="arithmatex">\(\lambda_i(\theta)\)</span>, the modifiers and their constraints, and an example are defined in Section <a href="#sec:histfactory" reference="sec:histfactory" reference-type="ref">HistFactory</a>.</p>
 <ul>
 <li><code>name</code>: custom unique string </li>
