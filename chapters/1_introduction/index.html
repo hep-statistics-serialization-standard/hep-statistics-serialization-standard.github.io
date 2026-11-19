@@ -405,6 +405,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#sec:identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#sec:what-is-a-pdf" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1227,6 +1238,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#sec:identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#sec:what-is-a-pdf" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1393,6 +1415,16 @@ multiple HS<span class="arithmatex">\({}^3\)</span> documents together, e.g. for
 <p>The names of HS<span class="arithmatex">\({}^3\)</span> objects that can be referenced from generic expressions, i.e. parameters, variables, functions and distributions, <span class="smallcaps">must</span> be identifiers matching the regular expression <code>[A-Za-z_][A-Za-z0-9_]*</code>: an ASCII letter or underscore, followed by any number of ASCII letters, digits or underscores. The generic expression language (see <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a>) relies on this, since symbols in an expression that are not defined by the expression language refer to these objects by name, and names containing other characters could not be written there without an escaping mechanism.</p>
 <p>The names that the generic expression language reserves for itself, i.e. <code>PI</code>, <code>EULER</code>, <code>TRUE</code>, <code>FALSE</code>, <code>ifelse</code> and the names of the functions listed in <a href="#sec:generic_expression" reference="sec:generic_expression" reference-type="ref">Generic Expressions</a>, <span class="smallcaps">must not</span> be used as the name of any of these objects.</p>
 <p>The names of data sets, likelihoods, analyses, domains and parameter points <span class="smallcaps">should</span> follow the same rule, but are not required to.</p>
+<h3 id="sec:identity">Identity<a class="headerlink" href="#sec:identity" title="Permanent link">&para;</a></h3>
+<p>Names in HS<span class="arithmatex">\({}^3\)</span> are labels and carry no meaning of their own. Whether two nodes of the computational graph described by a document are the same is therefore decided by what they encode and not by how they are named. Two nodes are <em>identical</em> if an implementation cannot distinguish them:</p>
+<ul>
+<li>A parameter, a variable or a data axis is identical only to itself, that is, to the object of the same name.</li>
+<li>Two numeric literals are identical if they are the same number in the number representation used by the implementation.</li>
+<li>Two other nodes, such as functions, distributions or the components of an <a href="#sec:array-distribution" reference="sec:array-distribution" reference-type="ref">Array distribution</a>, are identical if they have the same <code>type</code> and all of their components are identical, after all references have been resolved and all defaults have been applied.</li>
+</ul>
+<p>Relative to a domain, an implementation <span class="smallcaps">may</span> treat a parameter with a fixed axis (see <a href="#sec:domains" reference="sec:domains" reference-type="ref">Domains</a>) as the numeric literal of its <code>value</code>. The component <code>const</code> of a parameter point has no such effect.</p>
+<p>Identity is an equivalence, not a tolerance: two numbers that are merely close to each other <span class="smallcaps">must not</span> be treated as identical. Nodes of different <code>type</code> are never identical, also if they describe the same density or function.</p>
+<p>Since names are unique (see <a href="#sec:global-namespace" reference="sec:global-namespace" reference-type="ref">Global namespace</a>), two references to the same name always refer to identical nodes, and every implementation <span class="smallcaps">must</span> recognize this. An implementation <span class="smallcaps">may</span> establish the identity of nodes with different names, with as much or as little effort as it chooses. Nodes whose identity it has not established <span class="smallcaps">must</span> be treated as not identical. Where this standard requires nodes to be identical, an implementation that has not established their identity <span class="smallcaps">must</span> reject the model. A model can therefore be accepted by one implementation and rejected by another, but two implementations that both accept it obtain the same result, up to the precision of their number representations. Authors <span class="smallcaps">should</span> refer to a shared node by a single name wherever a model relies on its identity, since this is the only form that every implementation recognizes.</p>
 <h3 id="sec:what-is-a-pdf">Probability density functions (PDFs)<a class="headerlink" href="#sec:what-is-a-pdf" title="Permanent link">&para;</a></h3>
 <p>Statistics literature often discriminates between probability density functions (PDF) for continuous probability distributions and probability mass functions (PMF) for discrete probability distributions. This standard use the term PDF for both continuous and discrete distributions. The concept of density is to be understood in terms of densities in the realm of measure theory here, that is the density of a probability measure (distribution) is its Radon-Nikodym derivative in respect to an (implied) reference measure. 
 In principle, any reference measure can be chosen that dominates all distributions of the model and does not depend on the model parameters. A different choice scales likelihood functions 

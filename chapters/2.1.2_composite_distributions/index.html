@@ -511,6 +511,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#sec:composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composition of factors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#sec:mixture-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1112,6 +1123,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#sec:composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composition of factors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#sec:mixture-distribution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1239,6 +1261,15 @@
 
 <h3 id="composite-distributions">Composite distributions<a class="headerlink" href="#composite-distributions" title="Permanent link">&para;</a></h3>
 <p>This section contains composite distributions in the sense that they refer to other distribution which they combine or modify in some way. </p>
+<h4 id="sec:composition">Composition of factors<a class="headerlink" href="#sec:composition" title="Permanent link">&para;</a></h4>
+<p>Distributions that multiply other distributions do so in one of two ways:</p>
+<ul>
+<li><strong>Product composition</strong>: the factors are multiplied as listed. The distribution is <em>opaque</em>: towards any distribution that contains it, it is a single factor.</li>
+<li><strong>Union composition</strong>: the distribution stands for a <em>set</em> of factors, and its density is the product over this set. The set is obtained by replacing every component that itself uses union composition by the factors of that component, recursively. Identical factors (see <a href="#sec:identity" reference="sec:identity" reference-type="ref">Identity</a>) are contained in the set once, however many times and under whatever names they occur. The distribution is <em>transparent</em>.</li>
+</ul>
+<p>Two factors of such a set that are not identical <span class="smallcaps">must not</span> share a variate. An implementation that has not established the identity of two factors that share a variate <span class="smallcaps">must</span> reject the model; it <span class="smallcaps">must not</span> multiply both.</p>
+<p>In this version of the standard, the <a href="#sec:combined-distribution" reference="sec:combined-distribution" reference-type="ref">Combined distribution</a> and the <a href="#sec:array-distribution" reference="sec:array-distribution" reference-type="ref">Array distribution</a> use union composition. All other distributions use product composition.</p>
+<p><em>Example (non-normative): Let <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> be combined distributions with the components <span class="arithmatex">\(\{a, Z_a\}\)</span> and <span class="arithmatex">\(\{b, Z_b\}\)</span>, where <span class="arithmatex">\(Z_a\)</span> is an Array distribution over <span class="arithmatex">\(x_1,\ldots,x_4\)</span> and <span class="arithmatex">\(Z_b\)</span> one over <span class="arithmatex">\(x_3,\ldots,x_6\)</span>, with identical components for <span class="arithmatex">\(x_3\)</span> and <span class="arithmatex">\(x_4\)</span>. A union of <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> has the factors <span class="arithmatex">\(a\)</span>, <span class="arithmatex">\(b\)</span> and one factor for each of <span class="arithmatex">\(x_1,\ldots,x_6\)</span>. The components for <span class="arithmatex">\(x_3\)</span> and <span class="arithmatex">\(x_4\)</span> enter once.</em></p>
 <h4 id="sec:mixture-distribution" label="sec:mixture-distribution">Mixture distribution<a class="headerlink" href="#sec:mixture-distribution" title="Permanent link">&para;</a></h4>
 <p>The mixture distribution, sometimes called addition of distributions, is a (weighted) sum of distributions <span class="arithmatex">\(f_i(\vec{x})\)</span>, depending on the same variable(s) <span class="arithmatex">\(\vec{x}\)</span>: </p>
 <div class="arithmatex">\[
@@ -1303,7 +1334,8 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 </ul>
 </li>
 </ul>
-<p>The distributions referenced by <code>components</code> <span class="smallcaps">must</span> be statistically independent of each other, and no variate <span class="smallcaps">may</span> be used by more than one of them. The sub-distribution with a given <code>key</code> is evaluated on the sub-data set with the same <code>key</code> in the paired combined data set; its variates are matched to the axes of that sub-data set by name, as for any other pairing of a distribution with a data set. Since the variates are pairwise distinct across components, the pairing by <code>key</code> is a cross-check of the pairing by variate names and <span class="smallcaps">must</span> agree with it. <code>components</code> <span class="smallcaps">need not</span> list every possible <code>key</code>. The paired combined data set <span class="smallcaps">must not</span> list a <code>key</code> that has no entry in <code>components</code>. A <code>key</code> of <code>components</code> without a sub-data set in the paired combined data set contributes no factor. A <code>key</code> whose sub-data set is present always contributes, also with zero events: for an extended sub-distribution with expected event count <span class="arithmatex">\(\nu_c\)</span>, a present unbinned sub-data set with zero entries still contributes the factor <span class="arithmatex">\(\exp(-\nu_c)\)</span>. A sub-data set that is present but has no entries contributes no factor for a non-extended component.</p>
+<p>The combined distribution uses union composition (see <a href="#sec:composition" reference="sec:composition" reference-type="ref">Composition of factors</a>). Apart from identical factors, which enter once, the distributions referenced by <code>components</code> <span class="smallcaps">must</span> be statistically independent of each other, and no variate <span class="smallcaps">may</span> be used by more than one of them. If identical factors occur in components with different <code>key</code>s, the sub-data sets with these <code>key</code>s <span class="smallcaps">must</span> supply the same observed values for the variates of these factors; otherwise the pairing is invalid. The sub-distribution with a given <code>key</code> is evaluated on the sub-data set with the same <code>key</code> in the paired combined data set; its variates are matched to the axes of that sub-data set by name, as for any other pairing of a distribution with a data set. Since the variates are, apart from those of identical factors, pairwise distinct across components, the pairing by <code>key</code> is a cross-check of the pairing by variate names and <span class="smallcaps">must</span> agree with it. <code>components</code> <span class="smallcaps">need not</span> list every possible <code>key</code>. The paired combined data set <span class="smallcaps">must not</span> list a <code>key</code> that has no entry in <code>components</code>. A <code>key</code> of <code>components</code> without a sub-data set in the paired combined data set contributes no factor. A <code>key</code> whose sub-data set is present always contributes, also with zero events: for an extended sub-distribution with expected event count <span class="arithmatex">\(\nu_c\)</span>, a present unbinned sub-data set with zero entries still contributes the factor <span class="arithmatex">\(\exp(-\nu_c)\)</span>. A sub-data set that is present but has no entries contributes no factor for a non-extended component.</p>
+<p>The <code>columns</code> and <code>key</code>s are labels. They select the sub-data set a component is paired with and have no mathematical meaning: the density depends only on the set of factors. A component <span class="smallcaps">may</span> itself be a combined distribution, in which case the sub-data set with its <code>key</code> <span class="smallcaps">must</span> be a combined data set that can be paired with it. When an implementation replaces such a component by its factors, it <span class="smallcaps">may</span> relabel <code>columns</code> and <code>key</code>s in any way, as long as every factor that remains has a <code>key</code> that is unique within the resulting distribution. Of several identical factors, it <span class="smallcaps">may</span> keep any one and drop the others together with their <code>key</code>s.</p>
 <div class="highlight"><span class="filename">Example: Combined distribution for a multi-channel model with global observables</span><pre><span></span><code><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;channels&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;combined_dist&quot;</span><span class="p">,</span>
@@ -1328,6 +1360,7 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 <li><code>type</code>: <code>product_dist</code> </li>
 <li><code>factors</code>: array of names referencing distributions </li>
 </ul>
+<p>The product distribution uses product composition (see <a href="#sec:composition" reference="sec:composition" reference-type="ref">Composition of factors</a>): the product distribution as a whole is a single factor of any distribution that contains it. The behavior of a product distribution whose factors have overlapping variates, including one in which two entries of <code>factors</code> are identical, is unspecified in this version of the standard. Documents <span class="smallcaps">should not</span> rely on it.</p>
 <h4 id="efficiency-product-distribution">Efficiency product distribution<a class="headerlink" href="#efficiency-product-distribution" title="Permanent link">&para;</a></h4>
 <p>The efficiency product distribution multiplies a normalized PDF with an efficiency function and normalizes the product:</p>
 <div class="arithmatex">\[
@@ -1371,7 +1404,7 @@ c_n = 1 - \sum_{i=1}^{n-1} c_i .
 \text{ArrayPdf}(\vec{x}) &amp;= \prod_{i=1}^{n} m(x_i; p_{i,1},\cdots,p_{i,k})
 \end{aligned}
 \]</div>
-<p>where <span class="arithmatex">\(x_i\)</span> is the observable named by <code>x</code> of the <span class="arithmatex">\(i\)</span>-th entry of <code>components</code> and <span class="arithmatex">\(p_{i,1},\cdots,p_{i,k}\)</span> are the <span class="arithmatex">\(k\)</span> type-specific parameters of <span class="arithmatex">\(m\)</span> assigned in that entry or in <code>default_parameters</code>. The observables <span class="arithmatex">\(x_i\)</span> <span class="smallcaps">must</span> be pairwise distinct. It is semantically equivalent to a <a href="#sec:product-distribution" reference="sec:product-distribution" reference-type="ref">Product distribution</a> of <span class="arithmatex">\(n\)</span> one-dimensional distributions of the given type, but declared flat and explicit such that engines <span class="smallcaps">may</span> use a dedicated, vectorized implementation. Unlike an array of separate distributions, one draw from an Array distribution contains every component, and its evaluation returns one joint density.</p>
+<p>where <span class="arithmatex">\(x_i\)</span> is the observable named by <code>x</code> of the <span class="arithmatex">\(i\)</span>-th entry of <code>components</code> and <span class="arithmatex">\(p_{i,1},\cdots,p_{i,k}\)</span> are the <span class="arithmatex">\(k\)</span> type-specific parameters of <span class="arithmatex">\(m\)</span> assigned in that entry or in <code>default_parameters</code>. The observables <span class="arithmatex">\(x_i\)</span> <span class="smallcaps">must</span> be pairwise distinct. The Array distribution uses union composition (see <a href="#sec:composition" reference="sec:composition" reference-type="ref">Composition of factors</a>): each entry of <code>components</code> is one factor, identical to a distribution of the type <code>component_type</code> with the same <code>x</code> and the same parameters. Its density is that of the product distribution of these <span class="arithmatex">\(n\)</span> distributions, but it is declared flat and explicit such that engines <span class="smallcaps">may</span> use a dedicated, vectorized implementation. Unlike an array of separate distributions, one draw from an Array distribution contains every component, and its evaluation returns one joint density.</p>
 <p>An Array distribution is a struct defined by the following components:</p>
 <ul>
 <li><code>name</code>: custom unique string</li>

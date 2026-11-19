@@ -1269,7 +1269,7 @@ Here the first column of <code>entries</code> refers to the <code>cat1</code> ax
 <span class="p">]</span>
 </code></pre></div>
 <h3 id="combined-data-set">Combined data set<a class="headerlink" href="#combined-data-set" title="Permanent link">&para;</a></h3>
-<p>Combined data sets merge multiple data structs into one. The sub-data sets can be of any <code>type</code> described above. Their <code>axes</code> names are pairwise distinct, since each sub-data set is paired with a component of a combined distribution and those components share no variate.<br />
+<p>Combined data sets merge multiple data structs into one. The sub-data sets can be of any <code>type</code> described above, or again of the <code>type</code> <code>combined</code> when paired with a component that is itself a combined distribution. Their <code>axes</code> names are pairwise distinct, since each sub-data set is paired with a component of a combined distribution and those components share no variate. The only exception are the variates of identical factors of the combined distribution (see <a href="#sec:composition" reference="sec:composition" reference-type="ref">Composition of factors</a>): the axes for these <span class="smallcaps">may</span> occur in several sub-data sets, which <span class="smallcaps">must</span> then hold the same observed values for them.<br />
 A combined data set is defined with the components:  </p>
 <ul>
 <li><code>name</code>: custom string</li>
